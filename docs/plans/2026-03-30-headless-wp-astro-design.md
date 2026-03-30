@@ -1,0 +1,147 @@
+# Headless WordPress + Astro SSG Design
+
+**Date:** 2026-03-30
+**Status:** Approved
+
+## Summary
+
+Convert scanfence.com from a WordPress+Elementor monolith to a headless architecture: WordPress remains as the CMS/API on CloudPanel (178.104.95.180), Astro generates static HTML at build time, deployed via Docker on Hetzner VPS (46.225.12.180) behind Caddy.
+
+## Architecture
+
+```
+WordPress (178.104.95.180)          Docker VPS (46.225.12.180)
+┌─────────────────────┐            ┌──────────────────────────┐
+│  WP Admin (headless) │            │  Caddy (reverse proxy)   │
+│  REST API at         │───build──▶│  ├── scanfence.com        │
+│  scanfence.com/      │   time    │  │   └── static HTML      │
+│  wp-json/wp/v2/      │            │  └── app.scanfence.com   │
+│                      │            │      └── (existing app)   │
+│  Webhook on save ────│──trigger─▶│  rebuild.sh → astro build │
+└─────────────────────┘            └──────────────────────────┘
+```
+
+- WordPress stays on CloudPanel as API-only CMS
+- Astro builds static HTML, deployed to Docker VPS
+- Caddy serves scanfence.com from Astro output
+- Webhook: WP fires on post save → rebuild endpoint on VPS → git pull + astro build
+
+## Design System (matching app.scanfence.com)
+
+| Token | Value |
+|-------|-------|
+| Body font | Inter, sans-serif |
+| Heading font | Space Grotesk, sans-serif |
+| Primary blue | #2563eb |
+| Primary hover | #1d4ed8 |
+| Blue light | #dbeafe |
+| Background | #f8fafc |
+| Text | #0f172a |
+| Heading color | #111827 |
+| Heading weight | 800 |
+| Gray borders | #e2e8f0 |
+| Border radius | 6px |
+| Card style | White bg, 1px #e2e8f0 border, 12px radius |
+
+## Routes
+
+| Route | Source | Description |
+|-------|--------|-------------|
+| `/` | Hardcoded layout + WP data | Hero, video, screenshots, features, CTA |
+| `/blog/` | WP posts listing | Paginated blog index (12/page) |
+| `/blog/[slug]/` | WP single post | Individual blog post |
+| `/category/[slug]/` | WP categories | Posts filtered by category |
+| `/features/` | WP page | Features page |
+| `/faq/` | WP page | FAQ page |
+| `/documentation/` | WP page | Docs page |
+| `/support/` | WP page | Support page |
+| `/contact/` | WP page | Contact page |
+| `/pricing/` | WP page | Pricing page |
+| `/terms-and-conditions/` | WP page | Terms page |
+| `/datenschutzerklaerung/` | WP page | Privacy page |
+| `/about-raphael/` | WP page | About page |
+
+## Project Structure
+
+```
+scanfence-website/
+├── src/
+│   ├── layouts/
+│   │   ├── BaseLayout.astro      # HTML shell, fonts, meta
+│   │   ├── PageLayout.astro      # WP page wrapper
+│   │   └── PostLayout.astro      # Blog post wrapper
+│   ├── components/
+│   │   ├── Header.astro          # Sticky nav
+│   │   ├── Footer.astro          # Blue footer
+│   │   ├── Hero.astro            # Homepage hero section
+│   │   ├── Features.astro        # 6 feature cards grid
+│   │   ├── Screenshots.astro     # App screenshots grid
+│   │   ├── CTA.astro             # CTA card section
+│   │   ├── BlogCard.astro        # Blog post card component
+│   │   └── Pagination.astro      # Blog pagination
+│   ├── lib/
+│   │   └── wordpress.ts          # WP REST API fetch layer
+│   ├── styles/
+│   │   └── global.css            # Design tokens + base styles
+│   └── pages/
+│       ├── index.astro           # Homepage
+│       ├── blog/
+│       │   ├── index.astro       # Blog listing
+│       │   └── [slug].astro      # Single post (getStaticPaths)
+│       ├── category/
+│       │   └── [slug].astro      # Category archive
+│       └── [...slug].astro       # Catch-all for WP pages
+├── public/
+│   └── assets/                   # Logos, favicon
+├── Dockerfile                    # Multi-stage: node build + nginx serve
+├── docker-compose.yml
+├── rebuild.sh                    # Webhook rebuild script
+├── astro.config.mjs
+├── package.json
+└── tsconfig.json
+```
+
+## WordPress API Layer (lib/wordpress.ts)
+
+Functions:
+- `getPosts(page, perPage)` — paginated blog listing
+- `getPost(slug)` — single post by slug
+- `getAllPosts()` — all posts for getStaticPaths
+- `getPages()` — all published pages
+- `getPage(slug)` — single page by slug
+- `getCategories()` — all categories with counts
+- `getPostsByCategory(categoryId, page)` — filtered posts
+- `getMedia(id)` — featured image URL + alt text
+
+API base: `https://scanfence.com/wp-json/wp/v2` (configurable via env var)
+
+## SEO Strategy
+
+- Pull `yoast_head_json` from WP API for every page/post
+- Render: `<title>`, meta description, canonical, OG tags, Twitter cards
+- Inject JSON-LD schema from Yoast
+- Generate sitemap via `@astrojs/sitemap`
+- robots.txt generated by Astro
+
+## Rebuild Webhook
+
+1. WP plugin (WP Webhooks or custom `save_post` hook) sends POST to VPS endpoint
+2. VPS runs `rebuild.sh`: `git pull && npm run build && rsync dist/ /srv/scanfence/`
+3. Caddy serves updated static files immediately (no restart needed)
+
+## Deployment (Docker)
+
+Multi-stage Dockerfile:
+- Stage 1: Node.js — install deps, run `astro build`
+- Stage 2: Nginx/Caddy — copy `dist/` and serve
+
+Docker Compose on VPS at `/opt/scanfence-website/`
+
+Caddy config for `scanfence.com` points to the built static files.
+
+## Decisions
+
+- **Astro SSG over SSR**: 70 posts rebuild in <60s, static is fastest and simplest
+- **All content from WP**: User edits everything in WP admin, no code changes needed for content
+- **Webhook rebuild**: Hands-free content updates without manual deploys
+- **Docker VPS deployment**: Matches existing shipvps workflow
