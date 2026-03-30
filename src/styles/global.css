@@ -747,6 +747,220 @@ ul {
   font-size: 44px;
 }
 
+/* ===== Elementor Content Cleanup ===== */
+.wp-content .elementor,
+.wp-content [data-elementor-type] {
+  max-width: 100%;
+}
+
+.wp-content .e-con,
+.wp-content .e-con-inner,
+.wp-content .elementor-widget-wrap,
+.wp-content .elementor-element {
+  max-width: 100%;
+}
+
+.wp-content .e-con-boxed > .e-con-inner {
+  max-width: 100%;
+  padding: 0;
+}
+
+.wp-content .elementor-widget {
+  margin-bottom: 1em;
+}
+
+.wp-content .elementor-heading-title {
+  font-family: var(--font-heading);
+  color: var(--color-heading);
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.wp-content h2.elementor-heading-title {
+  font-size: 28px;
+  margin-top: 1.5em;
+  margin-bottom: 0.75em;
+}
+
+.wp-content h2.elementor-heading-title:first-child {
+  margin-top: 0;
+}
+
+.wp-content .elementor-widget-text-editor p {
+  margin-bottom: 1em;
+}
+
+/* ===== Accordion (Elementor + native details) ===== */
+.wp-content details,
+.wp-content .e-n-accordion-item {
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-lg);
+  margin-bottom: 12px;
+  overflow: hidden;
+  background: var(--color-white);
+}
+
+.wp-content summary,
+.wp-content .e-n-accordion-item-title {
+  padding: 16px 20px;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--color-heading);
+  list-style: none;
+  transition: background 0.2s;
+}
+
+.wp-content summary::-webkit-details-marker {
+  display: none;
+}
+
+.wp-content summary::before {
+  content: '▸';
+  font-size: 14px;
+  color: var(--color-blue);
+  transition: transform 0.2s;
+}
+
+.wp-content details[open] summary::before {
+  transform: rotate(90deg);
+}
+
+.wp-content summary:hover,
+.wp-content .e-n-accordion-item-title:hover {
+  background: var(--color-gray-100);
+}
+
+.wp-content details > :not(summary) {
+  padding: 0 20px 16px;
+}
+
+.wp-content .e-n-accordion-item-title-icon {
+  color: var(--color-blue);
+}
+
+.wp-content .e-n-accordion-item-title-icon .e-closed {
+  display: inline;
+}
+
+.wp-content .e-n-accordion-item-title-icon .e-opened {
+  display: none;
+}
+
+.wp-content details[open] .e-n-accordion-item-title-icon .e-closed {
+  display: none;
+}
+
+.wp-content details[open] .e-n-accordion-item-title-icon .e-opened {
+  display: inline;
+}
+
+/* ===== Forms (Elementor) ===== */
+.wp-content .elementor-form {
+  max-width: 100%;
+}
+
+.wp-content .elementor-form .elementor-field-group {
+  margin-bottom: 20px;
+}
+
+.wp-content .elementor-form label,
+.wp-content .elementor-field-label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-heading);
+  margin-bottom: 6px;
+}
+
+.wp-content .elementor-form .elementor-field-required::after {
+  content: ' *';
+  color: #ef4444;
+}
+
+.wp-content .elementor-field-textual,
+.wp-content .elementor-form input[type="text"],
+.wp-content .elementor-form input[type="email"],
+.wp-content .elementor-form input[type="tel"],
+.wp-content .elementor-form input[type="url"],
+.wp-content .elementor-form input[type="number"],
+.wp-content .elementor-form select,
+.wp-content .elementor-form textarea,
+.wp-content form input[type="text"],
+.wp-content form input[type="email"],
+.wp-content form textarea {
+  width: 100%;
+  padding: 10px 14px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  border: 1px solid var(--color-gray-300);
+  border-radius: var(--radius);
+  background: var(--color-white);
+  color: var(--color-text);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.wp-content .elementor-field-textual:focus,
+.wp-content form input:focus,
+.wp-content form textarea:focus {
+  outline: none;
+  border-color: var(--color-blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.wp-content .elementor-form textarea,
+.wp-content form textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.wp-content .elementor-button,
+.wp-content form button[type="submit"],
+.wp-content form input[type="submit"] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 28px;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: var(--radius);
+  border: 2px solid var(--color-blue);
+  background: var(--color-blue);
+  color: var(--color-white);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+
+.wp-content .elementor-button:hover,
+.wp-content form button[type="submit"]:hover,
+.wp-content form input[type="submit"]:hover {
+  background: var(--color-blue-hover);
+  border-color: var(--color-blue-hover);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  transform: translateY(-1px);
+}
+
+/* Elementor form column layout */
+.wp-content .elementor-field-group {
+  display: block;
+  width: 100%;
+}
+
+/* Hide Elementor hidden fields and recaptcha placeholders */
+.wp-content .elementor-form input[type="hidden"],
+.wp-content .elementor-field-type-hidden {
+  display: none;
+}
+
 /* ===== Responsive ===== */
 @media (max-width: 1024px) {
   .header-nav,
