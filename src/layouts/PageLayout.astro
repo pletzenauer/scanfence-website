@@ -1,0 +1,33 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  canonical?: string;
+  ogImage?: string;
+}
+
+const { title, description, canonical, ogImage } = Astro.props;
+---
+
+<BaseLayout title={title} description={description} canonical={canonical} ogImage={ogImage}>
+  <Header />
+  <main>
+    <div class="page-header">
+      <div class="container">
+        <h1>{title}</h1>
+      </div>
+    </div>
+    <section class="section">
+      <div class="container">
+        <div class="wp-content">
+          <slot />
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>

@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import BlogCard from '../../components/BlogCard.astro';
+import { getCategories, getPostsByCategory, getMedia, stripHtml, formatDate } from '../../lib/wordpress';
+
+export async function getStaticPaths() {
+  const categories = await getCategories();
+  return categories
+    .filter(c => c.count > 0)
+    .map(c => ({ params: { slug: c.slug }, props: { category: c } }));
+}
+
+const { category } = Astro.props;
+const { posts } = await getPostsByCategory(category.id, 1, 100);
+
+const postsWithData = await Promise.all(
+  posts.map(async (post) => {
+    const media = post.featured_media ? await getMedia(post.featured_media) : null;
+    return {
+      title: post.title.rendered,
+      slug: post.slug,
+      excerpt: stripHtml(post.excerpt.rendered).slice(0, 160),
+      date: formatDate(post.date),
+      imageUrl: media?.source_url,
+      category: category.name,
+    };
+  })
+);
+---
+
+<BaseLayout
+  title={`${category.name} — ScanFence Blog`}
+  description={`Browse all ${category.name} articles on the ScanFence blog.`}
+>
+  <Header />
+  <main>
+    <div class="page-header">
+      <div class="container">
+        <h1>{category.name}</h1>
+      </div>
+    </div>
+    <section class="section">
+      <div class="container">
+        <div class="blog-grid">
+          {postsWithData.map(post => (
+            <BlogCard {...post} />
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>

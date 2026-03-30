@@ -1,0 +1,44 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  canonical?: string;
+  ogImage?: string;
+  date?: string;
+  category?: string;
+  featuredImage?: string;
+  featuredImageAlt?: string;
+}
+
+const { title, description, canonical, ogImage, date, category, featuredImage, featuredImageAlt } = Astro.props;
+---
+
+<BaseLayout title={title} description={description} canonical={canonical} ogImage={ogImage}>
+  <Header />
+  <main>
+    <div class="container">
+      <div class="post-header">
+        {category && <span class="blog-card-category">{category}</span>}
+        <h1>{title}</h1>
+        {date && (
+          <div class="post-meta">
+            <time>{date}</time>
+          </div>
+        )}
+      </div>
+      {featuredImage && (
+        <div class="post-featured-image">
+          <img src={featuredImage} alt={featuredImageAlt || title} />
+        </div>
+      )}
+      <div class="wp-content">
+        <slot />
+      </div>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>

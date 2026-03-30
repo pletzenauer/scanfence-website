@@ -1,0 +1,51 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import BlogCard from '../../components/BlogCard.astro';
+import Pagination from '../../components/Pagination.astro';
+import { getPosts, getCategories, getMedia, stripHtml, formatDate } from '../../lib/wordpress';
+
+const { posts, totalPages } = await getPosts(1, 12);
+const categories = await getCategories();
+
+const postsWithData = await Promise.all(
+  posts.map(async (post) => {
+    const media = post.featured_media ? await getMedia(post.featured_media) : null;
+    const category = categories.find(c => post.categories.includes(c.id));
+    return {
+      title: post.title.rendered,
+      slug: post.slug,
+      excerpt: stripHtml(post.excerpt.rendered).slice(0, 160),
+      date: formatDate(post.date),
+      imageUrl: media?.source_url,
+      category: category?.name,
+    };
+  })
+);
+---
+
+<BaseLayout
+  title="Blog — ScanFence"
+  description="Read the latest articles about QR codes, geofencing, and location-based marketing from ScanFence."
+>
+  <Header />
+  <main>
+    <div class="page-header">
+      <div class="container">
+        <h1>Blog</h1>
+      </div>
+    </div>
+    <section class="section">
+      <div class="container">
+        <div class="blog-grid">
+          {postsWithData.map(post => (
+            <BlogCard {...post} />
+          ))}
+        </div>
+        <Pagination currentPage={1} totalPages={totalPages} basePath="/blog" />
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>

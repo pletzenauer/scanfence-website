@@ -1,0 +1,77 @@
+---
+---
+
+<header class="header">
+  <div class="container">
+    <a href="/" class="header-logo">
+      <img src="/assets/scanfence-logo-black.png" alt="ScanFence" width="48" height="48">
+    </a>
+
+    <nav class="header-nav">
+      <a href="/">Home</a>
+      <a href="/#features">Features</a>
+      <a href="/faq/">FAQ</a>
+      <a href="/documentation/">Docs</a>
+      <a href="/blog/">Blog</a>
+      <a href="/support/">Support</a>
+      <a href="/contact/">Contact</a>
+    </nav>
+
+    <div class="header-actions">
+      <a href="https://app.scanfence.com/signup">Sign Up</a>
+      <a href="https://app.scanfence.com/login">Login</a>
+      <a href="/pricing/" class="btn btn-primary btn-nav">Pricing</a>
+    </div>
+
+    <button class="mobile-toggle" aria-label="Toggle menu" id="menuToggle">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+      </svg>
+    </button>
+  </div>
+</header>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="/">Home</a>
+  <a href="/#features">Features</a>
+  <a href="/faq/">FAQ</a>
+  <a href="/documentation/">Docs</a>
+  <a href="/blog/">Blog</a>
+  <a href="/support/">Support</a>
+  <a href="/contact/">Contact</a>
+  <a href="https://app.scanfence.com/signup">Sign Up</a>
+  <a href="https://app.scanfence.com/login">Login</a>
+  <a href="/pricing/" class="btn btn-primary">Pricing</a>
+</div>
+
+<script>
+  const menuToggle = document.getElementById('menuToggle');
+  const mobileMenu = document.getElementById('mobileMenu');
+
+  if (menuToggle && mobileMenu) {
+    let isOpen = false;
+
+    menuToggle.addEventListener('click', () => {
+      isOpen = !isOpen;
+      mobileMenu.classList.toggle('active', isOpen);
+      const path = menuToggle.querySelector('svg path');
+      if (path) {
+        path.setAttribute('d', isOpen
+          ? 'M6 18L18 6M6 6l12 12'
+          : 'M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5'
+        );
+      }
+    });
+
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        isOpen = false;
+        mobileMenu.classList.remove('active');
+        const path = menuToggle.querySelector('svg path');
+        if (path) {
+          path.setAttribute('d', 'M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5');
+        }
+      });
+    });
+  }
+</script>

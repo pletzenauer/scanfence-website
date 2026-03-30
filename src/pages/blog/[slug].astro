@@ -1,0 +1,32 @@
+---
+import { getAllPosts, getPost, getMedia, getCategories, formatDate } from '../../lib/wordpress';
+import PostLayout from '../../layouts/PostLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getAllPosts();
+  return posts.map(post => ({ params: { slug: post.slug } }));
+}
+
+const { slug } = Astro.params;
+const post = await getPost(slug!);
+if (!post) return Astro.redirect('/blog/');
+
+const media = post.featured_media ? await getMedia(post.featured_media) : null;
+const categories = await getCategories();
+const postCategory = categories.find(c => post.categories.includes(c.id));
+
+const seo = post.yoast_head_json;
+---
+
+<PostLayout
+  title={seo?.title || post.title.rendered}
+  description={seo?.description}
+  canonical={seo?.canonical}
+  ogImage={seo?.og_image?.[0]?.url || media?.source_url}
+  date={formatDate(post.date)}
+  category={postCategory?.name}
+  featuredImage={media?.source_url}
+  featuredImageAlt={media?.alt_text}
+>
+  <Fragment set:html={post.content.rendered} />
+</PostLayout>
