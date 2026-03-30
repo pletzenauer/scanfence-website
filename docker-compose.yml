@@ -4,4 +4,4 @@ services:
     container_name: scanfence-web
     restart: unless-stopped
     ports:
-      - "8090:80"
+      - "8091:80"
