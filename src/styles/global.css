@@ -1,19 +1,22 @@
 /* ===== Design Tokens ===== */
 :root {
-  --color-bg: #f8fafc;
-  --color-text: #0f172a;
-  --color-heading: #111827;
-  --color-blue: #2563eb;
-  --color-blue-hover: #1d4ed8;
-  --color-blue-light: #dbeafe;
-  --color-white: #ffffff;
-  --color-gray-100: #f1f5f9;
-  --color-gray-200: #e2e8f0;
-  --color-gray-300: #d1d5db;
+  --color-bg: #0b1120;
+  --color-bg-secondary: #111827;
+  --color-surface: #1e293b;
+  --color-surface-hover: #253349;
+  --color-text: #cbd5e1;
+  --color-heading: #f1f5f9;
+  --color-blue: #6366f1;
+  --color-blue-hover: #818cf8;
+  --color-blue-light: rgba(99, 102, 241, 0.15);
+  --color-white: #f8fafc;
+  --color-gray-100: #1e293b;
+  --color-gray-200: #334155;
+  --color-gray-300: #475569;
   --color-gray-400: #94a3b8;
-  --color-gray-500: #64748b;
-  --color-gray-600: #475569;
-  --color-gray-900: #0f172a;
+  --color-gray-500: #94a3b8;
+  --color-gray-600: #cbd5e1;
+  --color-gray-900: #f1f5f9;
   --font-body: 'Inter', sans-serif;
   --font-heading: 'Space Grotesk', sans-serif;
   --radius: 6px;
@@ -123,13 +126,13 @@ ul {
   background: var(--color-blue-hover);
   border-color: var(--color-blue-hover);
   color: var(--color-white);
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
   transform: translateY(-1px);
 }
 
 .btn-outline {
   background: transparent;
-  color: var(--color-text);
+  color: var(--color-white);
   border-color: var(--color-gray-300);
 }
 
@@ -154,7 +157,8 @@ ul {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: var(--color-white);
+  background: rgba(11, 17, 32, 0.85);
+  backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--color-gray-200);
   height: var(--header-height);
 }
@@ -222,7 +226,7 @@ ul {
 .hero {
   padding: 48px 0 64px;
   text-align: center;
-  background: linear-gradient(180deg, var(--color-white) 0%, var(--color-bg) 100%);
+  background: linear-gradient(180deg, var(--color-bg-secondary) 0%, var(--color-bg) 100%);
   position: relative;
   overflow: hidden;
 }
@@ -234,7 +238,7 @@ ul {
   right: -200px;
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(37, 99, 235, 0.06) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -245,7 +249,7 @@ ul {
   left: -200px;
   width: 500px;
   height: 500px;
-  background: radial-gradient(circle, rgba(37, 99, 235, 0.04) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -340,7 +344,7 @@ ul {
 /* ===== Features ===== */
 .features {
   padding: 80px 0;
-  background: var(--color-white);
+  background: var(--color-bg-secondary);
   position: relative;
 }
 
@@ -383,17 +387,18 @@ ul {
 }
 
 .feature-card {
-  background: var(--color-white);
+  background: var(--color-surface);
   border: 1px solid var(--color-gray-200);
   border-radius: var(--radius-lg);
   padding: 32px;
-  transition: box-shadow 0.3s, transform 0.2s;
+  transition: box-shadow 0.3s, transform 0.2s, border-color 0.2s;
   text-align: left;
 }
 
 .feature-card:hover {
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   transform: translateY(-2px);
+  border-color: var(--color-blue);
 }
 
 .feature-icon {
@@ -432,14 +437,14 @@ ul {
 }
 
 .cta-card {
-  background: linear-gradient(135deg, var(--color-white) 0%, #f0f4ff 100%);
-  border: 1px solid rgba(37, 99, 235, 0.12);
+  background: linear-gradient(135deg, var(--color-surface) 0%, #1a1f3d 100%);
+  border: 1px solid rgba(99, 102, 241, 0.2);
   border-radius: var(--radius-xl);
   padding: 64px 48px;
   text-align: center;
   max-width: 800px;
   margin: 0 auto;
-  box-shadow: 0 8px 30px rgba(37, 99, 235, 0.08);
+  box-shadow: 0 8px 30px rgba(99, 102, 241, 0.1);
 }
 
 .cta-card h2 {
@@ -465,9 +470,10 @@ ul {
 
 /* ===== Footer ===== */
 .footer {
-  background: var(--color-blue);
+  background: #070c18;
   color: var(--color-white);
   padding: 48px 0;
+  border-top: 1px solid var(--color-gray-200);
 }
 
 .footer .container {
@@ -504,7 +510,7 @@ ul {
   left: 0;
   right: 0;
   bottom: 0;
-  background: var(--color-white);
+  background: var(--color-bg);
   z-index: 99;
   padding: 24px;
   flex-direction: column;
@@ -541,16 +547,17 @@ ul {
 }
 
 .blog-card {
-  background: var(--color-white);
+  background: var(--color-surface);
   border: 1px solid var(--color-gray-200);
   border-radius: var(--radius-lg);
   overflow: hidden;
-  transition: box-shadow 0.3s, transform 0.2s;
+  transition: box-shadow 0.3s, transform 0.2s, border-color 0.2s;
 }
 
 .blog-card:hover {
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   transform: translateY(-2px);
+  border-color: var(--color-blue);
 }
 
 .blog-card img {
@@ -584,7 +591,7 @@ ul {
 }
 
 .blog-card h3 a {
-  color: var(--color-heading);
+  color: var(--color-white);
 }
 
 .blog-card h3 a:hover {
@@ -621,7 +628,7 @@ ul {
 }
 
 .pagination a {
-  color: var(--color-text);
+  color: var(--color-white);
   border: 1px solid var(--color-gray-200);
 }
 
@@ -699,8 +706,27 @@ ul {
 }
 
 .wp-content th {
-  background: var(--color-gray-100);
+  background: var(--color-surface);
   font-weight: 600;
+  color: var(--color-heading);
+}
+
+/* ===== Elementor TOC & Widget Cleanup ===== */
+.wp-content .elementor-toc__header,
+.wp-content .elementor-toc__body,
+.wp-content .elementor-widget-table-of-contents {
+  display: none;
+}
+
+.wp-content svg {
+  max-width: 24px;
+  max-height: 24px;
+}
+
+.wp-content .wp-content img,
+.wp-content figure img {
+  max-width: 100%;
+  height: auto;
 }
 
 /* ===== Post Header ===== */
@@ -740,7 +766,7 @@ ul {
 .page-header {
   text-align: center;
   padding: 48px 0 32px;
-  background: linear-gradient(180deg, var(--color-white) 0%, var(--color-bg) 100%);
+  background: linear-gradient(180deg, var(--color-bg-secondary) 0%, var(--color-bg) 100%);
 }
 
 .page-header h1 {
@@ -797,7 +823,7 @@ ul {
   border-radius: var(--radius-lg);
   margin-bottom: 12px;
   overflow: hidden;
-  background: var(--color-white);
+  background: var(--color-surface);
 }
 
 .wp-content summary,
@@ -899,8 +925,8 @@ ul {
   font-size: 15px;
   border: 1px solid var(--color-gray-300);
   border-radius: var(--radius);
-  background: var(--color-white);
-  color: var(--color-text);
+  background: var(--color-bg-secondary);
+  color: var(--color-white);
   transition: border-color 0.2s, box-shadow 0.2s;
   -webkit-appearance: none;
   appearance: none;
