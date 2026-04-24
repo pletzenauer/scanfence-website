@@ -4,8 +4,9 @@
     {
       "name": "scanfence-site",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["astro", "dev"],
-      "port": 4321
+      "runtimeArgs": ["astro", "dev", "--port", "$PORT"],
+      "port": 4321,
+      "autoPort": true
     }
   ]
 }
