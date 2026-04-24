@@ -300,32 +300,6 @@ ul {
   color: var(--color-gray-400);
 }
 
-/* ===== Screenshots ===== */
-.screenshots {
-  padding: 40px 0 80px;
-  overflow: hidden;
-}
-
-.screenshots-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 0 24px;
-}
-
-.screenshots-grid img {
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  width: 100%;
-  transition: transform 0.3s;
-}
-
-.screenshots-grid img:hover {
-  transform: scale(1.03);
-}
-
 /* ===== Features ===== */
 .features {
   padding: 80px 0;
@@ -991,10 +965,6 @@ ul {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .screenshots-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
   .blog-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -1019,11 +989,6 @@ ul {
 
   .features-grid {
     grid-template-columns: 1fr;
-  }
-
-  .screenshots-grid {
-    grid-template-columns: 1fr;
-    gap: 12px;
   }
 
   .cta-card {
