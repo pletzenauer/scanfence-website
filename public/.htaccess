@@ -1,0 +1,21 @@
+# scanfence.com static frontend (Astro)
+# Served from /home/ywxmbssz/scanfence-frontend/ on flokinet shared hosting.
+# This file is copied verbatim into dist/ by Astro and deployed by CI.
+
+RewriteEngine On
+
+# 1) 301 legacy date-based WP permalinks -> Astro /blog/<slug>/
+#    Example: /2026/03/05/foo-bar/  ->  /blog/foo-bar/
+RewriteRule ^([0-9]{4})/([0-9]{2})/([0-9]{2})/([^/]+)/?$ /blog/$4/ [R=301,L]
+
+# 2) Strip trailing index.html (clean URLs in the address bar)
+RewriteCond %{THE_REQUEST} \s/+(.*?)index\.html[\s?] [NC]
+RewriteRule ^ /%1 [R=301,L]
+
+# 3) Add trailing slash to bare directory requests (matches Astro output)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_URI} !\.(css|js|png|jpe?g|gif|svg|ico|webp|woff2?|xml|txt|map)$
+RewriteCond %{REQUEST_URI} !/$
+RewriteRule ^(.+)$ /$1/ [R=301,L]
+
+ErrorDocument 404 /404.html
