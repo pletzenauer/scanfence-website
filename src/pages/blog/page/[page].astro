@@ -1,0 +1,76 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import BlogCard from '../../../components/BlogCard.astro';
+import Pagination from '../../../components/Pagination.astro';
+import { getPosts, getCategories, getMedia, stripHtml, formatDate } from '../../../lib/wordpress';
+
+export async function getStaticPaths() {
+  const { totalPages } = await getPosts(1, 12);
+  const paths = [];
+  for (let p = 2; p <= totalPages; p++) {
+    paths.push({ params: { page: String(p) }, props: { pageNumber: p } });
+  }
+  return paths;
+}
+
+const { pageNumber } = Astro.props as { pageNumber: number };
+const { posts, totalPages } = await getPosts(pageNumber, 12);
+const categories = await getCategories();
+
+const postsWithData = await Promise.all(
+  posts.map(async (post) => {
+    const media = post.featured_media ? await getMedia(post.featured_media) : null;
+    const category = categories.find(c => post.categories.includes(c.id));
+    return {
+      title: post.title.rendered,
+      slug: post.slug,
+      excerpt: stripHtml(post.excerpt.rendered).slice(0, 160),
+      date: formatDate(post.date),
+      imageUrl: media?.source_url,
+      category: category?.name,
+    };
+  })
+);
+
+const canonical = `https://scanfence.com/blog/page/${pageNumber}/`;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': canonical,
+  name: `ScanFence Blog — Page ${pageNumber}`,
+  description: `Page ${pageNumber} of the ScanFence blog.`,
+  url: canonical,
+  isPartOf: { '@type': 'Blog', '@id': 'https://scanfence.com/blog/', name: 'ScanFence Blog' },
+};
+---
+
+<BaseLayout
+  title={`Blog — Page ${pageNumber} — ScanFence`}
+  description={`Page ${pageNumber} of the ScanFence blog — QR codes, geofencing, and location-based marketing.`}
+  canonical={canonical}
+  robots="noindex,follow"
+  jsonLd={jsonLd}
+>
+  <Header />
+  <main>
+    <div class="page-header">
+      <div class="container">
+        <h1>Blog</h1>
+      </div>
+    </div>
+    <section class="section">
+      <div class="container">
+        <div class="blog-grid">
+          {postsWithData.map(post => (
+            <BlogCard {...post} />
+          ))}
+        </div>
+        <Pagination currentPage={pageNumber} totalPages={totalPages} basePath="/blog/page" firstPagePath="/blog/" />
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>

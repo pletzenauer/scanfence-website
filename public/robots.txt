@@ -1,0 +1,9 @@
+# https://scanfence.com/robots.txt
+User-agent: *
+Allow: /
+
+# Disallow WP-admin / staging artifacts on cms subdomain (defensive — CMS lives on cms.scanfence.com)
+Disallow: /wp-admin/
+Disallow: /wp-login.php
+
+Sitemap: https://scanfence.com/sitemap-index.xml

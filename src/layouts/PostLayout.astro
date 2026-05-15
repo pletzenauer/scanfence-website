@@ -12,12 +12,13 @@ interface Props {
   category?: string;
   featuredImage?: string;
   featuredImageAlt?: string;
+  jsonLd?: object;
 }
 
-const { title, description, canonical, ogImage, date, category, featuredImage, featuredImageAlt } = Astro.props;
+const { title, description, canonical, ogImage, date, category, featuredImage, featuredImageAlt, jsonLd } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description} canonical={canonical} ogImage={ogImage}>
+<BaseLayout title={title} description={description} canonical={canonical} ogImage={ogImage} ogType="article" jsonLd={jsonLd}>
   <Header />
   <main>
     <div class="container">

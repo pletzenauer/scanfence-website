@@ -1,0 +1,79 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const title = '404 — Page not found — ScanFence';
+const description = 'That route was not found on scanfence.com.';
+---
+
+<BaseLayout title={title} description={description} robots="noindex,follow">
+  <Header />
+  <main>
+    <section class="error-hero">
+      <div class="container">
+        <span class="eyebrow">ERROR · 404</span>
+        <h1>
+          The signal <span class="serif-accent">went silent.</span>
+        </h1>
+        <p class="error-lede">
+          That URL is not on the perimeter. The page may have moved, been
+          retired, or never existed. Try one of these instead:
+        </p>
+        <ul class="error-links">
+          <li><a href="/">Home</a></li>
+          <li><a href="/features/">Features</a></li>
+          <li><a href="/pricing/">Pricing</a></li>
+          <li><a href="/blog/">Blog</a></li>
+          <li><a href="/documentation/">Docs</a></li>
+          <li><a href="/contact/">Contact</a></li>
+        </ul>
+        <div class="error-cta">
+          <a href="/" class="btn btn-primary btn-lg">Back to home →</a>
+          <a href="mailto:hello@scanfence.com" class="btn btn-ghost btn-lg">Email us</a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .error-hero {
+    padding: var(--space-9) 0;
+    background: var(--d01-paper);
+    border-bottom: var(--rule-hard);
+  }
+  .error-hero h1 {
+    font-size: clamp(48px, 6vw, 80px);
+    font-weight: 500;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    margin: var(--space-3) 0 var(--space-5);
+  }
+  .error-lede {
+    font-size: 18px;
+    color: var(--d01-steel);
+    line-height: 1.55;
+    margin-bottom: var(--space-6);
+    max-width: 56ch;
+  }
+  .error-links {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--space-7);
+    border-top: var(--rule-hard);
+  }
+  .error-links li {
+    border-bottom: var(--rule);
+    padding: var(--space-3) 0;
+  }
+  .error-links a {
+    font-family: var(--font-display);
+    font-size: 18px;
+    color: var(--d01-ink);
+    text-decoration: none;
+  }
+  .error-links a:hover { color: var(--d01-signal); }
+  .error-cta { display: flex; gap: var(--space-4); flex-wrap: wrap; }
+</style>

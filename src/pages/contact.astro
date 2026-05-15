@@ -7,6 +7,28 @@ const title = 'Contact ScanFence — Send a signal';
 const description = 'Get in touch with ScanFence. EU office. We reply within one business day.';
 const canonical = 'https://scanfence.com/contact/';
 
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ContactPage',
+  '@id': canonical,
+  name: title,
+  description,
+  url: canonical,
+  mainEntity: {
+    '@type': 'Organization',
+    name: 'ScanFence',
+    url: 'https://scanfence.com/',
+    email: 'hello@scanfence.com',
+    contactPoint: {
+      '@type': 'ContactPoint',
+      contactType: 'customer support',
+      email: 'hello@scanfence.com',
+      availableLanguage: ['English', 'German'],
+      areaServed: 'EU',
+    },
+  },
+};
+
 const topics = [
   { value: 'sales',       label: 'Sales' },
   { value: 'technical',   label: 'Support' },
@@ -22,7 +44,7 @@ const faqs = [
 ];
 ---
 
-<BaseLayout title={title} description={description} canonical={canonical}>
+<BaseLayout title={title} description={description} canonical={canonical} jsonLd={jsonLd}>
   <Header />
   <main>
     <section class="contact-hero">

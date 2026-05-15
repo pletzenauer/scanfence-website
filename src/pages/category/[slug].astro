@@ -28,11 +28,30 @@ const postsWithData = await Promise.all(
     };
   })
 );
+
+const canonical = `https://scanfence.com/category/${category.slug}/`;
+
+const categoryJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  '@id': canonical,
+  name: `${category.name} — ScanFence Blog`,
+  description: `Browse all ${category.name} articles on the ScanFence blog.`,
+  url: canonical,
+  isPartOf: { '@type': 'Blog', '@id': 'https://scanfence.com/blog/', name: 'ScanFence Blog' },
+  hasPart: postsWithData.map(p => ({
+    '@type': 'BlogPosting',
+    headline: p.title,
+    url: `https://scanfence.com/blog/${p.slug}/`,
+  })),
+};
 ---
 
 <BaseLayout
   title={`${category.name} — ScanFence Blog`}
   description={`Browse all ${category.name} articles on the ScanFence blog.`}
+  canonical={canonical}
+  jsonLd={categoryJsonLd}
 >
   <Header />
   <main>

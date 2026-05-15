@@ -23,12 +23,29 @@ const postsWithData = await Promise.all(
     };
   })
 );
+
+const blogJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Blog',
+  '@id': 'https://scanfence.com/blog/',
+  name: 'ScanFence Blog',
+  description: 'Articles about QR codes, geofencing, and location-based marketing.',
+  url: 'https://scanfence.com/blog/',
+  publisher: { '@type': 'Organization', name: 'ScanFence', url: 'https://scanfence.com/' },
+  blogPost: postsWithData.map(p => ({
+    '@type': 'BlogPosting',
+    headline: p.title,
+    url: `https://scanfence.com/blog/${p.slug}/`,
+    datePublished: p.date,
+  })),
+};
 ---
 
 <BaseLayout
   title="Blog — ScanFence"
   description="Read the latest articles about QR codes, geofencing, and location-based marketing from ScanFence."
   canonical="https://scanfence.com/blog/"
+  jsonLd={blogJsonLd}
 >
   <Header />
   <main>
@@ -44,7 +61,7 @@ const postsWithData = await Promise.all(
             <BlogCard {...post} />
           ))}
         </div>
-        <Pagination currentPage={1} totalPages={totalPages} basePath="/blog" />
+        <Pagination currentPage={1} totalPages={totalPages} basePath="/blog/page" firstPagePath="/blog/" />
       </div>
     </section>
   </main>
