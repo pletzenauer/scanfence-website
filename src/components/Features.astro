@@ -1,60 +1,40 @@
 ---
+const items = [
+  { n: '01', title: 'Dynamic codes',
+    body: 'Print once. Route forever. Repoint a code without reprinting.' },
+  { n: '02', title: 'GPS geofencing',
+    body: 'Geography is the rule. Scans inside the perimeter open one door; scans outside open another.' },
+  { n: '03', title: 'Time-based routing',
+    body: "Different hour, different destination. The code reads the clock before it reads the visitor." },
+  { n: '04', title: 'The receipt',
+    body: 'Every scan leaves one. Device, place, hour, outcome. No surprises.' },
+  { n: '05', title: 'A small crew',
+    body: 'Add the people who hold the keys. Role-based. Audit-clean.' },
+  { n: '06', title: 'No reprints',
+    body: "Change the destination at 11:47. It lands at 11:47." },
+];
 ---
 
-<section class="features section text-center" id="features">
+<section class="features section" id="features">
   <div class="container">
-    <div class="features-label">Features</div>
-    <h2>Everything you need for smart QR campaigns</h2>
-    <p class="features-subtitle">A comprehensive platform for creating, managing, and tracking dynamic QR codes with powerful geofencing and time-based routing capabilities.</p>
+    <header class="features-header">
+      <span class="eyebrow">THE WATCH</span>
+      <h2>
+        Six things the code does<br />
+        <span class="serif-accent">while you're not looking.</span>
+      </h2>
+    </header>
 
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 013.75 9.375v-4.5zM3.75 14.625c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5a1.125 1.125 0 01-1.125-1.125v-4.5zM13.5 4.875c0-.621.504-1.125 1.125-1.125h4.5c.621 0 1.125.504 1.125 1.125v4.5c0 .621-.504 1.125-1.125 1.125h-4.5A1.125 1.125 0 0113.5 9.375v-4.5z"/><path stroke-linecap="round" stroke-linejoin="round" d="M6.75 6.75h.75v.75h-.75v-.75zM6.75 16.5h.75v.75h-.75v-.75zM16.5 6.75h.75v.75H16.5v-.75zM13.5 13.5h.75v.75h-.75v-.75zM13.5 19.5h.75v.75h-.75v-.75zM19.5 13.5h.75v.75h-.75v-.75zM19.5 19.5h.75v.75h-.75v-.75zM16.5 16.5h.75v.75H16.5v-.75z"/></svg>
-        </div>
-        <h3>Dynamic QR Codes</h3>
-        <p>Create and manage QR codes that can be updated anytime without reprinting. Change destinations, track performance, and optimize on the fly.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z"/></svg>
-        </div>
-        <h3>GPS Geofencing</h3>
-        <p>Set up location-based triggers to deliver personalized content based on where your customers scan.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        </div>
-        <h3>Time-Based Routing</h3>
-        <p>Schedule different destinations based on time of day, day of week, or specific date ranges.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3 13.125C3 12.504 3.504 12 4.125 12h2.25c.621 0 1.125.504 1.125 1.125v6.75C7.5 20.496 6.996 21 6.375 21h-2.25A1.125 1.125 0 013 19.875v-6.75zM9.75 8.625c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125v11.25c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V8.625zM16.5 4.125c0-.621.504-1.125 1.125-1.125h2.25C20.496 3 21 3.504 21 4.125v15.75c0 .621-.504 1.125-1.125 1.125h-2.25a1.125 1.125 0 01-1.125-1.125V4.125z"/></svg>
-        </div>
-        <h3>Advanced Analytics</h3>
-        <p>Track scans in real-time with detailed insights on location, device, time, and user behavior patterns.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
-        </div>
-        <h3>Team Collaboration</h3>
-        <p>Invite team members to manage QR codes and campaigns together with role-based permissions.</p>
-      </div>
-
-      <div class="feature-card">
-        <div class="feature-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15"/></svg>
-        </div>
-        <h3>Instant Updates</h3>
-        <p>Changes go live immediately. Update your QR destinations without waiting or reprinting.</p>
-      </div>
-    </div>
+    <ul class="features-list">
+      {items.map(item => (
+        <li class="features-item">
+          <span class="features-num">{item.n}</span>
+          <div class="features-body">
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
   </div>
 </section>
