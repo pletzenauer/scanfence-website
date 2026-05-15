@@ -1,33 +1,72 @@
-/* ===== Design Tokens ===== */
+/* ===== Design Tokens — d01 Paper ===== */
 :root {
-  --color-bg: #0b1120;
-  --color-bg-secondary: #111827;
-  --color-surface: #1e293b;
-  --color-surface-hover: #253349;
-  --color-text: #cbd5e1;
-  --color-heading: #f1f5f9;
-  --color-blue: #6366f1;
-  --color-blue-hover: #818cf8;
-  --color-blue-light: rgba(99, 102, 241, 0.15);
-  --color-white: #f8fafc;
-  --color-gray-100: #1e293b;
-  --color-gray-200: #334155;
-  --color-gray-300: #475569;
-  --color-gray-400: #94a3b8;
-  --color-gray-500: #94a3b8;
-  --color-gray-600: #cbd5e1;
-  --color-gray-900: #f1f5f9;
-  --font-body: 'Inter', sans-serif;
-  --font-heading: 'Space Grotesk', sans-serif;
-  --radius: 6px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  /* Paper palette */
+  --d01-paper:      #F1ECE0;
+  --d01-paper-hi:   #F7F3E8;
+  --d01-ink:        #101012;
+  --d01-steel:      #5C5E63;
+  --d01-mute:       #8A8B8E;
+  --d01-rule:       #D8D2C2;
+  --d01-rule-hard:  #B8B0A0;
+
+  /* Accent (use sparingly) */
+  --d01-signal:     #1F7A3E;
+  --d01-signal-bg:  #E2EFDF;
+  --d01-vermil:     #B8412A;
+  --d01-vermil-bg:  #F2DDD3;
+  --d01-mustard:    #9C7820;
+  --d01-mustard-bg: #F2E6CA;
+  --d01-sky:        #3F627F;
+
+  /* Semantic aliases (preserve old variable names so legacy CSS still resolves
+     while we migrate; remove in a later pass). */
+  --color-bg:           var(--d01-paper);
+  --color-bg-secondary: var(--d01-paper-hi);
+  --color-surface:      var(--d01-paper-hi);
+  --color-surface-hover:var(--d01-paper-hi);
+  --color-text:         var(--d01-steel);
+  --color-heading:      var(--d01-ink);
+  --color-blue:         var(--d01-signal);
+  --color-blue-hover:   var(--d01-ink);
+  --color-blue-light:   var(--d01-signal-bg);
+  --color-white:        var(--d01-paper-hi);
+  --color-gray-100:     var(--d01-paper-hi);
+  --color-gray-200:     var(--d01-rule);
+  --color-gray-300:     var(--d01-rule-hard);
+  --color-gray-400:     var(--d01-mute);
+  --color-gray-500:     var(--d01-steel);
+  --color-gray-600:     var(--d01-steel);
+  --color-gray-900:     var(--d01-ink);
+
+  /* Type */
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-serif:   'Newsreader', serif;
+  --font-body:    'Inter', sans-serif;
+  --font-ui:      'Geist', 'Inter', sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, monospace;
+  --font-heading: var(--font-display);  /* alias for legacy */
+
+  /* Geometry */
+  --radius: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --rule:       1px solid var(--d01-rule);
+  --rule-hard:  1px solid var(--d01-rule-hard);
+
+  /* Shadow tokens — kept as no-op to avoid breaking legacy callers */
+  --shadow-sm: none;
+  --shadow:    none;
+  --shadow-md: none;
+  --shadow-lg: none;
+
+  /* Spacing — 4px base */
+  --space-1: 4px;  --space-2: 8px;   --space-3: 12px;
+  --space-4: 16px; --space-5: 24px;  --space-6: 32px;
+  --space-7: 48px; --space-8: 64px;  --space-9: 96px;
+  --space-10: 128px;
+
   --max-width: 1200px;
-  --header-height: 72px;
+  --header-height: 64px;
 }
 
 /* ===== Reset ===== */
@@ -41,31 +80,35 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: var(--d01-paper);
 }
 
 body {
   font-family: var(--font-body);
   font-size: 16px;
-  line-height: 1.6;
-  color: var(--color-text);
-  background-color: var(--color-bg);
+  line-height: 1.65;
+  color: var(--d01-ink);
+  background-color: var(--d01-paper);
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-heading);
-  color: var(--color-heading);
-  font-weight: 800;
-  line-height: 1.2;
+  font-family: var(--font-display);
+  color: var(--d01-ink);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
 }
 
 a {
-  color: var(--color-blue);
-  text-decoration: none;
-  transition: color 0.2s;
+  color: var(--d01-ink);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: color 0.15s;
 }
 
 a:hover {
-  color: var(--color-blue-hover);
+  color: var(--d01-signal);
 }
 
 img {
