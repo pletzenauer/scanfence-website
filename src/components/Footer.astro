@@ -1,14 +1,24 @@
 ---
+const year = new Date().getFullYear();
 ---
-
 <footer class="footer">
   <div class="container">
-    <a href="/" class="footer-logo">
-      <img src="/assets/scanfence-logo-white.png" alt="ScanFence" width="56" height="56">
-    </a>
-    <div>
-      <p class="footer-text">Dynamic QR codes with GPS geofencing and time-based routing for modern businesses.</p>
-      <p class="footer-bottom">&copy; 2026 ScanFence. All rights reserved.</p>
+    <div class="footer-top">
+      <a href="/" class="footer-logo" aria-label="ScanFence — home">
+        <span class="footer-logo-mark" aria-hidden="true"></span>
+        <span class="footer-logo-text">ScanFence</span>
+      </a>
+      <p class="footer-tagline">
+        Codes that know <span class="serif-accent">where they are.</span>
+      </p>
+      <a href="mailto:hello@scanfence.com" class="footer-email">hello@scanfence.com →</a>
+    </div>
+    <div class="footer-meta metadata-strip">
+      <span>© {year} ScanFence</span>
+      <span>EU · IRELAND-1</span>
+      <span>v2.4.1</span>
+      <span>SOC-2 TYPE II</span>
+      <span><a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></span>
     </div>
   </div>
 </footer>
