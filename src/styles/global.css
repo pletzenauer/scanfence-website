@@ -5,7 +5,7 @@
   --d01-paper-hi:   #F7F3E8;
   --d01-ink:        #101012;
   --d01-steel:      #5C5E63;
-  --d01-mute:       #8A8B8E;
+  --d01-mute:       #6F7074;
   --d01-rule:       #D8D2C2;
   --d01-rule-hard:  #B8B0A0;
 
@@ -18,46 +18,17 @@
   --d01-mustard-bg: #F2E6CA;
   --d01-sky:        #3F627F;
 
-  /* Semantic aliases (preserve old variable names so legacy CSS still resolves
-     while we migrate; remove in a later pass). */
-  --color-bg:           var(--d01-paper);
-  --color-bg-secondary: var(--d01-paper-hi);
-  --color-surface:      var(--d01-paper-hi);
-  --color-surface-hover:var(--d01-paper-hi);
-  --color-text:         var(--d01-steel);
-  --color-heading:      var(--d01-ink);
-  --color-blue:         var(--d01-signal);
-  --color-blue-hover:   var(--d01-ink);
-  --color-blue-light:   var(--d01-signal-bg);
-  --color-white:        var(--d01-paper-hi);
-  --color-gray-100:     var(--d01-paper-hi);
-  --color-gray-200:     var(--d01-rule);
-  --color-gray-300:     var(--d01-rule-hard);
-  --color-gray-400:     var(--d01-mute);
-  --color-gray-500:     var(--d01-steel);
-  --color-gray-600:     var(--d01-steel);
-  --color-gray-900:     var(--d01-ink);
-
   /* Type */
   --font-display: 'Space Grotesk', sans-serif;
   --font-serif:   'Newsreader', serif;
   --font-body:    'Inter', sans-serif;
   --font-ui:      'Geist', 'Inter', sans-serif;
   --font-mono:    'JetBrains Mono', ui-monospace, monospace;
-  --font-heading: var(--font-display);  /* alias for legacy */
 
   /* Geometry */
   --radius: 0;
-  --radius-lg: 0;
-  --radius-xl: 0;
   --rule:       1px solid var(--d01-rule);
   --rule-hard:  1px solid var(--d01-rule-hard);
-
-  /* Shadow tokens — kept as no-op to avoid breaking legacy callers */
-  --shadow-sm: none;
-  --shadow:    none;
-  --shadow-md: none;
-  --shadow-lg: none;
 
   /* Spacing — 4px base */
   --space-1: 4px;  --space-2: 8px;   --space-3: 12px;
@@ -119,6 +90,19 @@ img {
 
 ul {
   list-style: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--d01-signal);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* ===== Utilities ===== */
@@ -934,17 +918,6 @@ ul {
   margin-bottom: var(--space-4);
 }
 
-.post-meta {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  color: var(--d01-mute);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  display: flex;
-  gap: var(--space-4);
-  align-items: center;
-}
-
 .post-featured-image {
   max-width: var(--max-width);
   margin: 0 auto var(--space-7);
@@ -1249,55 +1222,14 @@ ul {
   .mobile-toggle {
     display: block;
   }
-
-  .hero h1 {
-    font-size: 40px;
-  }
-
-  .blog-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
 }
 
 @media (max-width: 640px) {
-  .hero {
-    padding: 32px 0 48px;
-  }
-
-  .hero h1 {
-    font-size: 32px;
-  }
-
-  .hero-subtitle {
-    font-size: 16px;
-  }
-
   .cta-card {
-    padding: 40px 24px;
-  }
-
-  .cta-card h2 {
-    font-size: 26px;
+    padding: var(--space-7) var(--space-5);
   }
 
   .section {
-    padding: 56px 0;
-  }
-
-  .footer .container {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .blog-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .post-header h1 {
-    font-size: 28px;
-  }
-
-  .page-header h1 {
-    font-size: 32px;
+    padding: var(--space-7) 0;
   }
 }

@@ -33,7 +33,7 @@ const nav = [
       <a href="https://app.scanfence.com/signup" class="btn btn-primary btn-nav">Start a plan →</a>
     </div>
 
-    <button class="mobile-toggle" aria-label="Toggle menu" id="menuToggle">
+    <button class="mobile-toggle" aria-label="Toggle menu" aria-controls="mobileMenu" aria-expanded="false" id="menuToggle">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
       </svg>
@@ -58,6 +58,7 @@ const nav = [
     menuToggle.addEventListener('click', () => {
       isOpen = !isOpen;
       mobileMenu.classList.toggle('active', isOpen);
+      menuToggle.setAttribute('aria-expanded', String(isOpen));
       const path = menuToggle.querySelector('svg path');
       if (path) {
         path.setAttribute('d', isOpen
@@ -70,6 +71,7 @@ const nav = [
       link.addEventListener('click', () => {
         isOpen = false;
         mobileMenu.classList.remove('active');
+        menuToggle.setAttribute('aria-expanded', 'false');
         const path = menuToggle.querySelector('svg path');
         if (path) path.setAttribute('d', 'M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5');
       });
