@@ -22,13 +22,11 @@ const { title, description, canonical, ogImage, date, category, featuredImage, f
   <main>
     <div class="container">
       <div class="post-header">
-        {category && <span class="blog-card-category">{category}</span>}
+        <div class="post-eyebrow-row">
+          {category && <span class="eyebrow">{category}</span>}
+          {date && <time class="post-date">{date}</time>}
+        </div>
         <h1>{title}</h1>
-        {date && (
-          <div class="post-meta">
-            <time>{date}</time>
-          </div>
-        )}
       </div>
       {featuredImage && (
         <div class="post-featured-image">
@@ -42,3 +40,19 @@ const { title, description, canonical, ogImage, date, category, featuredImage, f
   </main>
   <Footer />
 </BaseLayout>
+
+<style>
+  .post-eyebrow-row {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+  .post-date {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--d01-mute);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+</style>
