@@ -1,29 +1,40 @@
 ---
+const path = Astro.url.pathname;
+const isActive = (href: string) => {
+  if (href === '/') return path === '/';
+  return path.startsWith(href);
+};
+const nav = [
+  { href: '/', label: 'Home' },
+  { href: '/features/', label: 'Features' },
+  { href: '/pricing/', label: 'Pricing' },
+  { href: '/faq/', label: 'FAQ' },
+  { href: '/documentation/', label: 'Docs' },
+  { href: '/blog/', label: 'Blog' },
+  { href: '/contact/', label: 'Contact' },
+];
 ---
 
 <header class="header">
   <div class="container">
-    <a href="/" class="header-logo">
-      <img src="/assets/scanfence-logo-white.png" alt="ScanFence" width="48" height="48">
+    <a href="/" class="header-logo" aria-label="ScanFence — home">
+      <span class="header-logo-mark" aria-hidden="true"></span>
+      <span class="header-logo-text">ScanFence</span>
     </a>
 
-    <nav class="header-nav">
-      <a href="/">Home</a>
-      <a href="/#features">Features</a>
-      <a href="/faq/">FAQ</a>
-      <a href="/documentation/">Docs</a>
-      <a href="/blog/">Blog</a>
-      <a href="/contact/">Contact</a>
+    <nav class="header-nav" aria-label="Primary">
+      {nav.map(item => (
+        <a href={item.href} class:list={[{ 'is-active': isActive(item.href) }]}>{item.label}</a>
+      ))}
     </nav>
 
     <div class="header-actions">
-      <a href="https://app.scanfence.com/signup">Sign Up</a>
-      <a href="https://app.scanfence.com/login">Login</a>
-      <a href="/pricing/" class="btn btn-primary btn-nav">Pricing</a>
+      <a href="https://app.scanfence.com/login" class="header-link">Sign in</a>
+      <a href="https://app.scanfence.com/signup" class="btn btn-primary btn-nav">Start a plan →</a>
     </div>
 
     <button class="mobile-toggle" aria-label="Toggle menu" id="menuToggle">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
       </svg>
     </button>
@@ -31,24 +42,19 @@
 </header>
 
 <div class="mobile-menu" id="mobileMenu">
-  <a href="/">Home</a>
-  <a href="/#features">Features</a>
-  <a href="/faq/">FAQ</a>
-  <a href="/documentation/">Docs</a>
-  <a href="/blog/">Blog</a>
-  <a href="/contact/">Contact</a>
-  <a href="https://app.scanfence.com/signup">Sign Up</a>
-  <a href="https://app.scanfence.com/login">Login</a>
-  <a href="/pricing/" class="btn btn-primary">Pricing</a>
+  {nav.map(item => (
+    <a href={item.href} class:list={[{ 'is-active': isActive(item.href) }]}>{item.label}</a>
+  ))}
+  <hr class="rule-hard" />
+  <a href="https://app.scanfence.com/login">Sign in</a>
+  <a href="https://app.scanfence.com/signup" class="btn btn-primary">Start a plan →</a>
 </div>
 
 <script>
   const menuToggle = document.getElementById('menuToggle');
   const mobileMenu = document.getElementById('mobileMenu');
-
   if (menuToggle && mobileMenu) {
     let isOpen = false;
-
     menuToggle.addEventListener('click', () => {
       isOpen = !isOpen;
       mobileMenu.classList.toggle('active', isOpen);
@@ -60,15 +66,12 @@
         );
       }
     });
-
     mobileMenu.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', () => {
         isOpen = false;
         mobileMenu.classList.remove('active');
         const path = menuToggle.querySelector('svg path');
-        if (path) {
-          path.setAttribute('d', 'M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5');
-        }
+        if (path) path.setAttribute('d', 'M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5');
       });
     });
   }
