@@ -1,4 +1,4 @@
-const WP_API = import.meta.env.WP_API_URL || 'https://scanfence.com/wp-json/wp/v2';
+const WP_API = import.meta.env.WP_API_URL || 'https://cms.scanfence.com/wp-json/wp/v2';
 
 export interface WPPost {
   id: number;
