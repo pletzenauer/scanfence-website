@@ -1,20 +1,51 @@
 ---
+const scans = [
+  { time: '09:42', city: 'PARIS',    state: 'ROUTED → menu/fr',         tone: 'signal' },
+  { time: '09:43', city: 'BUDAPEST', state: 'BLOCKED · out-of-window',  tone: 'vermil' },
+  { time: '09:44', city: 'DUBLIN',   state: 'ROUTED → menu/en',         tone: 'signal' },
+  { time: '09:45', city: 'LYON',     state: 'ROUTED → menu/fr',         tone: 'signal' },
+  { time: '09:46', city: 'VIENNA',   state: 'ROUTED → menu/de',         tone: 'signal' },
+];
 ---
 
 <section class="hero" id="hero">
-  <div class="container">
-    <div class="hero-badge">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-      With GPS Geofencing &amp; Time-Based Routing
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow">QR · GEOFENCED · TIME-AWARE</span>
+      <h1>
+        Every scan,<br />
+        <span class="serif-accent">on the perimeter.</span>
+      </h1>
+      <p class="hero-lede">
+        ScanFence is a dynamic QR platform with GPS geofencing and time-based
+        routing. Print the code once. Route it forever. Watch what scanned,
+        what blocked, what's next.
+      </p>
+      <div class="hero-cta">
+        <a href="https://app.scanfence.com/signup" class="btn btn-primary btn-lg">Start a plan →</a>
+        <a href="/pricing/" class="btn btn-ghost btn-lg">See the pricing</a>
+      </div>
+      <p class="hero-note">30D · NO CARD</p>
     </div>
 
-    <h1>Dynamic QR Codes&nbsp; <span>Location Intelligence</span></h1>
-
-    <p class="hero-subtitle">Create smart QR codes with GPS geofencing and time-based routing. Track scans, analyze engagement, and deliver location-aware content to your audience.</p>
-
-    <div class="hero-cta">
-      <a href="https://app.scanfence.com/signup" class="btn btn-primary btn-lg">Start Free Trial</a>
-      <span class="hero-cta-note">30-day free trial &middot; Cancel anytime</span>
-    </div>
+    <aside class="hero-receipt" aria-label="Live scan receipt sample">
+      <header class="hero-receipt-header">
+        <span class="eyebrow eyebrow--mute">LIVE · SAMPLE</span>
+        <span class="hero-receipt-dot" aria-hidden="true"></span>
+      </header>
+      <ul class="hero-receipt-list">
+        {scans.map(s => (
+          <li class={`hero-receipt-row hero-receipt-row--${s.tone}`}>
+            <span class="hero-receipt-time">{s.time}</span>
+            <span class="hero-receipt-city">{s.city}</span>
+            <span class="hero-receipt-state">{s.state}</span>
+          </li>
+        ))}
+      </ul>
+      <footer class="hero-receipt-footer">
+        <span>EU · IRELAND-1</span>
+        <span>P50 · 117MS</span>
+      </footer>
+    </aside>
   </div>
 </section>
