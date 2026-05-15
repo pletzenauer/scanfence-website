@@ -4,16 +4,41 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import Hero from '../components/Hero.astro';
 import Features from '../components/Features.astro';
+import Receipt from '../components/Receipt.astro';
 import CTA from '../components/CTA.astro';
+
+const title = 'ScanFence — Dynamic QR Codes with GPS Geofencing';
+const description = 'Dynamic QR codes with GPS geofencing and time-based routing. Print the code once. Route it forever. Watch what scanned, what blocked, what\'s next.';
+const canonical = 'https://scanfence.com/';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: 'ScanFence',
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'Web',
+  description: 'Dynamic QR codes with GPS geofencing and time-based routing.',
+  url: 'https://scanfence.com/',
+  offers: { '@type': 'Offer', priceCurrency: 'EUR', availability: 'https://schema.org/InStock' },
+};
 ---
 
-<BaseLayout
-  title="ScanFence — Dynamic QR Codes with GPS Geofencing"
-  description="Create smart QR codes with GPS geofencing and time-based routing. Track scans, analyze engagement, and deliver location-aware content to your audience."
->
+<BaseLayout title={title} description={description} canonical={canonical} jsonLd={jsonLd}>
   <Header />
-  <Hero />
-  <Features />
-  <CTA />
+  <main>
+    <Hero />
+    <div class="container">
+      <div class="metadata-strip">
+        <span>QR · DYNAMIC</span>
+        <span>GPS · GEOFENCED</span>
+        <span>TIME-AWARE</span>
+        <span>EU · IRELAND</span>
+        <span>SOC-2 TYPE II</span>
+      </div>
+    </div>
+    <Features />
+    <Receipt />
+    <CTA />
+  </main>
   <Footer />
 </BaseLayout>
