@@ -1,13 +1,15 @@
 ---
-import { getAllPosts, getPost, getMedia, getCategories, formatDate } from '../../lib/wordpress';
+import { getAllPosts, getPost, getMedia, getCategories, formatDate, rewriteWPLinks } from '../../lib/wordpress';
 import PostLayout from '../../layouts/PostLayout.astro';
 
 export async function getStaticPaths() {
   const posts = await getAllPosts();
-  return posts.map(post => ({ params: { slug: post.slug } }));
+  const slugs = posts.map(p => p.slug);
+  return posts.map(post => ({ params: { slug: post.slug }, props: { allSlugs: slugs } }));
 }
 
 const { slug } = Astro.params;
+const { allSlugs } = Astro.props as { allSlugs: string[] };
 const post = await getPost(slug!);
 if (!post) return Astro.redirect('/blog/');
 
@@ -16,6 +18,8 @@ const categories = await getCategories();
 const postCategory = categories.find(c => post.categories.includes(c.id));
 
 const seo = post.yoast_head_json;
+const knownPostSlugs = new Set<string>(allSlugs);
+const rewrittenContent = rewriteWPLinks(post.content.rendered, knownPostSlugs);
 ---
 
 <PostLayout
@@ -27,6 +31,7 @@ const seo = post.yoast_head_json;
   category={postCategory?.name}
   featuredImage={media?.source_url}
   featuredImageAlt={media?.alt_text}
+  jsonLd={seo?.schema}
 >
-  <Fragment set:html={post.content.rendered} />
+  <Fragment set:html={rewrittenContent} />
 </PostLayout>

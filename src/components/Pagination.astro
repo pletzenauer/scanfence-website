@@ -3,10 +3,11 @@ interface Props {
   currentPage: number;
   totalPages: number;
   basePath: string;
+  firstPagePath?: string;
 }
-const { currentPage, totalPages, basePath } = Astro.props;
+const { currentPage, totalPages, basePath, firstPagePath } = Astro.props;
 function pageUrl(page: number): string {
-  if (page === 1) return `${basePath}/`;
+  if (page === 1) return firstPagePath ?? `${basePath}/`;
   return `${basePath}/${page}/`;
 }
 ---

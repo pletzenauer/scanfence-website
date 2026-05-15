@@ -113,6 +113,44 @@ export function stripHtml(html: string): string {
   return html.replace(/<[^>]*>/g, '').trim();
 }
 
+const ROOT_SLUG_ALLOWLIST = new Set([
+  '', 'pricing', 'features', 'faq', 'documentation', 'contact', 'blog',
+  'about-raphael', 'support', 'datenschutzerklaerung', 'terms-and-conditions',
+  'category', 'assets', 'wp-content', 'wp-admin', 'wp-login.php',
+]);
+
+const LEGACY_PATH_REDIRECTS: Record<string, string> = {
+  '/privacy-policy': '/datenschutzerklaerung/',
+  '/privacy-policy/': '/datenschutzerklaerung/',
+  '/privacy/': '/datenschutzerklaerung/',
+  '/terms/': '/terms-and-conditions/',
+  '/terms-of-service/': '/terms-and-conditions/',
+};
+
+export function rewriteWPLinks(html: string, knownPostSlugs: Set<string>): string {
+  return html.replace(
+    /(\bhref=["'])((?:https?:\/\/(?:www\.)?scanfence\.com)?)\/([^"'#?\s]*?)\/?(["'#?])/gi,
+    (match, prefix, origin, path, suffix) => {
+      if (!path) return match;
+      const legacyKey = `/${path}/`;
+      if (LEGACY_PATH_REDIRECTS[legacyKey]) {
+        return `${prefix}${LEGACY_PATH_REDIRECTS[legacyKey]}${suffix}`;
+      }
+      const bareKey = `/${path}`;
+      if (LEGACY_PATH_REDIRECTS[bareKey]) {
+        return `${prefix}${LEGACY_PATH_REDIRECTS[bareKey]}${suffix}`;
+      }
+      if (path.includes('/')) return match;
+      const firstSeg = path.split('/')[0];
+      if (ROOT_SLUG_ALLOWLIST.has(firstSeg)) return match;
+      if (knownPostSlugs.has(firstSeg)) {
+        return `${prefix}/blog/${firstSeg}/${suffix}`;
+      }
+      return match;
+    }
+  );
+}
+
 export function formatDate(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString('en-US', {
     year: 'numeric',

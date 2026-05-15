@@ -1,0 +1,442 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CTA from '../components/CTA.astro';
+
+const title = 'Pricing — ScanFence';
+const description = 'Simple, predictable pricing for dynamic QR codes with GPS geofencing. EU-hosted. 30 days, no card. Cancel anytime.';
+const canonical = 'https://scanfence.com/pricing/';
+
+const tiers = [
+  {
+    name: 'Starter',
+    eyebrow: 'TIER · 01',
+    price: '29',
+    cadence: '/month',
+    blurb: 'For one venue, one menu, one operator.',
+    cta: { label: 'Start Starter →', href: 'https://app.scanfence.com/signup?plan=starter' },
+    features: [
+      '5 dynamic QR codes',
+      '10,000 scans / month',
+      '2 geofences per code',
+      'Time-based routing',
+      'EU · Ireland residency',
+      'Email support',
+    ],
+    featured: false,
+  },
+  {
+    name: 'Growth',
+    eyebrow: 'TIER · 02 · POPULAR',
+    price: '79',
+    cadence: '/month',
+    blurb: 'For multi-site operators and campaigns.',
+    cta: { label: 'Start Growth →', href: 'https://app.scanfence.com/signup?plan=growth' },
+    features: [
+      '50 dynamic QR codes',
+      '100,000 scans / month',
+      'Unlimited geofences',
+      'A/B routing & schedules',
+      'Webhooks & API access',
+      'Priority email support',
+    ],
+    featured: true,
+  },
+  {
+    name: 'Scale',
+    eyebrow: 'TIER · 03',
+    price: '199',
+    cadence: '/month',
+    blurb: 'For chains, agencies, and ad operations.',
+    cta: { label: 'Start Scale →', href: 'https://app.scanfence.com/signup?plan=scale' },
+    features: [
+      '500 dynamic QR codes',
+      '1,000,000 scans / month',
+      'Team seats & roles',
+      'Custom domains',
+      'SOC-2 reports on request',
+      '99.9% uptime SLA',
+    ],
+    featured: false,
+  },
+];
+
+const compare = [
+  { row: 'Dynamic QR codes',        s: '5',           g: '50',           x: '500' },
+  { row: 'Monthly scans',           s: '10,000',      g: '100,000',      x: '1,000,000' },
+  { row: 'Geofences per code',      s: '2',           g: 'Unlimited',    x: 'Unlimited' },
+  { row: 'Time-based routing',      s: '✓',           g: '✓',            x: '✓' },
+  { row: 'Webhooks & API',          s: '—',           g: '✓',            x: '✓' },
+  { row: 'Team seats',              s: '1',           g: '3',            x: 'Unlimited' },
+  { row: 'Custom domains',          s: '—',           g: '—',            x: '✓' },
+  { row: 'Uptime SLA',              s: '—',           g: '—',            x: '99.9%' },
+  { row: 'Support',                 s: 'Email',       g: 'Priority',     x: 'Priority + SLA' },
+];
+
+const faqs = [
+  { q: 'Is there a free trial?',                          a: '30 days. No card up front. Cancel anytime — your codes keep working through the trial window.' },
+  { q: 'What counts as a scan?',                          a: 'Every successful resolution of a dynamic QR — the redirect lookup. Blocked scans (out of geofence or schedule) are logged but do not count against your quota.' },
+  { q: 'Where is my data hosted?',                        a: 'EU only — Ireland region. We never replicate scan metadata outside the EU. SOC-2 Type II.' },
+  { q: 'Can I change plans later?',                       a: 'Yes — upgrade or downgrade anytime. Prorated to the day, no contract lock-in.' },
+  { q: 'What happens if I exceed my scan quota?',         a: 'Codes keep resolving. Overages are billed at €0.0008 per scan, capped monthly. We email you when you hit 80% so there are no surprises.' },
+  { q: 'Do you offer annual billing?',                    a: 'Yes — pay annually, save two months. Visible on the checkout screen.' },
+  { q: 'Enterprise, procurement, custom MSAs?',           a: 'Talk to us. Custom volume, dedicated tenancy, regional residency, and signed agreements are available on the Enterprise plan.' },
+];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  '@id': canonical,
+  name: 'ScanFence',
+  description: 'Dynamic QR codes with GPS geofencing and time-based routing.',
+  brand: { '@type': 'Brand', name: 'ScanFence' },
+  offers: {
+    '@type': 'AggregateOffer',
+    priceCurrency: 'EUR',
+    lowPrice: '29',
+    highPrice: '199',
+    offerCount: tiers.length,
+    availability: 'https://schema.org/InStock',
+    url: canonical,
+  },
+};
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<BaseLayout title={title} description={description} canonical={canonical} jsonLd={jsonLd}>
+  <Header />
+  <main>
+    <section class="pricing-hero">
+      <div class="container">
+        <span class="eyebrow">PRICING</span>
+        <h1>
+          One code, <span class="serif-accent">priced honestly.</span>
+        </h1>
+        <p class="pricing-lede">
+          Three plans, billed monthly, in euros. 30 days, no card.
+          Cancel anytime. EU-hosted. Print once, route forever.
+        </p>
+        <div class="metadata-strip">
+          <span>EUR · NET</span>
+          <span>30D · NO CARD</span>
+          <span>EU · IRELAND</span>
+          <span>SOC-2 TYPE II</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="pricing-tiers section">
+      <div class="container">
+        <ul class="pricing-grid">
+          {tiers.map(t => (
+            <li class={`pricing-card${t.featured ? ' pricing-card--featured' : ''}`}>
+              <header class="pricing-card-head">
+                <span class="eyebrow eyebrow--mute">{t.eyebrow}</span>
+                <h2>{t.name}</h2>
+                <p class="pricing-card-blurb">{t.blurb}</p>
+              </header>
+              <div class="pricing-card-price">
+                <span class="pricing-card-currency">€</span>
+                <span class="pricing-card-amount">{t.price}</span>
+                <span class="pricing-card-cadence">{t.cadence}</span>
+              </div>
+              <a href={t.cta.href} class={`btn ${t.featured ? 'btn-primary' : 'btn-ghost'} btn-lg pricing-card-cta`}>
+                {t.cta.label}
+              </a>
+              <ul class="pricing-card-features">
+                {t.features.map(f => (
+                  <li><span class="pricing-card-tick" aria-hidden="true">✓</span>{f}</li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ul>
+
+        <div class="pricing-enterprise">
+          <div class="pricing-enterprise-copy">
+            <span class="eyebrow eyebrow--mute">TIER · 04 · ENTERPRISE</span>
+            <h3>Need volume, regional residency, or a signed MSA?</h3>
+            <p>Custom plans for chains, agencies, and ad operations. Dedicated tenancy, per-region routing, custom uptime SLAs, and procurement-friendly paperwork.</p>
+          </div>
+          <a href="/contact/?topic=sales" class="btn btn-ghost btn-lg">Talk to us →</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="pricing-compare section">
+      <div class="container">
+        <span class="eyebrow">COMPARE</span>
+        <h2>Plan by plan.</h2>
+        <div class="pricing-compare-wrap">
+          <table class="pricing-compare-table">
+            <thead>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col">Starter</th>
+                <th scope="col">Growth</th>
+                <th scope="col">Scale</th>
+              </tr>
+            </thead>
+            <tbody>
+              {compare.map(row => (
+                <tr>
+                  <th scope="row">{row.row}</th>
+                  <td>{row.s}</td>
+                  <td>{row.g}</td>
+                  <td>{row.x}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="pricing-faq section">
+      <div class="container pricing-faq-container">
+        <span class="eyebrow">FAQ</span>
+        <h2>The honest questions.</h2>
+        <div class="pricing-faq-list">
+          {faqs.map((f, i) => (
+            <details open={i === 0}>
+              <summary>{f.q}</summary>
+              <div class="pricing-faq-answer">{f.a}</div>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <CTA />
+  </main>
+  <Footer />
+  <script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />
+</BaseLayout>
+
+<style>
+  .pricing-hero {
+    padding: var(--space-8) 0 var(--space-7);
+    background: var(--d01-paper);
+    border-bottom: var(--rule-hard);
+  }
+  .pricing-hero h1 {
+    font-size: clamp(48px, 6vw, 80px);
+    font-weight: 500;
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    margin: var(--space-3) 0 var(--space-5);
+  }
+  .pricing-lede {
+    font-size: 18px;
+    color: var(--d01-steel);
+    line-height: 1.55;
+    margin-bottom: var(--space-6);
+    max-width: 56ch;
+  }
+
+  .pricing-tiers { background: var(--d01-paper-hi); }
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-5);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .pricing-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    padding: var(--space-6);
+    background: var(--d01-paper);
+    border: var(--rule-hard);
+  }
+  .pricing-card--featured {
+    background: var(--d01-ink);
+    color: var(--d01-paper-hi);
+    border-color: var(--d01-ink);
+  }
+  .pricing-card--featured .pricing-card-blurb,
+  .pricing-card--featured .pricing-card-features li {
+    color: rgba(247, 243, 232, 0.78);
+  }
+  .pricing-card--featured .eyebrow--mute { color: rgba(247, 243, 232, 0.55); }
+  .pricing-card-head h2 {
+    font-size: 28px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    margin: var(--space-2) 0 var(--space-2);
+  }
+  .pricing-card-blurb {
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--d01-steel);
+    max-width: 32ch;
+  }
+  .pricing-card-price {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    padding: var(--space-3) 0;
+    border-top: var(--rule);
+    border-bottom: var(--rule);
+  }
+  .pricing-card--featured .pricing-card-price {
+    border-color: rgba(247, 243, 232, 0.2);
+  }
+  .pricing-card-currency {
+    font-family: var(--font-display);
+    font-size: 22px;
+    font-weight: 500;
+  }
+  .pricing-card-amount {
+    font-family: var(--font-display);
+    font-size: 56px;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .pricing-card-cadence {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--d01-mute);
+    margin-left: 6px;
+  }
+  .pricing-card--featured .pricing-card-cadence { color: rgba(247, 243, 232, 0.55); }
+  .pricing-card-cta { align-self: stretch; text-align: center; }
+  .pricing-card-features {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    font-family: var(--font-ui);
+    font-size: 15px;
+    color: var(--d01-ink);
+  }
+  .pricing-card-features li {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    line-height: 1.5;
+  }
+  .pricing-card-tick {
+    font-family: var(--font-mono);
+    color: var(--d01-signal);
+    font-size: 12px;
+  }
+  .pricing-card--featured .pricing-card-tick { color: var(--d01-paper-hi); }
+
+  .pricing-enterprise {
+    margin-top: var(--space-7);
+    padding: var(--space-6);
+    border: var(--rule-hard);
+    background: var(--d01-paper);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    gap: var(--space-5);
+  }
+  .pricing-enterprise-copy h3 {
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+    margin: var(--space-2) 0 var(--space-2);
+  }
+  .pricing-enterprise-copy p {
+    color: var(--d01-steel);
+    font-size: 15px;
+    line-height: 1.55;
+    max-width: 68ch;
+  }
+
+  .pricing-compare h2 {
+    font-size: clamp(32px, 3.5vw, 48px);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    margin: var(--space-3) 0 var(--space-6);
+  }
+  .pricing-compare-wrap { overflow-x: auto; border: var(--rule-hard); }
+  .pricing-compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+  .pricing-compare-table th,
+  .pricing-compare-table td {
+    padding: var(--space-3) var(--space-4);
+    text-align: left;
+    border-bottom: var(--rule);
+    font-family: var(--font-ui);
+  }
+  .pricing-compare-table thead th {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--d01-mute);
+    background: var(--d01-paper-hi);
+    border-bottom: var(--rule-hard);
+  }
+  .pricing-compare-table tbody th {
+    color: var(--d01-ink);
+    font-weight: 500;
+  }
+  .pricing-compare-table tbody td { color: var(--d01-steel); }
+
+  /* FAQ */
+  .pricing-faq-container { max-width: 800px; }
+  .pricing-faq h2 {
+    font-size: clamp(32px, 3.5vw, 48px);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    margin: var(--space-3) 0 var(--space-6);
+  }
+  .pricing-faq-list { border-top: var(--rule-hard); }
+  .pricing-faq details { border-bottom: var(--rule-hard); }
+  .pricing-faq summary {
+    padding: var(--space-5) 0;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 20px;
+    color: var(--d01-ink);
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-4);
+  }
+  .pricing-faq summary::-webkit-details-marker { display: none; }
+  .pricing-faq summary::after {
+    content: '+';
+    font-family: var(--font-mono);
+    font-size: 20px;
+    color: var(--d01-mute);
+    line-height: 1;
+  }
+  .pricing-faq details[open] summary::after { content: '−'; }
+  .pricing-faq-answer {
+    padding: 0 0 var(--space-5);
+    color: var(--d01-steel);
+    font-size: 16px;
+    line-height: 1.65;
+    max-width: 64ch;
+  }
+
+  @media (max-width: 900px) {
+    .pricing-grid { grid-template-columns: 1fr; }
+    .pricing-enterprise { grid-template-columns: 1fr; }
+  }
+</style>
