@@ -1,0 +1,56 @@
+---
+const log = [
+  { t: '09:42:11', city: 'PARIS',    info: 'iOS · Safari',     state: 'ROUTED → menu/fr',         tone: 'signal' },
+  { t: '09:42:34', city: 'BERLIN',   info: 'Android · Chrome', state: 'ROUTED → menu/de',         tone: 'signal' },
+  { t: '09:43:02', city: 'BUDAPEST', info: 'iOS · Safari',     state: 'BLOCKED · out-of-window',  tone: 'vermil' },
+  { t: '09:43:18', city: 'DUBLIN',   info: 'iOS · Safari',     state: 'ROUTED → menu/en',         tone: 'signal' },
+  { t: '09:43:51', city: 'LISBON',   info: 'Android · Chrome', state: 'ROUTED → menu/pt',         tone: 'signal' },
+  { t: '09:44:09', city: 'OSLO',     info: 'iOS · Safari',     state: 'BLOCKED · outside-fence',  tone: 'vermil' },
+  { t: '09:44:33', city: 'VIENNA',   info: 'Android · Chrome', state: 'ROUTED → menu/de',         tone: 'signal' },
+];
+
+const stats = [
+  { label: 'SCANS · LAST 30D',    value: '12.4M'  },
+  { label: 'UPTIME · 30D',         value: '99.97%' },
+  { label: 'P50 · ROUTING',        value: '<120ms' },
+  { label: 'DATA RESIDENCY',       value: 'EU · IRELAND' },
+];
+---
+
+<section class="receipt section">
+  <div class="container">
+    <header class="receipt-header">
+      <span class="eyebrow">THE RECEIPT</span>
+      <h2>
+        We log it because<br />
+        <span class="serif-accent">you'll want to read it.</span>
+      </h2>
+    </header>
+
+    <div class="receipt-readout" role="figure" aria-label="Sample scan log">
+      <div class="receipt-readout-head">
+        <span>TIME</span>
+        <span>LOCATION</span>
+        <span>CLIENT</span>
+        <span>OUTCOME</span>
+      </div>
+      {log.map(row => (
+        <div class={`receipt-readout-row receipt-readout-row--${row.tone}`}>
+          <span>{row.t}</span>
+          <span>{row.city}</span>
+          <span>{row.info}</span>
+          <span>{row.state}</span>
+        </div>
+      ))}
+    </div>
+
+    <ul class="receipt-stats">
+      {stats.map(s => (
+        <li>
+          <span class="receipt-stats-value">{s.value}</span>
+          <span class="receipt-stats-label">{s.label}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
