@@ -160,6 +160,34 @@ export function rewriteSchemaUrls<T>(schema: T, knownPostSlugs: Set<string>): T 
   return schema;
 }
 
+/**
+ * Demotes every `<h1>` in `html` to `<h2>` (preserves attributes).
+ * Use on blog post body content where PostLayout already renders the post
+ * title as the canonical H1 — any inline body H1 would duplicate it.
+ */
+export function demoteAllH1s(html: string): string {
+  return html
+    .replace(/<h1(\s[^>]*)?>/gi, '<h2$1>')
+    .replace(/<\/h1>/gi, '</h2>');
+}
+
+/**
+ * Keeps the first `<h1>…</h1>` block intact and demotes every subsequent
+ * H1 block to `<h2>`. Use on WP pages where the body owns the canonical H1
+ * (PageLayout no longer adds its own), but the body sometimes contains an
+ * extra SEO-duplicate H1.
+ */
+export function demoteExtraH1s(html: string): string {
+  let kept = false;
+  return html.replace(/<h1((?:\s[^>]*)?)>([\s\S]*?)<\/h1>/gi, (_match, attrs, inner) => {
+    if (!kept) {
+      kept = true;
+      return `<h1${attrs}>${inner}</h1>`;
+    }
+    return `<h2${attrs}>${inner}</h2>`;
+  });
+}
+
 export function rewriteWPLinks(html: string, knownPostSlugs: Set<string>): string {
   return html.replace(
     /(\bhref=["'])((?:https?:\/\/(?:www\.)?scanfence\.com)?)\/([^"'#?\s]*?)\/?(["'#?])/gi,
