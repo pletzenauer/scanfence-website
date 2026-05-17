@@ -19,11 +19,11 @@
   --d01-sky:        #3F627F;
 
   /* Type */
-  --font-display: 'Space Grotesk', sans-serif;
+  --font-display: 'Space Grotesk Variable', 'Space Grotesk', sans-serif;
   --font-serif:   'Newsreader', serif;
-  --font-body:    'Inter', sans-serif;
-  --font-ui:      'Geist', 'Inter', sans-serif;
-  --font-mono:    'JetBrains Mono', ui-monospace, monospace;
+  --font-body:    'Inter Variable', 'Inter', sans-serif;
+  --font-ui:      'Geist Variable', 'Geist', 'Inter Variable', 'Inter', sans-serif;
+  --font-mono:    'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, monospace;
 
   /* Geometry */
   --radius: 0;
@@ -439,18 +439,28 @@ ul {
 }
 
 .hero-receipt-dot {
+  position: relative;
   width: 8px;
   height: 8px;
   border-radius: 0;
   background: var(--d01-signal);
   display: inline-block;
-  box-shadow: 0 0 0 0 var(--d01-signal);
+}
+
+.hero-receipt-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(31, 122, 62, 0.35);
+  transform: scale(1);
+  opacity: 1;
+  will-change: transform, opacity;
   animation: hero-pulse 1.6s ease-out infinite;
 }
 
 @keyframes hero-pulse {
-  0%   { box-shadow: 0 0 0 0    rgba(31, 122, 62, 0.35); }
-  100% { box-shadow: 0 0 0 12px rgba(31, 122, 62, 0);    }
+  0%   { transform: scale(1); opacity: 1; }
+  100% { transform: scale(4); opacity: 0; }
 }
 
 .hero-receipt-list {

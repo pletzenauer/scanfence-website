@@ -4,8 +4,13 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://scanfence.com',
   trailingSlash: 'always',
+  compressHTML: true,
   build: {
     format: 'directory',
+    inlineStylesheets: 'auto',
+  },
+  vite: {
+    build: { cssMinify: 'lightningcss' },
   },
   integrations: [
     sitemap({
