@@ -1,5 +1,5 @@
 ---
-import { getAllPosts, getPost, getMedia, getCategories, formatDate, rewriteWPLinks, rewriteSchemaUrls } from '../../lib/wordpress';
+import { getAllPosts, getPost, getMedia, getCategories, formatDate, rewriteWPLinks, rewriteSchemaUrls, demoteAllH1s } from '../../lib/wordpress';
 import PostLayout from '../../layouts/PostLayout.astro';
 
 export async function getStaticPaths() {
@@ -19,7 +19,7 @@ const postCategory = categories.find(c => post.categories.includes(c.id));
 
 const seo = post.yoast_head_json;
 const knownPostSlugs = new Set<string>(allSlugs);
-const rewrittenContent = rewriteWPLinks(post.content.rendered, knownPostSlugs);
+const rewrittenContent = demoteAllH1s(rewriteWPLinks(post.content.rendered, knownPostSlugs));
 
 // Yoast emits canonicals against WP's permalink structure (no /blog/ prefix).
 // Override with the actual Astro URL so search engines index the right page.
