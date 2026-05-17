@@ -127,6 +127,39 @@ const LEGACY_PATH_REDIRECTS: Record<string, string> = {
   '/terms-of-service/': '/terms-and-conditions/',
 };
 
+/**
+ * Rewrites every `https://scanfence.com/<slug>/` URL in a Yoast schema
+ * object to `/blog/<slug>/` when <slug> is a known post slug. Yoast emits
+ * canonicals against WP's permalink structure (which omits /blog/), so we
+ * fix them up to match the Astro routing.
+ */
+export function rewriteSchemaUrls<T>(schema: T, knownPostSlugs: Set<string>): T {
+  if (schema === null || schema === undefined) return schema;
+  if (typeof schema === 'string') {
+    return schema.replace(
+      /(https?:\/\/(?:www\.)?scanfence\.com)\/([^\/"'\s#?]+)\/?(#[^"'\s]*)?/g,
+      (match, origin, slug, hash) => {
+        if (ROOT_SLUG_ALLOWLIST.has(slug)) return match;
+        if (knownPostSlugs.has(slug)) {
+          return `${origin}/blog/${slug}/${hash ?? ''}`;
+        }
+        return match;
+      }
+    ) as unknown as T;
+  }
+  if (Array.isArray(schema)) {
+    return schema.map(item => rewriteSchemaUrls(item, knownPostSlugs)) as unknown as T;
+  }
+  if (typeof schema === 'object') {
+    const out: Record<string, unknown> = {};
+    for (const [k, v] of Object.entries(schema as Record<string, unknown>)) {
+      out[k] = rewriteSchemaUrls(v, knownPostSlugs);
+    }
+    return out as T;
+  }
+  return schema;
+}
+
 export function rewriteWPLinks(html: string, knownPostSlugs: Set<string>): string {
   return html.replace(
     /(\bhref=["'])((?:https?:\/\/(?:www\.)?scanfence\.com)?)\/([^"'#?\s]*?)\/?(["'#?])/gi,

@@ -1,5 +1,5 @@
 ---
-import { getPages, getAllPosts, rewriteWPLinks } from '../lib/wordpress';
+import { getPages, getAllPosts, rewriteWPLinks, rewriteSchemaUrls } from '../lib/wordpress';
 import PageLayout from '../layouts/PageLayout.astro';
 
 export async function getStaticPaths() {
@@ -15,6 +15,9 @@ const { page, postSlugs } = Astro.props;
 const seo = page.yoast_head_json;
 const knownPostSlugs = new Set<string>(postSlugs);
 const rewrittenContent = rewriteWPLinks(page.content.rendered, knownPostSlugs);
+const fixedSchema = seo?.schema
+  ? rewriteSchemaUrls(seo.schema, knownPostSlugs)
+  : undefined;
 ---
 
 <PageLayout
@@ -23,7 +26,7 @@ const rewrittenContent = rewriteWPLinks(page.content.rendered, knownPostSlugs);
   description={seo?.description}
   canonical={seo?.canonical}
   ogImage={seo?.og_image?.[0]?.url}
-  jsonLd={seo?.schema}
+  jsonLd={fixedSchema}
 >
   <Fragment set:html={rewrittenContent} />
 </PageLayout>
