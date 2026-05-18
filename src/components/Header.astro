@@ -1,39 +1,47 @@
 ---
-const path = Astro.url.pathname;
+import { resolveLocale, localizedUrl, stripLocalePrefix, t } from '../i18n/t';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+
+const locale = resolveLocale(Astro.currentLocale);
+const { path: canonicalPath } = stripLocalePrefix(Astro.url.pathname);
 const isActive = (href: string) => {
-  if (href === '/') return path === '/';
-  return path.startsWith(href);
+  if (href === '/') return canonicalPath === '/';
+  return canonicalPath.startsWith(href);
 };
 const nav = [
-  { href: '/', label: 'Home' },
-  { href: '/features/', label: 'Features' },
-  { href: '/pricing/', label: 'Pricing' },
-  { href: '/faq/', label: 'FAQ' },
-  { href: '/documentation/', label: 'Docs' },
-  { href: '/blog/', label: 'Blog' },
-  { href: '/contact/', label: 'Contact' },
+  { href: '/',               key: 'nav.home' },
+  { href: '/features/',      key: 'nav.features' },
+  { href: '/pricing/',       key: 'nav.pricing' },
+  { href: '/faq/',           key: 'nav.faq' },
+  { href: '/documentation/', key: 'nav.docs' },
+  { href: '/blog/',          key: 'nav.blog' },
+  { href: '/contact/',       key: 'nav.contact' },
 ];
 ---
 
 <header class="header">
   <div class="container">
-    <a href="/" class="header-logo" aria-label="ScanFence — home">
+    <a href={localizedUrl('/', locale)} class="header-logo" aria-label="ScanFence — home">
       <span class="header-logo-mark" aria-hidden="true"></span>
       <span class="header-logo-text">ScanFence</span>
     </a>
 
-    <nav class="header-nav" aria-label="Primary">
+    <nav class="header-nav" aria-label={t('nav.primary', locale)}>
       {nav.map(item => (
-        <a href={item.href} class:list={[{ 'is-active': isActive(item.href) }]}>{item.label}</a>
+        <a
+          href={localizedUrl(item.href, locale)}
+          class:list={[{ 'is-active': isActive(item.href) }]}
+        >{t(item.key, locale)}</a>
       ))}
     </nav>
 
     <div class="header-actions">
-      <a href="https://app.scanfence.com/login" class="header-link">Sign in</a>
-      <a href="https://app.scanfence.com/signup" class="btn btn-primary btn-nav">Start a plan →</a>
+      <LanguageSwitcher />
+      <a href="https://app.scanfence.com/login" class="header-link">{t('nav.signIn', locale)}</a>
+      <a href="https://app.scanfence.com/signup" class="btn btn-primary btn-nav">{t('nav.startPlan', locale)}</a>
     </div>
 
-    <button class="mobile-toggle" aria-label="Toggle menu" aria-controls="mobileMenu" aria-expanded="false" id="menuToggle">
+    <button class="mobile-toggle" aria-label={t('nav.toggleMenu', locale)} aria-controls="mobileMenu" aria-expanded="false" id="menuToggle">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
       </svg>
@@ -43,11 +51,15 @@ const nav = [
 
 <div class="mobile-menu" id="mobileMenu">
   {nav.map(item => (
-    <a href={item.href} class:list={[{ 'is-active': isActive(item.href) }]}>{item.label}</a>
+    <a
+      href={localizedUrl(item.href, locale)}
+      class:list={[{ 'is-active': isActive(item.href) }]}
+    >{t(item.key, locale)}</a>
   ))}
   <hr class="rule-hard" />
-  <a href="https://app.scanfence.com/login">Sign in</a>
-  <a href="https://app.scanfence.com/signup" class="btn btn-primary">Start a plan →</a>
+  <LanguageSwitcher />
+  <a href="https://app.scanfence.com/login">{t('nav.signIn', locale)}</a>
+  <a href="https://app.scanfence.com/signup" class="btn btn-primary">{t('nav.startPlan', locale)}</a>
 </div>
 
 <script>

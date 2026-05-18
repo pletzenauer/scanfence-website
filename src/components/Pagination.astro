@@ -1,4 +1,6 @@
 ---
+import { resolveLocale, localizedUrl, t } from '../i18n/t';
+
 interface Props {
   currentPage: number;
   totalPages: number;
@@ -6,24 +8,27 @@ interface Props {
   firstPagePath?: string;
 }
 const { currentPage, totalPages, basePath, firstPagePath } = Astro.props;
+const locale = resolveLocale(Astro.currentLocale);
 function pageUrl(page: number): string {
-  if (page === 1) return firstPagePath ?? `${basePath}/`;
-  return `${basePath}/${page}/`;
+  const canonical = page === 1
+    ? (firstPagePath ?? `${basePath}/`)
+    : `${basePath}/${page}/`;
+  return localizedUrl(canonical, locale);
 }
 ---
 
 {totalPages > 1 && (
-  <nav class="pagination" aria-label="Pagination">
+  <nav class="pagination" aria-label={t('pagination.aria', locale)}>
     {currentPage > 1 ? (
-      <a href={pageUrl(currentPage - 1)} class="pagination-prev">← Previous</a>
+      <a href={pageUrl(currentPage - 1)} class="pagination-prev">{t('pagination.prev', locale)}</a>
     ) : (
-      <span class="pagination-prev pagination-disabled">← Previous</span>
+      <span class="pagination-prev pagination-disabled">{t('pagination.prev', locale)}</span>
     )}
     <span class="pagination-count">{currentPage} / {totalPages}</span>
     {currentPage < totalPages ? (
-      <a href={pageUrl(currentPage + 1)} class="pagination-next">Next →</a>
+      <a href={pageUrl(currentPage + 1)} class="pagination-next">{t('pagination.next', locale)}</a>
     ) : (
-      <span class="pagination-next pagination-disabled">Next →</span>
+      <span class="pagination-next pagination-disabled">{t('pagination.next', locale)}</span>
     )}
   </nav>
 )}

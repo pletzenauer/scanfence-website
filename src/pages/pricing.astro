@@ -3,93 +3,53 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import CTA from '../components/CTA.astro';
+import { resolveLocale, localizedUrl, t } from '../i18n/t';
 
-const title = 'Pricing — ScanFence';
-const description = 'Simple, predictable pricing for dynamic QR codes with GPS geofencing. EU-hosted. 30 days, no card. Cancel anytime.';
-const canonical = 'https://scanfence.com/pricing/';
+const locale = resolveLocale(Astro.currentLocale);
+const title = t('pricing.title', locale);
+const description = t('pricing.description', locale);
+const canonical = `https://scanfence.com${localizedUrl('/pricing/', locale)}`;
 
-const tiers = [
-  {
-    name: 'Starter',
-    eyebrow: 'TIER · 01',
-    price: '29',
-    cadence: '/month',
-    blurb: 'For one venue, one menu, one operator.',
-    cta: { label: 'Start Starter →', href: 'https://app.scanfence.com/signup?plan=starter' },
-    features: [
-      '5 dynamic QR codes',
-      '10,000 scans / month',
-      '2 geofences per code',
-      'Time-based routing',
-      'EU · Ireland residency',
-      'Email support',
-    ],
-    featured: false,
+const tierKeys = ['starter', 'growth', 'scale'] as const;
+const tiers = tierKeys.map(k => ({
+  key: k,
+  name: t(`pricing.tier.${k}.name`, locale),
+  eyebrow: t(`pricing.tier.${k}.eyebrow`, locale),
+  price: k === 'starter' ? '29' : k === 'growth' ? '79' : '199',
+  cadence: t('pricing.cadence', locale),
+  blurb: t(`pricing.tier.${k}.blurb`, locale),
+  cta: {
+    label: t(`pricing.tier.${k}.cta`, locale),
+    href: `https://app.scanfence.com/signup?plan=${k}`,
   },
-  {
-    name: 'Growth',
-    eyebrow: 'TIER · 02 · POPULAR',
-    price: '79',
-    cadence: '/month',
-    blurb: 'For multi-site operators and campaigns.',
-    cta: { label: 'Start Growth →', href: 'https://app.scanfence.com/signup?plan=growth' },
-    features: [
-      '50 dynamic QR codes',
-      '100,000 scans / month',
-      'Unlimited geofences',
-      'A/B routing & schedules',
-      'Webhooks & API access',
-      'Priority email support',
-    ],
-    featured: true,
-  },
-  {
-    name: 'Scale',
-    eyebrow: 'TIER · 03',
-    price: '199',
-    cadence: '/month',
-    blurb: 'For chains, agencies, and ad operations.',
-    cta: { label: 'Start Scale →', href: 'https://app.scanfence.com/signup?plan=scale' },
-    features: [
-      '500 dynamic QR codes',
-      '1,000,000 scans / month',
-      'Team seats & roles',
-      'Custom domains',
-      'SOC-2 reports on request',
-      '99.9% uptime SLA',
-    ],
-    featured: false,
-  },
-];
+  features: [1, 2, 3, 4, 5, 6].map(i => t(`pricing.tier.${k}.feature${i}`, locale)),
+  featured: k === 'growth',
+}));
 
 const compare = [
-  { row: 'Dynamic QR codes',        s: '5',           g: '50',           x: '500' },
-  { row: 'Monthly scans',           s: '10,000',      g: '100,000',      x: '1,000,000' },
-  { row: 'Geofences per code',      s: '2',           g: 'Unlimited',    x: 'Unlimited' },
-  { row: 'Time-based routing',      s: '✓',           g: '✓',            x: '✓' },
-  { row: 'Webhooks & API',          s: '—',           g: '✓',            x: '✓' },
-  { row: 'Team seats',              s: '1',           g: '3',            x: 'Unlimited' },
-  { row: 'Custom domains',          s: '—',           g: '—',            x: '✓' },
-  { row: 'Uptime SLA',              s: '—',           g: '—',            x: '99.9%' },
-  { row: 'Support',                 s: 'Email',       g: 'Priority',     x: 'Priority + SLA' },
+  { row: t('pricing.compare.row.codes',        locale), s: '5',        g: '50',                                          x: '500' },
+  { row: t('pricing.compare.row.scans',        locale), s: '10,000',   g: '100,000',                                     x: '1,000,000' },
+  { row: t('pricing.compare.row.geofences',    locale), s: '2',        g: t('pricing.compare.val.unlimited', locale),    x: t('pricing.compare.val.unlimited', locale) },
+  { row: t('pricing.compare.row.timeRouting',  locale), s: '✓',        g: '✓',                                           x: '✓' },
+  { row: t('pricing.compare.row.api',          locale), s: '—',        g: '✓',                                           x: '✓' },
+  { row: t('pricing.compare.row.seats',        locale), s: '1',        g: '3',                                           x: t('pricing.compare.val.unlimited', locale) },
+  { row: t('pricing.compare.row.domains',      locale), s: '—',        g: '—',                                           x: '✓' },
+  { row: t('pricing.compare.row.sla',          locale), s: '—',        g: '—',                                           x: '99.9%' },
+  { row: t('pricing.compare.row.support',      locale), s: t('pricing.compare.val.email', locale), g: t('pricing.compare.val.priority', locale), x: t('pricing.compare.val.prioritySla', locale) },
 ];
 
-const faqs = [
-  { q: 'Is there a free trial?',                          a: '30 days. No card up front. Cancel anytime — your codes keep working through the trial window.' },
-  { q: 'What counts as a scan?',                          a: 'Every successful resolution of a dynamic QR — the redirect lookup. Blocked scans (out of geofence or schedule) are logged but do not count against your quota.' },
-  { q: 'Where is my data hosted?',                        a: 'EU only — Ireland region. We never replicate scan metadata outside the EU. SOC-2 Type II.' },
-  { q: 'Can I change plans later?',                       a: 'Yes — upgrade or downgrade anytime. Prorated to the day, no contract lock-in.' },
-  { q: 'What happens if I exceed my scan quota?',         a: 'Codes keep resolving. Overages are billed at €0.0008 per scan, capped monthly. We email you when you hit 80% so there are no surprises.' },
-  { q: 'Do you offer annual billing?',                    a: 'Yes — pay annually, save two months. Visible on the checkout screen.' },
-  { q: 'Enterprise, procurement, custom MSAs?',           a: 'Talk to us. Custom volume, dedicated tenancy, regional residency, and signed agreements are available on the Enterprise plan.' },
-];
+const faqKeys = [1, 2, 3, 4, 5, 6, 7];
+const faqs = faqKeys.map(i => ({
+  q: t(`pricing.faq.q${i}`, locale),
+  a: t(`pricing.faq.a${i}`, locale),
+}));
 
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Product',
   '@id': canonical,
   name: 'ScanFence',
-  description: 'Dynamic QR codes with GPS geofencing and time-based routing.',
+  description,
   brand: { '@type': 'Brand', name: 'ScanFence' },
   offers: {
     '@type': 'AggregateOffer',
@@ -118,19 +78,16 @@ const faqJsonLd = {
   <main>
     <section class="pricing-hero">
       <div class="container">
-        <span class="eyebrow">PRICING</span>
+        <span class="eyebrow">{t('pricing.hero.eyebrow', locale)}</span>
         <h1>
-          One code, <span class="serif-accent">priced honestly.</span>
+          {t('pricing.hero.heading.line1', locale)} <span class="serif-accent">{t('pricing.hero.heading.line2', locale)}</span>
         </h1>
-        <p class="pricing-lede">
-          Three plans, billed monthly, in euros. 30 days, no card.
-          Cancel anytime. EU-hosted. Print once, route forever.
-        </p>
+        <p class="pricing-lede">{t('pricing.hero.lede', locale)}</p>
         <div class="metadata-strip">
-          <span>EUR · NET</span>
-          <span>30D · NO CARD</span>
-          <span>EU · IRELAND</span>
-          <span>SOC-2 TYPE II</span>
+          <span>{t('common.metadata.eurNet', locale)}</span>
+          <span>{t('common.metadata.trial', locale)}</span>
+          <span>{t('common.metadata.euIreland', locale)}</span>
+          <span>{t('common.metadata.soc2', locale)}</span>
         </div>
       </div>
     </section>
@@ -138,23 +95,23 @@ const faqJsonLd = {
     <section class="pricing-tiers section">
       <div class="container">
         <ul class="pricing-grid">
-          {tiers.map(t => (
-            <li class={`pricing-card${t.featured ? ' pricing-card--featured' : ''}`}>
+          {tiers.map(tier => (
+            <li class={`pricing-card${tier.featured ? ' pricing-card--featured' : ''}`}>
               <header class="pricing-card-head">
-                <span class="eyebrow eyebrow--mute">{t.eyebrow}</span>
-                <h2>{t.name}</h2>
-                <p class="pricing-card-blurb">{t.blurb}</p>
+                <span class="eyebrow eyebrow--mute">{tier.eyebrow}</span>
+                <h2>{tier.name}</h2>
+                <p class="pricing-card-blurb">{tier.blurb}</p>
               </header>
               <div class="pricing-card-price">
                 <span class="pricing-card-currency">€</span>
-                <span class="pricing-card-amount">{t.price}</span>
-                <span class="pricing-card-cadence">{t.cadence}</span>
+                <span class="pricing-card-amount">{tier.price}</span>
+                <span class="pricing-card-cadence">{tier.cadence}</span>
               </div>
-              <a href={t.cta.href} class={`btn ${t.featured ? 'btn-primary' : 'btn-ghost'} btn-lg pricing-card-cta`}>
-                {t.cta.label}
+              <a href={tier.cta.href} class={`btn ${tier.featured ? 'btn-primary' : 'btn-ghost'} btn-lg pricing-card-cta`}>
+                {tier.cta.label}
               </a>
               <ul class="pricing-card-features">
-                {t.features.map(f => (
+                {tier.features.map(f => (
                   <li><span class="pricing-card-tick" aria-hidden="true">✓</span>{f}</li>
                 ))}
               </ul>
@@ -164,27 +121,27 @@ const faqJsonLd = {
 
         <div class="pricing-enterprise">
           <div class="pricing-enterprise-copy">
-            <span class="eyebrow eyebrow--mute">TIER · 04 · ENTERPRISE</span>
-            <h3>Need volume, regional residency, or a signed MSA?</h3>
-            <p>Custom plans for chains, agencies, and ad operations. Dedicated tenancy, per-region routing, custom uptime SLAs, and procurement-friendly paperwork.</p>
+            <span class="eyebrow eyebrow--mute">{t('pricing.enterprise.eyebrow', locale)}</span>
+            <h3>{t('pricing.enterprise.heading', locale)}</h3>
+            <p>{t('pricing.enterprise.body', locale)}</p>
           </div>
-          <a href="/contact/?topic=sales" class="btn btn-ghost btn-lg">Talk to us →</a>
+          <a href={`${localizedUrl('/contact/', locale)}?topic=sales`} class="btn btn-ghost btn-lg">{t('pricing.enterprise.cta', locale)}</a>
         </div>
       </div>
     </section>
 
     <section class="pricing-compare section">
       <div class="container">
-        <span class="eyebrow">COMPARE</span>
-        <h2>Plan by plan.</h2>
+        <span class="eyebrow">{t('pricing.compare.eyebrow', locale)}</span>
+        <h2>{t('pricing.compare.heading', locale)}</h2>
         <div class="pricing-compare-wrap">
           <table class="pricing-compare-table">
             <thead>
               <tr>
                 <th scope="col"></th>
-                <th scope="col">Starter</th>
-                <th scope="col">Growth</th>
-                <th scope="col">Scale</th>
+                <th scope="col">{t('pricing.compare.col.starter', locale)}</th>
+                <th scope="col">{t('pricing.compare.col.growth', locale)}</th>
+                <th scope="col">{t('pricing.compare.col.scale', locale)}</th>
               </tr>
             </thead>
             <tbody>
@@ -204,8 +161,8 @@ const faqJsonLd = {
 
     <section class="pricing-faq section">
       <div class="container pricing-faq-container">
-        <span class="eyebrow">FAQ</span>
-        <h2>The honest questions.</h2>
+        <span class="eyebrow">{t('pricing.faq.eyebrow', locale)}</span>
+        <h2>{t('pricing.faq.heading', locale)}</h2>
         <div class="pricing-faq-list">
           {faqs.map((f, i) => (
             <details open={i === 0}>
@@ -310,7 +267,7 @@ const faqJsonLd = {
     font-family: var(--font-mono);
     font-size: 13px;
     color: var(--d01-mute);
-    margin-left: 6px;
+    margin-inline-start: 6px;
   }
   .pricing-card--featured .pricing-card-cadence { color: rgba(247, 243, 232, 0.55); }
   .pricing-card-cta { align-self: stretch; text-align: center; }
@@ -376,7 +333,7 @@ const faqJsonLd = {
   .pricing-compare-table th,
   .pricing-compare-table td {
     padding: var(--space-3) var(--space-4);
-    text-align: left;
+    text-align: start;
     border-bottom: var(--rule);
     font-family: var(--font-ui);
   }

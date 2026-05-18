@@ -1,14 +1,17 @@
 ---
+import { resolveLocale, localizedUrl, t } from '../i18n/t';
+
+const locale = resolveLocale(Astro.currentLocale);
 ---
 <section class="cta">
   <div class="container">
     <div class="cta-card">
-      <span class="eyebrow eyebrow--steel">ONE QUESTION</span>
-      <h2>Print the code yet?</h2>
-      <p>30 days. No card. Cancel anytime.</p>
+      <span class="eyebrow eyebrow--steel">{t('cta.eyebrow', locale)}</span>
+      <h2>{t('cta.heading', locale)}</h2>
+      <p>{t('cta.lede', locale)}</p>
       <div class="cta-buttons">
-        <a href="https://app.scanfence.com/signup" class="btn btn-primary btn-lg">Start a plan →</a>
-        <a href="/contact/" class="btn btn-ghost btn-lg">Talk to us</a>
+        <a href="https://app.scanfence.com/signup" class="btn btn-primary btn-lg">{t('cta.primary', locale)}</a>
+        <a href={localizedUrl('/contact/', locale)} class="btn btn-ghost btn-lg">{t('cta.secondary', locale)}</a>
       </div>
     </div>
   </div>

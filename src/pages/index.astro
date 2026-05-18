@@ -6,10 +6,12 @@ import Hero from '../components/Hero.astro';
 import Features from '../components/Features.astro';
 import Receipt from '../components/Receipt.astro';
 import CTA from '../components/CTA.astro';
+import { resolveLocale, localizedUrl, t } from '../i18n/t';
 
+const locale = resolveLocale(Astro.currentLocale);
 const title = 'ScanFence — Dynamic QR Codes with GPS Geofencing';
-const description = 'Dynamic QR codes with GPS geofencing and time-based routing. Print the code once. Route it forever. Watch what scanned, what blocked, what\'s next.';
-const canonical = 'https://scanfence.com/';
+const description = t('site.description', locale);
+const canonical = `https://scanfence.com${localizedUrl('/', locale)}`;
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -17,8 +19,8 @@ const jsonLd = {
   name: 'ScanFence',
   applicationCategory: 'BusinessApplication',
   operatingSystem: 'Web',
-  description: 'Dynamic QR codes with GPS geofencing and time-based routing.',
-  url: 'https://scanfence.com/',
+  description,
+  url: canonical,
   offers: { '@type': 'Offer', priceCurrency: 'EUR', availability: 'https://schema.org/InStock' },
 };
 ---
@@ -29,11 +31,11 @@ const jsonLd = {
     <Hero />
     <div class="container">
       <div class="metadata-strip">
-        <span>QR · DYNAMIC</span>
-        <span>GPS · GEOFENCED</span>
-        <span>TIME-AWARE</span>
-        <span>EU · IRELAND</span>
-        <span>SOC-2 TYPE II</span>
+        <span>{t('common.metadata.qrDynamic', locale)}</span>
+        <span>{t('common.metadata.gpsGeofenced', locale)}</span>
+        <span>{t('common.metadata.timeAware', locale)}</span>
+        <span>{t('common.metadata.euIreland', locale)}</span>
+        <span>{t('common.metadata.soc2', locale)}</span>
       </div>
     </div>
     <Features />

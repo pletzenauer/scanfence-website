@@ -168,7 +168,7 @@ ul {
 .metadata-strip strong {
   color: var(--d01-ink);
   font-weight: 500;
-  margin-left: var(--space-2);
+  margin-inline-start: var(--space-2);
 }
 
 /* ===== Buttons ===== */
@@ -335,8 +335,8 @@ ul {
   display: none;
   position: fixed;
   top: var(--header-height);
-  left: 0;
-  right: 0;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
   bottom: 0;
   background: var(--d01-paper);
   z-index: 99;
@@ -524,7 +524,7 @@ ul {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0;
   border-top: var(--rule-hard);
-  border-left: var(--rule-hard);
+  border-inline-start: var(--rule-hard);
 }
 
 .features-item {
@@ -532,7 +532,7 @@ ul {
   grid-template-columns: 56px 1fr;
   gap: var(--space-4);
   padding: var(--space-6);
-  border-right: var(--rule-hard);
+  border-inline-end: var(--rule-hard);
   border-bottom: var(--rule-hard);
   background: var(--d01-paper);
   align-items: start;
@@ -624,7 +624,7 @@ ul {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0;
   border-top: var(--rule-hard);
-  border-left: var(--rule-hard);
+  border-inline-start: var(--rule-hard);
 }
 
 .receipt-stats li {
@@ -632,7 +632,7 @@ ul {
   flex-direction: column;
   gap: 4px;
   padding: var(--space-5);
-  border-right: var(--rule-hard);
+  border-inline-end: var(--rule-hard);
   border-bottom: var(--rule-hard);
   background: var(--d01-paper);
 }
@@ -782,8 +782,8 @@ ul {
 .footer-meta a:hover { color: var(--d01-ink); }
 
 @media (max-width: 640px) {
-  .footer-top { flex-direction: column; align-items: flex-start; text-align: left; }
-  .footer-tagline { text-align: left; }
+  .footer-top { flex-direction: column; align-items: flex-start; text-align: start; }
+  .footer-tagline { text-align: start; }
 }
 
 /* ===== Blog list (vertical editorial rows) ===== */
@@ -898,7 +898,7 @@ ul {
   background: var(--d01-paper);
   border-bottom: var(--rule-hard);
   padding: var(--space-8) 0 var(--space-6);
-  text-align: left;
+  text-align: start;
 }
 
 .page-header h1 {
@@ -973,14 +973,14 @@ ul {
 }
 
 .wp-content ul, .wp-content ol {
-  padding-left: 1.4em;
+  padding-inline-start: 1.4em;
   margin-bottom: 1.25em;
   list-style: revert;
 }
 
 .wp-content blockquote {
-  border-left: 3px solid var(--d01-signal);
-  padding-left: 1.4em;
+  border-inline-start: 3px solid var(--d01-signal);
+  padding-inline-start: 1.4em;
   margin: 1.5em 0;
   font-family: var(--font-serif);
   font-style: italic;
@@ -1007,7 +1007,7 @@ ul {
 .wp-content th, .wp-content td {
   padding: 12px 16px;
   border: var(--rule);
-  text-align: left;
+  text-align: start;
 }
 
 .wp-content th {
@@ -1242,4 +1242,132 @@ ul {
   .section {
     padding: var(--space-7) 0;
   }
+}
+
+/* ===== Language switcher ===== */
+.lang-switcher {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-ui);
+  font-size: 14px;
+}
+
+.lang-switcher__trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: transparent;
+  color: var(--d01-ink);
+  border: 1px solid var(--d01-rule);
+  padding: 6px 10px;
+  cursor: pointer;
+  font: inherit;
+  border-radius: 0;
+  line-height: 1;
+}
+
+.lang-switcher__trigger:hover {
+  border-color: var(--d01-ink);
+}
+
+.lang-switcher__chevron {
+  font-size: 10px;
+  color: var(--d01-mute);
+  line-height: 1;
+}
+
+.lang-switcher.is-open .lang-switcher__chevron {
+  transform: rotate(180deg);
+}
+
+.lang-switcher__menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  inset-inline-end: 0;
+  z-index: 200;
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  background: var(--d01-paper);
+  border: var(--rule-hard);
+  min-width: 160px;
+  max-height: 320px;
+  overflow-y: auto;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.lang-switcher__menu li {
+  list-style: none;
+}
+
+.lang-switcher__menu a {
+  display: block;
+  padding: 8px 12px;
+  color: var(--d01-ink);
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.lang-switcher__menu a:hover {
+  background: var(--d01-paper-hi);
+}
+
+.lang-switcher__menu a.is-active {
+  color: var(--d01-signal);
+  font-weight: 500;
+}
+
+.mobile-menu .lang-switcher {
+  margin: var(--space-3) 0;
+}
+
+.mobile-menu .lang-switcher__menu {
+  position: static;
+  inset-inline-end: auto;
+  box-shadow: none;
+  border-width: 1px;
+  max-height: 240px;
+}
+
+/* ===== RTL mirroring ===== */
+[dir="rtl"] .pagination-prev::before,
+[dir="rtl"] .pagination-next::before {
+  content: '';
+}
+
+[dir="rtl"] .hero-cta .btn::after,
+[dir="rtl"] .cta-buttons .btn::after,
+[dir="rtl"] .pricing-enterprise .btn::after {
+  content: '';
+}
+
+/* Mirror trailing "→" arrows present in copy by flipping them visually.
+   The translated copy may keep the "→" character; under RTL it reads backwards,
+   so we apply a unicode-bidi/direction trick to render it as "←". */
+[dir="rtl"] .btn,
+[dir="rtl"] .footer-email,
+[dir="rtl"] .contact-meta a {
+  unicode-bidi: plaintext;
+}
+
+[dir="rtl"] .receipt-readout-head,
+[dir="rtl"] .receipt-readout-row,
+[dir="rtl"] .hero-receipt-row,
+[dir="rtl"] .hero-receipt-footer,
+[dir="rtl"] .hero-receipt-header,
+[dir="rtl"] .metadata-strip {
+  /* Keep monospace tabular data left-to-right inside an RTL page so timestamps,
+     city names, and status strings remain readable. */
+  direction: ltr;
+  text-align: start;
+}
+
+[dir="rtl"] .pricing-compare-table {
+  /* Pricing comparison columns stay LTR so the data lines up under headers. */
+  direction: ltr;
+}
+
+[dir="rtl"] .footer-meta {
+  direction: ltr;
 }

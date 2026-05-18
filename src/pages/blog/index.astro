@@ -5,7 +5,10 @@ import Footer from '../../components/Footer.astro';
 import BlogCard from '../../components/BlogCard.astro';
 import Pagination from '../../components/Pagination.astro';
 import { getPosts, getCategories, getMedia, stripHtml, formatDate } from '../../lib/wordpress';
+import { DEFAULT_LOCALE } from '../../i18n/config';
+import { t } from '../../i18n/t';
 
+const locale = DEFAULT_LOCALE;
 const { posts, totalPages } = await getPosts(1, 12);
 const categories = await getCategories();
 
@@ -42,16 +45,17 @@ const blogJsonLd = {
 ---
 
 <BaseLayout
-  title="Blog — ScanFence"
-  description="Read the latest articles about QR codes, geofencing, and location-based marketing from ScanFence."
+  title={t('blog.title', locale)}
+  description={t('blog.description', locale)}
   canonical="https://scanfence.com/blog/"
   jsonLd={blogJsonLd}
+  locale={locale}
 >
   <Header />
   <main>
     <div class="page-header">
       <div class="container">
-        <h1>Blog</h1>
+        <h1>{t('blog.heading', locale)}</h1>
       </div>
     </div>
     <section class="section">

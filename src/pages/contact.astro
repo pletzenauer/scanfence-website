@@ -2,10 +2,13 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { resolveLocale, localizedUrl, t } from '../i18n/t';
+import { LOCALE_META } from '../i18n/config';
 
-const title = 'Contact ScanFence — Send a signal';
-const description = 'Get in touch with ScanFence. EU office. We reply within one business day.';
-const canonical = 'https://scanfence.com/contact/';
+const locale = resolveLocale(Astro.currentLocale);
+const title = t('contact.title', locale);
+const description = t('contact.description', locale);
+const canonical = `https://scanfence.com${localizedUrl('/contact/', locale)}`;
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -23,25 +26,23 @@ const jsonLd = {
       '@type': 'ContactPoint',
       contactType: 'customer support',
       email: 'hello@scanfence.com',
-      availableLanguage: ['English', 'German'],
+      availableLanguage: [LOCALE_META[locale].englishName, 'English'],
       areaServed: 'EU',
     },
   },
 };
 
 const topics = [
-  { value: 'sales',       label: 'Sales' },
-  { value: 'technical',   label: 'Support' },
-  { value: 'partnership', label: 'Partnerships' },
-  { value: 'other',       label: 'Press / other' },
+  { value: 'sales',       label: t('contact.form.topic.sales', locale) },
+  { value: 'technical',   label: t('contact.form.topic.technical', locale) },
+  { value: 'partnership', label: t('contact.form.topic.partnership', locale) },
+  { value: 'other',       label: t('contact.form.topic.other', locale) },
 ];
 
-const faqs = [
-  { q: 'How fast do you reply?',          a: 'Within one business day. Most questions answered same-day, Mon–Fri (CET).' },
-  { q: 'Can I book a product demo?',      a: 'Pick "Sales" and mention a preferred window. We send a calendar invite for a 20-minute walkthrough.' },
-  { q: 'Do you offer enterprise SLAs?',   a: 'Custom SLAs on Business and Enterprise plans, including 99.9% uptime commitments and priority support.' },
-  { q: 'Where do I find technical docs?', a: 'Head to /docs for API references, webhook payloads, and SDK examples.' },
-];
+const faqs = [1, 2, 3, 4].map(i => ({
+  q: t(`contact.faq.q${i}`, locale),
+  a: t(`contact.faq.a${i}`, locale),
+}));
 ---
 
 <BaseLayout title={title} description={description} canonical={canonical} jsonLd={jsonLd}>
@@ -50,25 +51,22 @@ const faqs = [
     <section class="contact-hero">
       <div class="container contact-grid">
         <div class="contact-copy">
-          <span class="eyebrow">CONTACT</span>
+          <span class="eyebrow">{t('contact.hero.eyebrow', locale)}</span>
           <h1>
-            Send <span class="serif-accent">a signal.</span>
+            {t('contact.hero.heading.line1', locale)} <span class="serif-accent">{t('contact.hero.heading.line2', locale)}</span>
           </h1>
-          <p class="contact-lede">
-            We read everything that lands. Replies usually within one business
-            day. EU office. EU hours.
-          </p>
+          <p class="contact-lede">{t('contact.hero.lede', locale)}</p>
           <ul class="contact-meta">
-            <li><span class="contact-meta-key">EMAIL</span><a href="mailto:hello@scanfence.com">hello@scanfence.com</a></li>
-            <li><span class="contact-meta-key">HOURS</span><span>Mon–Fri · 09:00–17:00 CET</span></li>
-            <li><span class="contact-meta-key">BASED</span><span>Vienna, Austria · remote-first</span></li>
-            <li><span class="contact-meta-key">DOCS</span><a href="/documentation/">Browse documentation →</a></li>
+            <li><span class="contact-meta-key">{t('contact.meta.emailLabel', locale)}</span><a href="mailto:hello@scanfence.com">hello@scanfence.com</a></li>
+            <li><span class="contact-meta-key">{t('contact.meta.hoursLabel', locale)}</span><span>{t('contact.meta.hoursValue', locale)}</span></li>
+            <li><span class="contact-meta-key">{t('contact.meta.basedLabel', locale)}</span><span>{t('contact.meta.basedValue', locale)}</span></li>
+            <li><span class="contact-meta-key">{t('contact.meta.docsLabel', locale)}</span><a href={localizedUrl('/documentation/', locale)}>{t('contact.meta.docsCta', locale)}</a></li>
           </ul>
         </div>
 
         <div class="contact-form-wrap" id="form">
-          <span class="eyebrow eyebrow--mute">FORM</span>
-          <h2>Write us a line.</h2>
+          <span class="eyebrow eyebrow--mute">{t('contact.form.eyebrow', locale)}</span>
+          <h2>{t('contact.form.heading', locale)}</h2>
           <form class="contact-form elementor-form" method="post" novalidate>
             <input type="hidden" name="post_id" value="79" />
             <input type="hidden" name="form_id" value="5f48d34" />
@@ -76,48 +74,48 @@ const faqs = [
             <input type="hidden" name="referer_title" value="Contact" />
 
             <div class="contact-field">
-              <label for="cf-name">NAME</label>
-              <input id="cf-name" type="text" name="form_fields[name]" required placeholder="Jane Doe" autocomplete="name" />
+              <label for="cf-name">{t('contact.form.nameLabel', locale)}</label>
+              <input id="cf-name" type="text" name="form_fields[name]" required placeholder={t('contact.form.namePlaceholder', locale)} autocomplete="name" />
             </div>
 
             <div class="contact-field">
-              <label for="cf-email">WORK EMAIL</label>
-              <input id="cf-email" type="email" name="form_fields[email]" required placeholder="you@company.com" autocomplete="email" />
+              <label for="cf-email">{t('contact.form.emailLabel', locale)}</label>
+              <input id="cf-email" type="email" name="form_fields[email]" required placeholder={t('contact.form.emailPlaceholder', locale)} autocomplete="email" />
             </div>
 
             <div class="contact-field">
-              <label for="cf-topic">TOPIC</label>
+              <label for="cf-topic">{t('contact.form.topicLabel', locale)}</label>
               <select id="cf-topic" name="form_fields[topic]">
-                {topics.map(t => <option value={t.value}>{t.label}</option>)}
+                {topics.map(top => <option value={top.value}>{top.label}</option>)}
               </select>
             </div>
 
             <div class="contact-field">
-              <label for="cf-subject">SUBJECT</label>
-              <input id="cf-subject" type="text" name="form_fields[field_a8c66ad]" placeholder="How can we help?" />
+              <label for="cf-subject">{t('contact.form.subjectLabel', locale)}</label>
+              <input id="cf-subject" type="text" name="form_fields[field_a8c66ad]" placeholder={t('contact.form.subjectPlaceholder', locale)} />
             </div>
 
             <div class="contact-field">
-              <label for="cf-message">MESSAGE</label>
-              <textarea id="cf-message" name="form_fields[message]" rows="4" required placeholder="Tell us a bit about what you're building…"></textarea>
+              <label for="cf-message">{t('contact.form.messageLabel', locale)}</label>
+              <textarea id="cf-message" name="form_fields[message]" rows="4" required placeholder={t('contact.form.messagePlaceholder', locale)}></textarea>
             </div>
 
             <button type="submit" class="btn btn-primary btn-lg contact-submit">
-              <span class="contact-submit-label">Send →</span>
+              <span class="contact-submit-label">{t('contact.form.submit', locale)}</span>
               <span class="contact-submit-spinner" aria-hidden="true"></span>
             </button>
 
-            <p class="contact-form-note">By sending this form you agree to be contacted about your inquiry. We never share your data.</p>
+            <p class="contact-form-note">{t('contact.form.note', locale)}</p>
           </form>
 
           <div class="contact-form-success" role="status" hidden>
-            <span class="eyebrow">RECEIVED</span>
-            <h3>Thanks — message logged.</h3>
-            <p>We'll reply within one business day. Or email <a href="mailto:hello@scanfence.com">hello@scanfence.com</a>.</p>
+            <span class="eyebrow">{t('contact.form.successEyebrow', locale)}</span>
+            <h3>{t('contact.form.successHeading', locale)}</h3>
+            <p>{t('contact.form.successBody.lead', locale)} <a href="mailto:hello@scanfence.com">hello@scanfence.com</a>.</p>
           </div>
 
           <div class="contact-form-error" role="alert" hidden>
-            <p>Something failed sending that. Email <a href="mailto:hello@scanfence.com">hello@scanfence.com</a> — we'll respond just as fast.</p>
+            <p>{t('contact.form.errorBody.lead', locale)} <a href="mailto:hello@scanfence.com">hello@scanfence.com</a> {t('contact.form.errorBody.tail', locale)}</p>
           </div>
         </div>
       </div>
@@ -125,8 +123,8 @@ const faqs = [
 
     <section class="contact-faq section">
       <div class="container contact-faq-container">
-        <span class="eyebrow">FAQ</span>
-        <h2>Frequently asked.</h2>
+        <span class="eyebrow">{t('contact.faq.eyebrow', locale)}</span>
+        <h2>{t('contact.faq.heading', locale)}</h2>
         <div class="contact-faq-list">
           {faqs.map((f, i) => (
             <details open={i === 0}>
@@ -240,7 +238,7 @@ const faqs = [
     background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3e%3cpath fill='%238A8B8E' d='M5 6 0 0h10z'/%3e%3c/svg%3e");
     background-repeat: no-repeat;
     background-position: right 4px center;
-    padding-right: 24px;
+    padding-inline-end: 24px;
   }
   .contact-submit {
     align-self: flex-start;

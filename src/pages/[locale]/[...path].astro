@@ -1,0 +1,822 @@
+---
+import {
+  getPages,
+  getAllPosts,
+  getCategories,
+  getPostsByCategory,
+  getMedia,
+  rewriteWPLinks,
+  rewriteSchemaUrls,
+  demoteExtraH1s,
+  demoteAllH1s,
+  stripHtml,
+  formatDate,
+  type WPPage,
+  type WPPost,
+  type WPCategory,
+} from '../../lib/wordpress';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageLayout from '../../layouts/PageLayout.astro';
+import PostLayout from '../../layouts/PostLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import Hero from '../../components/Hero.astro';
+import Features from '../../components/Features.astro';
+import Receipt from '../../components/Receipt.astro';
+import CTA from '../../components/CTA.astro';
+import BlogCard from '../../components/BlogCard.astro';
+import Pagination from '../../components/Pagination.astro';
+import { LOCALES, DEFAULT_LOCALE, type Locale } from '../../i18n/config';
+import { t, localizedUrl } from '../../i18n/t';
+import { getPageTranslation, getPostTranslation } from '../../i18n/wp-cache';
+
+const POSTS_PER_PAGE = 12;
+
+type Kind =
+  | 'home'
+  | 'pricing'
+  | 'contact'
+  | 'wp-page'
+  | 'blog-index'
+  | 'blog-post'
+  | 'blog-page'
+  | 'category'
+  | 'not-found';
+
+interface RouteProps {
+  kind: Kind;
+  page?: WPPage;
+  post?: WPPost;
+  category?: WPCategory;
+  pageNumber?: number;
+  postSlugs: string[];
+}
+
+export async function getStaticPaths() {
+  const POSTS_PER_PAGE_LOCAL = 12;
+  const EXCLUDED_WP_SLUGS = new Set(['homepage', 'blog', 'sample-page', 'contact', 'pricing']);
+  const NON_DEFAULT_LOCALES: Locale[] = LOCALES.filter(l => l !== DEFAULT_LOCALE) as Locale[];
+
+  const [pages, posts, categories] = await Promise.all([
+    getPages(),
+    getAllPosts(),
+    getCategories(),
+  ]);
+  const postSlugs = posts.map(p => p.slug);
+  const totalBlogPages = Math.max(1, Math.ceil(posts.length / POSTS_PER_PAGE_LOCAL));
+  const wpPages = pages.filter(p => !EXCLUDED_WP_SLUGS.has(p.slug));
+  const activeCategories = categories.filter(c => c.count > 0);
+
+  const paths: Array<{ params: { locale: Locale; path: string | undefined }; props: RouteProps }> = [];
+
+  for (const locale of NON_DEFAULT_LOCALES) {
+    // Static page kinds.
+    paths.push({ params: { locale, path: undefined },  props: { kind: 'home',    postSlugs } });
+    paths.push({ params: { locale, path: 'pricing' },   props: { kind: 'pricing', postSlugs } });
+    paths.push({ params: { locale, path: 'contact' },   props: { kind: 'contact', postSlugs } });
+
+    // WP pages.
+    for (const p of wpPages) {
+      paths.push({ params: { locale, path: p.slug }, props: { kind: 'wp-page', page: p, postSlugs } });
+    }
+
+    // Blog index + paginated.
+    paths.push({ params: { locale, path: 'blog' }, props: { kind: 'blog-index', pageNumber: 1, postSlugs } });
+    for (let n = 2; n <= totalBlogPages; n++) {
+      paths.push({
+        params: { locale, path: `blog/page/${n}` },
+        props: { kind: 'blog-page', pageNumber: n, postSlugs },
+      });
+    }
+
+    // Individual blog posts.
+    for (const post of posts) {
+      paths.push({
+        params: { locale, path: `blog/${post.slug}` },
+        props: { kind: 'blog-post', post, postSlugs },
+      });
+    }
+
+    // Categories.
+    for (const cat of activeCategories) {
+      paths.push({
+        params: { locale, path: `category/${cat.slug}` },
+        props: { kind: 'category', category: cat, postSlugs },
+      });
+    }
+  }
+
+  return paths;
+}
+
+const props = Astro.props as RouteProps;
+const { kind, postSlugs } = props;
+const locale = (Astro.params.locale as Locale);
+const knownPostSlugs = new Set<string>(postSlugs);
+
+// ---- branch: home ----
+let homeData: { title: string; description: string; canonical: string; jsonLd: object } | null = null;
+if (kind === 'home') {
+  const description = t('site.description', locale);
+  const canonical = `https://scanfence.com${localizedUrl('/', locale)}`;
+  homeData = {
+    title: 'ScanFence — Dynamic QR Codes with GPS Geofencing',
+    description,
+    canonical,
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'SoftwareApplication',
+      name: 'ScanFence',
+      applicationCategory: 'BusinessApplication',
+      operatingSystem: 'Web',
+      description,
+      url: canonical,
+      offers: { '@type': 'Offer', priceCurrency: 'EUR', availability: 'https://schema.org/InStock' },
+    },
+  };
+}
+
+// ---- branch: pricing ----
+type PricingTier = {
+  key: 'starter' | 'growth' | 'scale';
+  name: string;
+  eyebrow: string;
+  price: string;
+  cadence: string;
+  blurb: string;
+  cta: { label: string; href: string };
+  features: string[];
+  featured: boolean;
+};
+let pricingData: {
+  title: string; description: string; canonical: string;
+  tiers: PricingTier[];
+  compare: Array<{ row: string; s: string; g: string; x: string }>;
+  faqs: Array<{ q: string; a: string }>;
+  jsonLd: object;
+  faqJsonLd: object;
+} | null = null;
+if (kind === 'pricing') {
+  const title = t('pricing.title', locale);
+  const description = t('pricing.description', locale);
+  const canonical = `https://scanfence.com${localizedUrl('/pricing/', locale)}`;
+  const tierKeys = ['starter', 'growth', 'scale'] as const;
+  const tiers: PricingTier[] = tierKeys.map(k => ({
+    key: k,
+    name: t(`pricing.tier.${k}.name`, locale),
+    eyebrow: t(`pricing.tier.${k}.eyebrow`, locale),
+    price: k === 'starter' ? '29' : k === 'growth' ? '79' : '199',
+    cadence: t('pricing.cadence', locale),
+    blurb: t(`pricing.tier.${k}.blurb`, locale),
+    cta: {
+      label: t(`pricing.tier.${k}.cta`, locale),
+      href: `https://app.scanfence.com/signup?plan=${k}`,
+    },
+    features: [1, 2, 3, 4, 5, 6].map(i => t(`pricing.tier.${k}.feature${i}`, locale)),
+    featured: k === 'growth',
+  }));
+  const compare = [
+    { row: t('pricing.compare.row.codes', locale),       s: '5',      g: '50',                                       x: '500' },
+    { row: t('pricing.compare.row.scans', locale),       s: '10,000', g: '100,000',                                  x: '1,000,000' },
+    { row: t('pricing.compare.row.geofences', locale),   s: '2',      g: t('pricing.compare.val.unlimited', locale), x: t('pricing.compare.val.unlimited', locale) },
+    { row: t('pricing.compare.row.timeRouting', locale), s: '✓',      g: '✓',                                        x: '✓' },
+    { row: t('pricing.compare.row.api', locale),         s: '—',      g: '✓',                                        x: '✓' },
+    { row: t('pricing.compare.row.seats', locale),       s: '1',      g: '3',                                        x: t('pricing.compare.val.unlimited', locale) },
+    { row: t('pricing.compare.row.domains', locale),     s: '—',      g: '—',                                        x: '✓' },
+    { row: t('pricing.compare.row.sla', locale),         s: '—',      g: '—',                                        x: '99.9%' },
+    { row: t('pricing.compare.row.support', locale),
+      s: t('pricing.compare.val.email', locale),
+      g: t('pricing.compare.val.priority', locale),
+      x: t('pricing.compare.val.prioritySla', locale) },
+  ];
+  const faqs = [1, 2, 3, 4, 5, 6, 7].map(i => ({
+    q: t(`pricing.faq.q${i}`, locale),
+    a: t(`pricing.faq.a${i}`, locale),
+  }));
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Product',
+    '@id': canonical,
+    name: 'ScanFence',
+    description,
+    brand: { '@type': 'Brand', name: 'ScanFence' },
+    offers: {
+      '@type': 'AggregateOffer',
+      priceCurrency: 'EUR',
+      lowPrice: '29',
+      highPrice: '199',
+      offerCount: tiers.length,
+      availability: 'https://schema.org/InStock',
+      url: canonical,
+    },
+  };
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map(f => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  };
+  pricingData = { title, description, canonical, tiers, compare, faqs, jsonLd, faqJsonLd };
+}
+
+// ---- branch: contact ----
+let contactData: {
+  title: string; description: string; canonical: string; jsonLd: object;
+  topics: Array<{ value: string; label: string }>;
+  faqs: Array<{ q: string; a: string }>;
+} | null = null;
+if (kind === 'contact') {
+  const title = t('contact.title', locale);
+  const description = t('contact.description', locale);
+  const canonical = `https://scanfence.com${localizedUrl('/contact/', locale)}`;
+  contactData = {
+    title, description, canonical,
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'ContactPage',
+      '@id': canonical,
+      name: title,
+      description,
+      url: canonical,
+      mainEntity: {
+        '@type': 'Organization',
+        name: 'ScanFence',
+        url: 'https://scanfence.com/',
+        email: 'hello@scanfence.com',
+        contactPoint: {
+          '@type': 'ContactPoint',
+          contactType: 'customer support',
+          email: 'hello@scanfence.com',
+          availableLanguage: ['English'],
+          areaServed: 'EU',
+        },
+      },
+    },
+    topics: [
+      { value: 'sales',       label: t('contact.form.topic.sales', locale) },
+      { value: 'technical',   label: t('contact.form.topic.technical', locale) },
+      { value: 'partnership', label: t('contact.form.topic.partnership', locale) },
+      { value: 'other',       label: t('contact.form.topic.other', locale) },
+    ],
+    faqs: [1, 2, 3, 4].map(i => ({
+      q: t(`contact.faq.q${i}`, locale),
+      a: t(`contact.faq.a${i}`, locale),
+    })),
+  };
+}
+
+// ---- branch: wp-page ----
+let wpPageView: {
+  title: string; pageTitle: string; description?: string;
+  canonical: string; ogImage?: string; jsonLd?: object;
+  content: string;
+} | null = null;
+if (kind === 'wp-page' && props.page) {
+  const page = props.page;
+  const translation = getPageTranslation(locale, page.slug);
+  const seo = page.yoast_head_json;
+  const sourceContent = page.content.rendered;
+  const content = translation?.content ?? sourceContent;
+  const titleText = translation?.title ?? page.title.rendered;
+  const yoastTitle = translation?.yoastTitle ?? seo?.title;
+  const description = translation?.yoastDescription ?? seo?.description;
+  const rewritten = demoteExtraH1s(rewriteWPLinks(content, knownPostSlugs));
+  const canonical = `https://scanfence.com${localizedUrl(`/${page.slug}/`, locale)}`;
+  const fixedSchema = seo?.schema ? rewriteSchemaUrls(seo.schema, knownPostSlugs) : undefined;
+  wpPageView = {
+    title: yoastTitle || titleText,
+    pageTitle: titleText,
+    description,
+    canonical,
+    ogImage: seo?.og_image?.[0]?.url,
+    jsonLd: fixedSchema,
+    content: rewritten,
+  };
+}
+
+// ---- branch: blog-index / blog-page ----
+let blogList: {
+  pageNumber: number; totalPages: number;
+  postsWithData: Array<{ title: string; slug: string; excerpt: string; date: string; imageUrl?: string; category?: string }>;
+  canonical: string; title: string; description: string;
+  jsonLd: object; isPaginated: boolean;
+} | null = null;
+if (kind === 'blog-index' || kind === 'blog-page') {
+  const pageNumber = props.pageNumber ?? 1;
+  const allPosts = await getAllPosts();
+  const totalPages = Math.max(1, Math.ceil(allPosts.length / POSTS_PER_PAGE));
+  const sliceStart = (pageNumber - 1) * POSTS_PER_PAGE;
+  const slice = allPosts.slice(sliceStart, sliceStart + POSTS_PER_PAGE);
+  const categories = await getCategories();
+  const postsWithData = await Promise.all(
+    slice.map(async (post) => {
+      const media = post.featured_media ? await getMedia(post.featured_media) : null;
+      const category = categories.find(c => post.categories.includes(c.id));
+      const translation = getPostTranslation(locale, post.slug);
+      return {
+        title: translation?.title ?? post.title.rendered,
+        slug: post.slug,
+        excerpt: (translation?.excerpt ?? stripHtml(post.excerpt.rendered)).slice(0, 160),
+        date: formatDate(post.date),
+        imageUrl: media?.source_url,
+        category: category?.name,
+      };
+    })
+  );
+  const isPaginated = kind === 'blog-page';
+  const canonical = isPaginated
+    ? `https://scanfence.com${localizedUrl(`/blog/page/${pageNumber}/`, locale)}`
+    : `https://scanfence.com${localizedUrl('/blog/', locale)}`;
+  const title = isPaginated
+    ? t('blog.pageTitle', locale, { page: pageNumber })
+    : t('blog.title', locale);
+  const description = isPaginated
+    ? t('blog.pageDescription', locale, { page: pageNumber })
+    : t('blog.description', locale);
+  const jsonLd = isPaginated
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        '@id': canonical,
+        name: t('blog.pageName', locale, { page: pageNumber }),
+        description: t('blog.pageNameDescription', locale, { page: pageNumber }),
+        url: canonical,
+        isPartOf: { '@type': 'Blog', '@id': `https://scanfence.com${localizedUrl('/blog/', locale)}`, name: 'ScanFence Blog' },
+      }
+    : {
+        '@context': 'https://schema.org',
+        '@type': 'Blog',
+        '@id': canonical,
+        name: 'ScanFence Blog',
+        description,
+        url: canonical,
+        publisher: { '@type': 'Organization', name: 'ScanFence', url: 'https://scanfence.com/' },
+        blogPost: postsWithData.map(p => ({
+          '@type': 'BlogPosting',
+          headline: p.title,
+          url: `https://scanfence.com${localizedUrl(`/blog/${p.slug}/`, locale)}`,
+        })),
+      };
+  blogList = { pageNumber, totalPages, postsWithData, canonical, title, description, jsonLd, isPaginated };
+}
+
+// ---- branch: blog-post ----
+let blogPostView: {
+  title: string; description?: string;
+  canonical: string; ogImage?: string;
+  date: string; category?: string;
+  featuredImage?: string; featuredImageAlt?: string;
+  content: string; jsonLd?: object;
+} | null = null;
+if (kind === 'blog-post' && props.post) {
+  const post = props.post;
+  const media = post.featured_media ? await getMedia(post.featured_media) : null;
+  const categories = await getCategories();
+  const postCategory = categories.find(c => post.categories.includes(c.id));
+  const seo = post.yoast_head_json;
+  const translation = getPostTranslation(locale, post.slug);
+  const sourceContent = post.content.rendered;
+  const content = translation?.content ?? sourceContent;
+  const titleText = translation?.title ?? post.title.rendered;
+  const yoastTitle = translation?.yoastTitle ?? seo?.title;
+  const description = translation?.yoastDescription ?? seo?.description;
+  const rewritten = demoteAllH1s(rewriteWPLinks(content, knownPostSlugs));
+  const canonical = `https://scanfence.com${localizedUrl(`/blog/${post.slug}/`, locale)}`;
+  const fixedSchema = seo?.schema ? rewriteSchemaUrls(seo.schema, knownPostSlugs) : undefined;
+  blogPostView = {
+    title: titleText,
+    description,
+    canonical,
+    ogImage: seo?.og_image?.[0]?.url || media?.source_url,
+    date: formatDate(post.date),
+    category: postCategory?.name,
+    featuredImage: media?.source_url,
+    featuredImageAlt: media?.alt_text,
+    content: rewritten,
+    jsonLd: fixedSchema,
+  };
+}
+
+// ---- branch: category ----
+let categoryView: {
+  categoryName: string;
+  postsWithData: Array<{ title: string; slug: string; excerpt: string; date: string; imageUrl?: string; category?: string }>;
+  canonical: string; title: string; description: string; jsonLd: object;
+} | null = null;
+if (kind === 'category' && props.category) {
+  const cat = props.category;
+  const { posts } = await getPostsByCategory(cat.id, 1, 100);
+  const postsWithData = await Promise.all(
+    posts.map(async (post) => {
+      const media = post.featured_media ? await getMedia(post.featured_media) : null;
+      const translation = getPostTranslation(locale, post.slug);
+      return {
+        title: translation?.title ?? post.title.rendered,
+        slug: post.slug,
+        excerpt: (translation?.excerpt ?? stripHtml(post.excerpt.rendered)).slice(0, 160),
+        date: formatDate(post.date),
+        imageUrl: media?.source_url,
+        category: cat.name,
+      };
+    })
+  );
+  const canonical = `https://scanfence.com${localizedUrl(`/category/${cat.slug}/`, locale)}`;
+  const title = t('category.title', locale, { name: cat.name });
+  const description = t('category.description', locale, { name: cat.name });
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    '@id': canonical,
+    name: title,
+    description,
+    url: canonical,
+    isPartOf: { '@type': 'Blog', '@id': `https://scanfence.com${localizedUrl('/blog/', locale)}`, name: 'ScanFence Blog' },
+    hasPart: postsWithData.map(p => ({
+      '@type': 'BlogPosting',
+      headline: p.title,
+      url: `https://scanfence.com${localizedUrl(`/blog/${p.slug}/`, locale)}`,
+    })),
+  };
+  categoryView = { categoryName: cat.name, postsWithData, canonical, title, description, jsonLd };
+}
+---
+
+{kind === 'home' && homeData && (
+  <BaseLayout
+    title={homeData.title}
+    description={homeData.description}
+    canonical={homeData.canonical}
+    jsonLd={homeData.jsonLd}
+    locale={locale}
+  >
+    <Header />
+    <main>
+      <Hero />
+      <div class="container">
+        <div class="metadata-strip">
+          <span>{t('common.metadata.qrDynamic', locale)}</span>
+          <span>{t('common.metadata.gpsGeofenced', locale)}</span>
+          <span>{t('common.metadata.timeAware', locale)}</span>
+          <span>{t('common.metadata.euIreland', locale)}</span>
+          <span>{t('common.metadata.soc2', locale)}</span>
+        </div>
+      </div>
+      <Features />
+      <Receipt />
+      <CTA />
+    </main>
+    <Footer />
+  </BaseLayout>
+)}
+
+{kind === 'pricing' && pricingData && (
+  <BaseLayout
+    title={pricingData.title}
+    description={pricingData.description}
+    canonical={pricingData.canonical}
+    jsonLd={pricingData.jsonLd}
+    locale={locale}
+  >
+    <Header />
+    <main>
+      <section class="pricing-hero">
+        <div class="container">
+          <span class="eyebrow">{t('pricing.hero.eyebrow', locale)}</span>
+          <h1>
+            {t('pricing.hero.heading.line1', locale)} <span class="serif-accent">{t('pricing.hero.heading.line2', locale)}</span>
+          </h1>
+          <p class="pricing-lede">{t('pricing.hero.lede', locale)}</p>
+          <div class="metadata-strip">
+            <span>{t('common.metadata.eurNet', locale)}</span>
+            <span>{t('common.metadata.trial', locale)}</span>
+            <span>{t('common.metadata.euIreland', locale)}</span>
+            <span>{t('common.metadata.soc2', locale)}</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="pricing-tiers section">
+        <div class="container">
+          <ul class="pricing-grid">
+            {pricingData.tiers.map(tier => (
+              <li class={`pricing-card${tier.featured ? ' pricing-card--featured' : ''}`}>
+                <header class="pricing-card-head">
+                  <span class="eyebrow eyebrow--mute">{tier.eyebrow}</span>
+                  <h2>{tier.name}</h2>
+                  <p class="pricing-card-blurb">{tier.blurb}</p>
+                </header>
+                <div class="pricing-card-price">
+                  <span class="pricing-card-currency">€</span>
+                  <span class="pricing-card-amount">{tier.price}</span>
+                  <span class="pricing-card-cadence">{tier.cadence}</span>
+                </div>
+                <a href={tier.cta.href} class={`btn ${tier.featured ? 'btn-primary' : 'btn-ghost'} btn-lg pricing-card-cta`}>{tier.cta.label}</a>
+                <ul class="pricing-card-features">
+                  {tier.features.map(f => (
+                    <li><span class="pricing-card-tick" aria-hidden="true">✓</span>{f}</li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ul>
+
+          <div class="pricing-enterprise">
+            <div class="pricing-enterprise-copy">
+              <span class="eyebrow eyebrow--mute">{t('pricing.enterprise.eyebrow', locale)}</span>
+              <h3>{t('pricing.enterprise.heading', locale)}</h3>
+              <p>{t('pricing.enterprise.body', locale)}</p>
+            </div>
+            <a href={`${localizedUrl('/contact/', locale)}?topic=sales`} class="btn btn-ghost btn-lg">{t('pricing.enterprise.cta', locale)}</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="pricing-compare section">
+        <div class="container">
+          <span class="eyebrow">{t('pricing.compare.eyebrow', locale)}</span>
+          <h2>{t('pricing.compare.heading', locale)}</h2>
+          <div class="pricing-compare-wrap">
+            <table class="pricing-compare-table">
+              <thead>
+                <tr>
+                  <th scope="col"></th>
+                  <th scope="col">{t('pricing.compare.col.starter', locale)}</th>
+                  <th scope="col">{t('pricing.compare.col.growth', locale)}</th>
+                  <th scope="col">{t('pricing.compare.col.scale', locale)}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pricingData.compare.map(row => (
+                  <tr>
+                    <th scope="row">{row.row}</th>
+                    <td>{row.s}</td>
+                    <td>{row.g}</td>
+                    <td>{row.x}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="pricing-faq section">
+        <div class="container pricing-faq-container">
+          <span class="eyebrow">{t('pricing.faq.eyebrow', locale)}</span>
+          <h2>{t('pricing.faq.heading', locale)}</h2>
+          <div class="pricing-faq-list">
+            {pricingData.faqs.map((f, i) => (
+              <details open={i === 0}>
+                <summary>{f.q}</summary>
+                <div class="pricing-faq-answer">{f.a}</div>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <CTA />
+    </main>
+    <Footer />
+    <script type="application/ld+json" set:html={JSON.stringify(pricingData.faqJsonLd)} />
+  </BaseLayout>
+)}
+
+{kind === 'contact' && contactData && (
+  <BaseLayout
+    title={contactData.title}
+    description={contactData.description}
+    canonical={contactData.canonical}
+    jsonLd={contactData.jsonLd}
+    locale={locale}
+  >
+    <Header />
+    <main>
+      <section class="contact-hero">
+        <div class="container contact-grid">
+          <div class="contact-copy">
+            <span class="eyebrow">{t('contact.hero.eyebrow', locale)}</span>
+            <h1>
+              {t('contact.hero.heading.line1', locale)} <span class="serif-accent">{t('contact.hero.heading.line2', locale)}</span>
+            </h1>
+            <p class="contact-lede">{t('contact.hero.lede', locale)}</p>
+            <ul class="contact-meta">
+              <li><span class="contact-meta-key">{t('contact.meta.emailLabel', locale)}</span><a href="mailto:hello@scanfence.com">hello@scanfence.com</a></li>
+              <li><span class="contact-meta-key">{t('contact.meta.hoursLabel', locale)}</span><span>{t('contact.meta.hoursValue', locale)}</span></li>
+              <li><span class="contact-meta-key">{t('contact.meta.basedLabel', locale)}</span><span>{t('contact.meta.basedValue', locale)}</span></li>
+              <li><span class="contact-meta-key">{t('contact.meta.docsLabel', locale)}</span><a href={localizedUrl('/documentation/', locale)}>{t('contact.meta.docsCta', locale)}</a></li>
+            </ul>
+          </div>
+
+          <div class="contact-form-wrap" id="form">
+            <span class="eyebrow eyebrow--mute">{t('contact.form.eyebrow', locale)}</span>
+            <h2>{t('contact.form.heading', locale)}</h2>
+            <form class="contact-form elementor-form" method="post" novalidate>
+              <input type="hidden" name="post_id" value="79" />
+              <input type="hidden" name="form_id" value="5f48d34" />
+              <input type="hidden" name="queried_id" value="79" />
+              <input type="hidden" name="referer_title" value="Contact" />
+
+              <div class="contact-field">
+                <label for="cf-name">{t('contact.form.nameLabel', locale)}</label>
+                <input id="cf-name" type="text" name="form_fields[name]" required placeholder={t('contact.form.namePlaceholder', locale)} autocomplete="name" />
+              </div>
+
+              <div class="contact-field">
+                <label for="cf-email">{t('contact.form.emailLabel', locale)}</label>
+                <input id="cf-email" type="email" name="form_fields[email]" required placeholder={t('contact.form.emailPlaceholder', locale)} autocomplete="email" />
+              </div>
+
+              <div class="contact-field">
+                <label for="cf-topic">{t('contact.form.topicLabel', locale)}</label>
+                <select id="cf-topic" name="form_fields[topic]">
+                  {contactData.topics.map(top => <option value={top.value}>{top.label}</option>)}
+                </select>
+              </div>
+
+              <div class="contact-field">
+                <label for="cf-subject">{t('contact.form.subjectLabel', locale)}</label>
+                <input id="cf-subject" type="text" name="form_fields[field_a8c66ad]" placeholder={t('contact.form.subjectPlaceholder', locale)} />
+              </div>
+
+              <div class="contact-field">
+                <label for="cf-message">{t('contact.form.messageLabel', locale)}</label>
+                <textarea id="cf-message" name="form_fields[message]" rows="4" required placeholder={t('contact.form.messagePlaceholder', locale)}></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-lg contact-submit">
+                <span class="contact-submit-label">{t('contact.form.submit', locale)}</span>
+                <span class="contact-submit-spinner" aria-hidden="true"></span>
+              </button>
+
+              <p class="contact-form-note">{t('contact.form.note', locale)}</p>
+            </form>
+
+            <div class="contact-form-success" role="status" hidden>
+              <span class="eyebrow">{t('contact.form.successEyebrow', locale)}</span>
+              <h3>{t('contact.form.successHeading', locale)}</h3>
+              <p>{t('contact.form.successBody.lead', locale)} <a href="mailto:hello@scanfence.com">hello@scanfence.com</a>.</p>
+            </div>
+
+            <div class="contact-form-error" role="alert" hidden>
+              <p>{t('contact.form.errorBody.lead', locale)} <a href="mailto:hello@scanfence.com">hello@scanfence.com</a> {t('contact.form.errorBody.tail', locale)}</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="contact-faq section">
+        <div class="container contact-faq-container">
+          <span class="eyebrow">{t('contact.faq.eyebrow', locale)}</span>
+          <h2>{t('contact.faq.heading', locale)}</h2>
+          <div class="contact-faq-list">
+            {contactData.faqs.map((f, i) => (
+              <details open={i === 0}>
+                <summary>{f.q}</summary>
+                <div class="contact-faq-answer">{f.a}</div>
+              </details>
+            ))}
+          </div>
+        </div>
+      </section>
+    </main>
+    <Footer />
+
+    <script is:inline>
+      (() => {
+        const form = document.querySelector('.contact-form');
+        if (!form) return;
+        const submitBtn = form.querySelector('.contact-submit');
+        const topicSelect = form.querySelector('#cf-topic');
+        const successPanel = document.querySelector('.contact-form-success');
+        const errorPanel = document.querySelector('.contact-form-error');
+        const params = new URLSearchParams(window.location.search);
+        const topicParam = params.get('topic');
+        if (topicParam && topicSelect) {
+          const match = [...topicSelect.options].find(o => o.value === topicParam);
+          if (match) topicSelect.value = topicParam;
+        }
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          errorPanel.hidden = true;
+          submitBtn.setAttribute('data-loading', 'true');
+          submitBtn.disabled = true;
+          try {
+            const fd = new FormData(form);
+            fd.append('action', 'elementor_pro_forms_send_form');
+            fd.append('referer', window.location.href);
+            const res = await fetch('https://scanfence.com/wp-admin/admin-ajax.php', {
+              method: 'POST', body: fd, credentials: 'omit',
+            });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const data = await res.json().catch(() => ({ success: true }));
+            if (data && data.success === false) throw new Error('form rejected');
+            form.hidden = true;
+            successPanel.hidden = false;
+            successPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          } catch (err) {
+            console.error('[contact] submit failed', err);
+            errorPanel.hidden = false;
+            submitBtn.removeAttribute('data-loading');
+            submitBtn.disabled = false;
+          }
+        });
+      })();
+    </script>
+  </BaseLayout>
+)}
+
+{kind === 'wp-page' && wpPageView && (
+  <PageLayout
+    title={wpPageView.title}
+    pageTitle={wpPageView.pageTitle}
+    description={wpPageView.description}
+    canonical={wpPageView.canonical}
+    ogImage={wpPageView.ogImage}
+    jsonLd={wpPageView.jsonLd}
+    locale={locale}
+  >
+    <Fragment set:html={wpPageView.content} />
+  </PageLayout>
+)}
+
+{kind === 'blog-post' && blogPostView && (
+  <PostLayout
+    title={blogPostView.title}
+    description={blogPostView.description}
+    canonical={blogPostView.canonical}
+    ogImage={blogPostView.ogImage}
+    date={blogPostView.date}
+    category={blogPostView.category}
+    featuredImage={blogPostView.featuredImage}
+    featuredImageAlt={blogPostView.featuredImageAlt}
+    jsonLd={blogPostView.jsonLd}
+    locale={locale}
+  >
+    <Fragment set:html={blogPostView.content} />
+  </PostLayout>
+)}
+
+{(kind === 'blog-index' || kind === 'blog-page') && blogList && (
+  <BaseLayout
+    title={blogList.title}
+    description={blogList.description}
+    canonical={blogList.canonical}
+    robots={blogList.isPaginated ? 'noindex,follow' : 'index,follow'}
+    jsonLd={blogList.jsonLd}
+    locale={locale}
+  >
+    <Header />
+    <main>
+      <div class="page-header">
+        <div class="container">
+          <h1>{t('blog.heading', locale)}</h1>
+        </div>
+      </div>
+      <section class="section">
+        <div class="container">
+          <div class="blog-grid">
+            {blogList.postsWithData.map(post => <BlogCard {...post} />)}
+          </div>
+          <Pagination
+            currentPage={blogList.pageNumber}
+            totalPages={blogList.totalPages}
+            basePath="/blog/page"
+            firstPagePath="/blog/"
+          />
+        </div>
+      </section>
+    </main>
+    <Footer />
+  </BaseLayout>
+)}
+
+{kind === 'category' && categoryView && (
+  <BaseLayout
+    title={categoryView.title}
+    description={categoryView.description}
+    canonical={categoryView.canonical}
+    jsonLd={categoryView.jsonLd}
+    locale={locale}
+  >
+    <Header />
+    <main>
+      <div class="page-header">
+        <div class="container">
+          <h1>{categoryView.categoryName}</h1>
+        </div>
+      </div>
+      <section class="section">
+        <div class="container">
+          <div class="blog-grid">
+            {categoryView.postsWithData.map(post => <BlogCard {...post} />)}
+          </div>
+        </div>
+      </section>
+    </main>
+    <Footer />
+  </BaseLayout>
+)}

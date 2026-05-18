@@ -4,9 +4,11 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "translate": "tsx scripts/translate.ts"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.32.1",
     "@astrojs/sitemap": "^3.0.0",
     "astro": "^5.0.0"
   },
@@ -16,6 +18,8 @@
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
     "@fontsource-variable/space-grotesk": "^5.2.10",
     "@fontsource/newsreader": "^5.2.10",
-    "lightningcss": "^1.32.0"
+    "dotenv": "^16.4.5",
+    "lightningcss": "^1.32.0",
+    "tsx": "^4.19.2"
   }
 }

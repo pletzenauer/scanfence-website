@@ -1,24 +1,31 @@
 ---
+import { resolveLocale, localizedUrl, t } from '../i18n/t';
+
+const locale = resolveLocale(Astro.currentLocale);
 const year = new Date().getFullYear();
 ---
 <footer class="footer">
   <div class="container">
     <div class="footer-top">
-      <a href="/" class="footer-logo" aria-label="ScanFence — home">
+      <a href={localizedUrl('/', locale)} class="footer-logo" aria-label={t('footer.logoAria', locale)}>
         <span class="footer-logo-mark" aria-hidden="true"></span>
         <span class="footer-logo-text">ScanFence</span>
       </a>
       <p class="footer-tagline">
-        Codes that know <span class="serif-accent">where they are.</span>
+        {t('footer.tagline.lead', locale)} <span class="serif-accent">{t('footer.tagline.accent', locale)}</span>
       </p>
       <a href="mailto:hello@scanfence.com" class="footer-email">hello@scanfence.com →</a>
     </div>
     <div class="footer-meta metadata-strip">
-      <span>© {year} ScanFence</span>
-      <span>EU · IRELAND-1</span>
-      <span>v2.4.1</span>
-      <span>SOC-2 TYPE II</span>
-      <span><a href="/datenschutzerklaerung/">Privacy</a> · <a href="/terms-and-conditions/">Terms</a></span>
+      <span>{t('footer.copyright', locale, { year })}</span>
+      <span>{t('footer.region', locale)}</span>
+      <span>{t('footer.version', locale)}</span>
+      <span>{t('footer.soc2', locale)}</span>
+      <span>
+        <a href={localizedUrl('/datenschutzerklaerung/', locale)}>{t('footer.privacy', locale)}</a>
+        ·
+        <a href={localizedUrl('/terms-and-conditions/', locale)}>{t('footer.terms', locale)}</a>
+      </span>
     </div>
   </div>
 </footer>

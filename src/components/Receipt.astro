@@ -1,4 +1,8 @@
 ---
+import { resolveLocale, t } from '../i18n/t';
+
+const locale = resolveLocale(Astro.currentLocale);
+
 const log = [
   { t: '09:42:11', city: 'PARIS',    info: 'iOS · Safari',     state: 'ROUTED → menu/fr',         tone: 'signal' },
   { t: '09:42:34', city: 'BERLIN',   info: 'Android · Chrome', state: 'ROUTED → menu/de',         tone: 'signal' },
@@ -10,29 +14,29 @@ const log = [
 ];
 
 const stats = [
-  { label: 'SCANS · LAST 30D',    value: '12.4M'  },
-  { label: 'UPTIME · 30D',         value: '99.97%' },
-  { label: 'P50 · ROUTING',        value: '<120ms' },
-  { label: 'DATA RESIDENCY',       value: 'EU · IRELAND' },
+  { label: t('receipt.stats.scans', locale),     value: '12.4M'  },
+  { label: t('receipt.stats.uptime', locale),    value: '99.97%' },
+  { label: t('receipt.stats.routing', locale),   value: '<120ms' },
+  { label: t('receipt.stats.residency', locale), value: t('receipt.stats.residencyValue', locale) },
 ];
 ---
 
 <section class="receipt section">
   <div class="container">
     <header class="receipt-header">
-      <span class="eyebrow">THE RECEIPT</span>
+      <span class="eyebrow">{t('receipt.eyebrow', locale)}</span>
       <h2>
-        We log it because<br />
-        <span class="serif-accent">you'll want to read it.</span>
+        {t('receipt.heading.line1', locale)}<br />
+        <span class="serif-accent">{t('receipt.heading.line2', locale)}</span>
       </h2>
     </header>
 
-    <div class="receipt-readout" role="figure" aria-label="Sample scan log">
+    <div class="receipt-readout" role="figure" aria-label={t('receipt.tableAria', locale)}>
       <div class="receipt-readout-head">
-        <span>TIME</span>
-        <span>LOCATION</span>
-        <span>CLIENT</span>
-        <span>OUTCOME</span>
+        <span>{t('receipt.head.time', locale)}</span>
+        <span>{t('receipt.head.location', locale)}</span>
+        <span>{t('receipt.head.client', locale)}</span>
+        <span>{t('receipt.head.outcome', locale)}</span>
       </div>
       {log.map(row => (
         <div class={`receipt-readout-row receipt-readout-row--${row.tone}`}>
