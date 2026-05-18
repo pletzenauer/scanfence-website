@@ -1,6 +1,7 @@
 ---
 import { getAllPosts, getPost, getMedia, getCategories, formatDate, rewriteWPLinks, rewriteSchemaUrls, demoteAllH1s } from '../../lib/wordpress';
 import PostLayout from '../../layouts/PostLayout.astro';
+import { DEFAULT_LOCALE } from '../../i18n/config';
 
 export async function getStaticPaths() {
   const posts = await getAllPosts();
@@ -8,6 +9,7 @@ export async function getStaticPaths() {
   return posts.map(post => ({ params: { slug: post.slug }, props: { allSlugs: slugs } }));
 }
 
+const locale = DEFAULT_LOCALE;
 const { slug } = Astro.params;
 const { allSlugs } = Astro.props as { allSlugs: string[] };
 const post = await getPost(slug!);
@@ -39,6 +41,7 @@ const fixedSchema = seo?.schema
   featuredImage={media?.source_url}
   featuredImageAlt={media?.alt_text}
   jsonLd={fixedSchema}
+  locale={locale}
 >
   <Fragment set:html={rewrittenContent} />
 </PostLayout>

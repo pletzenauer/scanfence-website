@@ -10,12 +10,20 @@ interface Props {
   canonical?: string;
   ogImage?: string;
   jsonLd?: object;
+  locale?: string;
 }
 
-const { title, pageTitle, description, canonical, ogImage, jsonLd } = Astro.props;
+const { title, pageTitle, description, canonical, ogImage, jsonLd, locale } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description} canonical={canonical} ogImage={ogImage} jsonLd={jsonLd}>
+<BaseLayout
+  title={title}
+  description={description}
+  canonical={canonical}
+  ogImage={ogImage}
+  jsonLd={jsonLd}
+  locale={locale}
+>
   <Header />
   <main>
     <div class="wp-content">

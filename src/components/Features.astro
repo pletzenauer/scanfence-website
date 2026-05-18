@@ -1,27 +1,22 @@
 ---
-const items = [
-  { n: '01', title: 'Dynamic codes',
-    body: 'Print once. Route forever. Repoint a code without reprinting.' },
-  { n: '02', title: 'GPS geofencing',
-    body: 'Geography is the rule. Scans inside the perimeter open one door; scans outside open another.' },
-  { n: '03', title: 'Time-based routing',
-    body: "Different hour, different destination. The code reads the clock before it reads the visitor." },
-  { n: '04', title: 'The receipt',
-    body: 'Every scan leaves one. Device, place, hour, outcome. No surprises.' },
-  { n: '05', title: 'A small crew',
-    body: 'Add the people who hold the keys. Role-based. Audit-clean.' },
-  { n: '06', title: 'No reprints',
-    body: "Change the destination at 11:47. It lands at 11:47." },
-];
+import { resolveLocale, t } from '../i18n/t';
+
+const locale = resolveLocale(Astro.currentLocale);
+
+const items = ['01', '02', '03', '04', '05', '06'].map(n => ({
+  n,
+  title: t(`features.${n}.title`, locale),
+  body: t(`features.${n}.body`, locale),
+}));
 ---
 
 <section class="features section" id="features">
   <div class="container">
     <header class="features-header">
-      <span class="eyebrow">THE WATCH</span>
+      <span class="eyebrow">{t('features.eyebrow', locale)}</span>
       <h2>
-        Six things the code does<br />
-        <span class="serif-accent">while you're not looking.</span>
+        {t('features.heading.line1', locale)}<br />
+        <span class="serif-accent">{t('features.heading.line2', locale)}</span>
       </h2>
     </header>
 

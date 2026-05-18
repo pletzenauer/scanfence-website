@@ -1,0 +1,67 @@
+---
+import { LOCALES, LOCALE_META } from '../i18n/config';
+import { resolveLocale, stripLocalePrefix, localizedUrl, t } from '../i18n/t';
+
+const currentLocale = resolveLocale(Astro.currentLocale);
+const { path } = stripLocalePrefix(Astro.url.pathname);
+const options = LOCALES.map(loc => ({
+  code: loc,
+  label: LOCALE_META[loc].nativeName,
+  href: localizedUrl(path, loc),
+  hreflang: LOCALE_META[loc].hreflang,
+  active: loc === currentLocale,
+}));
+const current = LOCALE_META[currentLocale];
+const ariaLabel = t('nav.languageSwitcherAria', currentLocale);
+---
+
+<div class="lang-switcher" data-current={currentLocale}>
+  <button
+    type="button"
+    class="lang-switcher__trigger"
+    aria-haspopup="listbox"
+    aria-expanded="false"
+    aria-label={ariaLabel}
+    id="langSwitcherToggle"
+  >
+    <span class="lang-switcher__current">{current.nativeName}</span>
+    <span class="lang-switcher__chevron" aria-hidden="true">▾</span>
+  </button>
+  <ul class="lang-switcher__menu" role="listbox" id="langSwitcherMenu" hidden>
+    {options.map(o => (
+      <li role="option" aria-selected={o.active}>
+        <a href={o.href} hreflang={o.hreflang} lang={o.hreflang} class:list={[{ 'is-active': o.active }]}>
+          {o.label}
+        </a>
+      </li>
+    ))}
+  </ul>
+</div>
+
+<script>
+  const root = document.querySelector('.lang-switcher');
+  const toggle = document.getElementById('langSwitcherToggle') as HTMLButtonElement | null;
+  const menu = document.getElementById('langSwitcherMenu') as HTMLUListElement | null;
+  if (root && toggle && menu) {
+    let open = false;
+    const setOpen = (next: boolean) => {
+      open = next;
+      menu.hidden = !next;
+      toggle.setAttribute('aria-expanded', String(next));
+      root.classList.toggle('is-open', next);
+    };
+    toggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      setOpen(!open);
+    });
+    document.addEventListener('click', (e) => {
+      if (!root.contains(e.target as Node)) setOpen(false);
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && open) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+  }
+</script>

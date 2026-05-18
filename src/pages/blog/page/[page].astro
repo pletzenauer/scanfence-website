@@ -5,6 +5,8 @@ import Footer from '../../../components/Footer.astro';
 import BlogCard from '../../../components/BlogCard.astro';
 import Pagination from '../../../components/Pagination.astro';
 import { getPosts, getCategories, getMedia, stripHtml, formatDate } from '../../../lib/wordpress';
+import { DEFAULT_LOCALE } from '../../../i18n/config';
+import { t } from '../../../i18n/t';
 
 export async function getStaticPaths() {
   const { totalPages } = await getPosts(1, 12);
@@ -15,6 +17,7 @@ export async function getStaticPaths() {
   return paths;
 }
 
+const locale = DEFAULT_LOCALE;
 const { pageNumber } = Astro.props as { pageNumber: number };
 const { posts, totalPages } = await getPosts(pageNumber, 12);
 const categories = await getCategories();
@@ -40,25 +43,26 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'CollectionPage',
   '@id': canonical,
-  name: `ScanFence Blog — Page ${pageNumber}`,
-  description: `Page ${pageNumber} of the ScanFence blog.`,
+  name: t('blog.pageName', locale, { page: pageNumber }),
+  description: t('blog.pageNameDescription', locale, { page: pageNumber }),
   url: canonical,
   isPartOf: { '@type': 'Blog', '@id': 'https://scanfence.com/blog/', name: 'ScanFence Blog' },
 };
 ---
 
 <BaseLayout
-  title={`Blog — Page ${pageNumber} — ScanFence`}
-  description={`Page ${pageNumber} of the ScanFence blog — QR codes, geofencing, and location-based marketing.`}
+  title={t('blog.pageTitle', locale, { page: pageNumber })}
+  description={t('blog.pageDescription', locale, { page: pageNumber })}
   canonical={canonical}
   robots="noindex,follow"
   jsonLd={jsonLd}
+  locale={locale}
 >
   <Header />
   <main>
     <div class="page-header">
       <div class="container">
-        <h1>Blog</h1>
+        <h1>{t('blog.heading', locale)}</h1>
       </div>
     </div>
     <section class="section">

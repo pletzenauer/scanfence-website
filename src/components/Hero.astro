@@ -1,4 +1,8 @@
 ---
+import { resolveLocale, localizedUrl, t } from '../i18n/t';
+
+const locale = resolveLocale(Astro.currentLocale);
+
 const scans = [
   { time: '09:42', city: 'PARIS',    state: 'ROUTED → menu/fr',         tone: 'signal' },
   { time: '09:43', city: 'BUDAPEST', state: 'BLOCKED · out-of-window',  tone: 'vermil' },
@@ -11,26 +15,22 @@ const scans = [
 <section class="hero" id="hero">
   <div class="container hero-grid">
     <div class="hero-copy">
-      <span class="eyebrow">QR · GEOFENCED · TIME-AWARE</span>
+      <span class="eyebrow">{t('hero.eyebrow', locale)}</span>
       <h1>
-        Every scan,<br />
-        <span class="serif-accent">on the perimeter.</span>
+        {t('hero.heading.line1', locale)}<br />
+        <span class="serif-accent">{t('hero.heading.line2', locale)}</span>
       </h1>
-      <p class="hero-lede">
-        ScanFence is a dynamic QR platform with GPS geofencing and time-based
-        routing. Print the code once. Route it forever. Watch what scanned,
-        what blocked, what's next.
-      </p>
+      <p class="hero-lede">{t('hero.lede', locale)}</p>
       <div class="hero-cta">
-        <a href="https://app.scanfence.com/signup" class="btn btn-primary btn-lg">Start a plan →</a>
-        <a href="/pricing/" class="btn btn-ghost btn-lg">See the pricing</a>
+        <a href="https://app.scanfence.com/signup" class="btn btn-primary btn-lg">{t('hero.ctaPrimary', locale)}</a>
+        <a href={localizedUrl('/pricing/', locale)} class="btn btn-ghost btn-lg">{t('hero.ctaSecondary', locale)}</a>
       </div>
-      <p class="hero-note">30D · NO CARD</p>
+      <p class="hero-note">{t('hero.note', locale)}</p>
     </div>
 
-    <aside class="hero-receipt" aria-label="Live scan receipt sample">
+    <aside class="hero-receipt" aria-label={t('hero.receiptAria', locale)}>
       <header class="hero-receipt-header">
-        <span class="eyebrow eyebrow--mute">LIVE · SAMPLE</span>
+        <span class="eyebrow eyebrow--mute">{t('hero.receipt.eyebrow', locale)}</span>
         <span class="hero-receipt-dot" aria-hidden="true"></span>
       </header>
       <ul class="hero-receipt-list">
@@ -43,8 +43,8 @@ const scans = [
         ))}
       </ul>
       <footer class="hero-receipt-footer">
-        <span>EU · IRELAND-1</span>
-        <span>P50 · 117MS</span>
+        <span>{t('hero.receipt.regionLabel', locale)}</span>
+        <span>{t('hero.receipt.latency', locale)}</span>
       </footer>
     </aside>
   </div>

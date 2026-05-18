@@ -1,4 +1,6 @@
 ---
+import { resolveLocale, localizedUrl } from '../i18n/t';
+
 interface Props {
   title: string;
   slug: string;
@@ -8,11 +10,13 @@ interface Props {
   category?: string;
 }
 const { title, slug, excerpt, date, imageUrl, category } = Astro.props;
+const locale = resolveLocale(Astro.currentLocale);
+const href = localizedUrl(`/blog/${slug}/`, locale);
 ---
 
 <article class="blog-row">
   {imageUrl && (
-    <a href={`/blog/${slug}/`} class="blog-row-image" aria-hidden="true" tabindex="-1">
+    <a href={href} class="blog-row-image" aria-hidden="true" tabindex="-1">
       <img src={imageUrl} alt="" loading="lazy" />
     </a>
   )}
@@ -21,7 +25,7 @@ const { title, slug, excerpt, date, imageUrl, category } = Astro.props;
       {category && <span class="eyebrow eyebrow--mute">{category}</span>}
       <time class="blog-row-date">{date}</time>
     </div>
-    <h3><a href={`/blog/${slug}/`}>{title}</a></h3>
+    <h3><a href={href}>{title}</a></h3>
     <p class="blog-row-excerpt">{excerpt}</p>
   </div>
 </article>

@@ -2,9 +2,11 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { resolveLocale, localizedUrl, t } from '../i18n/t';
 
-const title = '404 — Page not found — ScanFence';
-const description = 'That route was not found on scanfence.com.';
+const locale = resolveLocale(Astro.currentLocale);
+const title = t('error.title', locale);
+const description = t('error.description', locale);
 ---
 
 <BaseLayout title={title} description={description} robots="noindex,follow">
@@ -12,25 +14,22 @@ const description = 'That route was not found on scanfence.com.';
   <main>
     <section class="error-hero">
       <div class="container">
-        <span class="eyebrow">ERROR · 404</span>
+        <span class="eyebrow">{t('error.eyebrow', locale)}</span>
         <h1>
-          The signal <span class="serif-accent">went silent.</span>
+          {t('error.heading.line1', locale)} <span class="serif-accent">{t('error.heading.line2', locale)}</span>
         </h1>
-        <p class="error-lede">
-          That URL is not on the perimeter. The page may have moved, been
-          retired, or never existed. Try one of these instead:
-        </p>
+        <p class="error-lede">{t('error.lede', locale)}</p>
         <ul class="error-links">
-          <li><a href="/">Home</a></li>
-          <li><a href="/features/">Features</a></li>
-          <li><a href="/pricing/">Pricing</a></li>
-          <li><a href="/blog/">Blog</a></li>
-          <li><a href="/documentation/">Docs</a></li>
-          <li><a href="/contact/">Contact</a></li>
+          <li><a href={localizedUrl('/', locale)}>{t('error.link.home', locale)}</a></li>
+          <li><a href={localizedUrl('/features/', locale)}>{t('error.link.features', locale)}</a></li>
+          <li><a href={localizedUrl('/pricing/', locale)}>{t('error.link.pricing', locale)}</a></li>
+          <li><a href={localizedUrl('/blog/', locale)}>{t('error.link.blog', locale)}</a></li>
+          <li><a href={localizedUrl('/documentation/', locale)}>{t('error.link.docs', locale)}</a></li>
+          <li><a href={localizedUrl('/contact/', locale)}>{t('error.link.contact', locale)}</a></li>
         </ul>
         <div class="error-cta">
-          <a href="/" class="btn btn-primary btn-lg">Back to home →</a>
-          <a href="mailto:hello@scanfence.com" class="btn btn-ghost btn-lg">Email us</a>
+          <a href={localizedUrl('/', locale)} class="btn btn-primary btn-lg">{t('error.cta.home', locale)}</a>
+          <a href="mailto:hello@scanfence.com" class="btn btn-ghost btn-lg">{t('error.cta.email', locale)}</a>
         </div>
       </div>
     </section>

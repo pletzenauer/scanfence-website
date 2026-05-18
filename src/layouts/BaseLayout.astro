@@ -1,4 +1,7 @@
 ---
+import { resolveLocale, alternatesFor, t } from '../i18n/t';
+import { LOCALE_META, isRTL, hreflangFor, ogLocaleFor } from '../i18n/config';
+
 interface Props {
   title: string;
   description?: string;
@@ -7,12 +10,15 @@ interface Props {
   ogType?: 'website' | 'article';
   robots?: string;
   jsonLd?: object;
+  locale?: string;
 }
 
 const SITE_NAME = 'ScanFence';
 const SITE_URL = 'https://scanfence.com';
-const DEFAULT_DESCRIPTION = 'Dynamic QR codes with GPS geofencing and time-based routing. Print the code once. Route it forever.';
 const DEFAULT_OG_IMAGE = `${SITE_URL}/assets/scanfence-logo-black.png`;
+
+const locale = resolveLocale(Astro.props.locale ?? Astro.currentLocale);
+const DEFAULT_DESCRIPTION = t('site.description', locale);
 
 const {
   title,
@@ -26,6 +32,10 @@ const {
 
 const resolvedCanonical = canonical ?? `${SITE_URL}${Astro.url.pathname}`;
 const resolvedOgImage = ogImage.startsWith('http') ? ogImage : `${SITE_URL}${ogImage}`;
+const alternates = alternatesFor(Astro.url.pathname, SITE_URL);
+const htmlLang = hreflangFor(locale);
+const htmlDir = isRTL(locale) ? 'rtl' : 'ltr';
+const ogLocale = ogLocaleFor(locale);
 
 import '@fontsource-variable/inter/wght.css';
 import '@fontsource-variable/space-grotesk/wght.css';
@@ -38,7 +48,7 @@ import '../styles/global.css';
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang={htmlLang} dir={htmlDir}>
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -51,6 +61,10 @@ import '../styles/global.css';
   <meta name="theme-color" content="#F1ECE0" />
   <link rel="canonical" href={resolvedCanonical} />
 
+  {alternates.map(alt => (
+    <link rel="alternate" hreflang={alt.hreflang} href={alt.href} />
+  ))}
+
   <!-- Open Graph -->
   <meta property="og:site_name" content={SITE_NAME} />
   <meta property="og:title" content={title} />
@@ -58,7 +72,7 @@ import '../styles/global.css';
   <meta property="og:type" content={ogType} />
   <meta property="og:url" content={resolvedCanonical} />
   <meta property="og:image" content={resolvedOgImage} />
-  <meta property="og:locale" content="en_US" />
+  <meta property="og:locale" content={ogLocale} />
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image" />
