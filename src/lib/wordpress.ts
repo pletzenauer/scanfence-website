@@ -45,14 +45,38 @@ export interface WPMedia {
   alt_text: string;
 }
 
+// Retries transient 5xx + network failures from cms.scanfence.com.
+// KonsoleH shared hosting occasionally returns 508 "Resource Limit Reached" —
+// without retry, a single blip fails the whole GitHub Actions build.
+async function wpFetch(url: string, retries = 3): Promise<Response> {
+  let lastErr: unknown;
+  for (let attempt = 0; attempt < retries; attempt++) {
+    try {
+      const res = await fetch(url);
+      if (res.status >= 500 && attempt < retries - 1) {
+        await new Promise(r => setTimeout(r, 1000 * 2 ** attempt));
+        continue;
+      }
+      return res;
+    } catch (err) {
+      lastErr = err;
+      if (attempt < retries - 1) {
+        await new Promise(r => setTimeout(r, 1000 * 2 ** attempt));
+        continue;
+      }
+    }
+  }
+  throw lastErr ?? new Error(`wpFetch failed: ${url}`);
+}
+
 async function fetchAPI<T>(endpoint: string): Promise<T> {
-  const res = await fetch(`${WP_API}${endpoint}`);
+  const res = await wpFetch(`${WP_API}${endpoint}`);
   if (!res.ok) throw new Error(`WP API error: ${res.status} ${endpoint}`);
   return res.json();
 }
 
 export async function getPosts(page = 1, perPage = 12): Promise<{ posts: WPPost[]; totalPages: number }> {
-  const res = await fetch(`${WP_API}/posts?page=${page}&per_page=${perPage}&_embed`);
+  const res = await wpFetch(`${WP_API}/posts?page=${page}&per_page=${perPage}&_embed`);
   if (!res.ok) throw new Error(`WP API error: ${res.status}`);
   const posts = await res.json();
   const totalPages = parseInt(res.headers.get('X-WP-TotalPages') || '1');
@@ -64,7 +88,7 @@ export async function getAllPosts(): Promise<WPPost[]> {
   let page = 1;
   let totalPages = 1;
   do {
-    const res = await fetch(`${WP_API}/posts?page=${page}&per_page=100&_embed`);
+    const res = await wpFetch(`${WP_API}/posts?page=${page}&per_page=100&_embed`);
     if (!res.ok) break;
     const posts = await res.json();
     all.push(...posts);
@@ -93,7 +117,7 @@ export async function getCategories(): Promise<WPCategory[]> {
 }
 
 export async function getPostsByCategory(categoryId: number, page = 1, perPage = 12): Promise<{ posts: WPPost[]; totalPages: number }> {
-  const res = await fetch(`${WP_API}/posts?categories=${categoryId}&page=${page}&per_page=${perPage}&_embed`);
+  const res = await wpFetch(`${WP_API}/posts?categories=${categoryId}&page=${page}&per_page=${perPage}&_embed`);
   if (!res.ok) throw new Error(`WP API error: ${res.status}`);
   const posts = await res.json();
   const totalPages = parseInt(res.headers.get('X-WP-TotalPages') || '1');

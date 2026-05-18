@@ -4,6 +4,14 @@
 
 RewriteEngine On
 
+# 0) Disable mod_pagespeed on this vhost.
+#    The site is already an optimized static Astro build; mod_pagespeed adds
+#    nothing and was injecting a /mod_pagespeed_beacon/ script that 404s
+#    (doubled-slash URL produced by the host vhost config).
+<IfModule pagespeed_module>
+  ModPagespeed off
+</IfModule>
+
 # 1) 301 legacy date-based WP permalinks -> Astro /blog/<slug>/
 #    Example: /2026/03/05/foo-bar/  ->  /blog/foo-bar/
 RewriteRule ^([0-9]{4})/([0-9]{2})/([0-9]{2})/([^/]+)/?$ /blog/$4/ [R=301,L]
