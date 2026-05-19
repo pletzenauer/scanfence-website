@@ -10,32 +10,38 @@ const title = t('pricing.title', locale);
 const description = t('pricing.description', locale);
 const canonical = `https://scanfence.com${localizedUrl('/pricing/', locale)}`;
 
-const tierKeys = ['starter', 'growth', 'scale'] as const;
+const tierKeys = ['basic', 'starter', 'professional'] as const;
+const tierPricing = {
+  basic:        { monthly: '4.99',  annual: '49'  },
+  starter:      { monthly: '14.99', annual: '149' },
+  professional: { monthly: '44.99', annual: '449' },
+} as const;
 const tiers = tierKeys.map(k => ({
   key: k,
   name: t(`pricing.tier.${k}.name`, locale),
   eyebrow: t(`pricing.tier.${k}.eyebrow`, locale),
-  price: k === 'starter' ? '29' : k === 'growth' ? '79' : '199',
-  cadence: t('pricing.cadence', locale),
+  priceMonthly: tierPricing[k].monthly,
+  priceAnnual: tierPricing[k].annual,
   blurb: t(`pricing.tier.${k}.blurb`, locale),
   cta: {
     label: t(`pricing.tier.${k}.cta`, locale),
     href: `https://app.scanfence.com/signup?plan=${k}`,
   },
   features: [1, 2, 3, 4, 5, 6].map(i => t(`pricing.tier.${k}.feature${i}`, locale)),
-  featured: k === 'growth',
+  featured: k === 'starter',
 }));
 
 const compare = [
-  { row: t('pricing.compare.row.codes',        locale), s: '5',        g: '50',                                          x: '500' },
-  { row: t('pricing.compare.row.scans',        locale), s: '10,000',   g: '100,000',                                     x: '1,000,000' },
-  { row: t('pricing.compare.row.geofences',    locale), s: '2',        g: t('pricing.compare.val.unlimited', locale),    x: t('pricing.compare.val.unlimited', locale) },
-  { row: t('pricing.compare.row.timeRouting',  locale), s: '✓',        g: '✓',                                           x: '✓' },
-  { row: t('pricing.compare.row.api',          locale), s: '—',        g: '✓',                                           x: '✓' },
-  { row: t('pricing.compare.row.seats',        locale), s: '1',        g: '3',                                           x: t('pricing.compare.val.unlimited', locale) },
-  { row: t('pricing.compare.row.domains',      locale), s: '—',        g: '—',                                           x: '✓' },
-  { row: t('pricing.compare.row.sla',          locale), s: '—',        g: '—',                                           x: '99.9%' },
-  { row: t('pricing.compare.row.support',      locale), s: t('pricing.compare.val.email', locale), g: t('pricing.compare.val.priority', locale), x: t('pricing.compare.val.prioritySla', locale) },
+  { row: t('pricing.compare.row.codes',     locale), s: '100',    g: '500',     x: '2,500' },
+  { row: t('pricing.compare.row.scans',     locale), s: '25,000', g: '125,000', x: '1,250,000' },
+  { row: t('pricing.compare.row.geofences', locale), s: '100',    g: '500',     x: '2,500' },
+  { row: t('pricing.compare.row.seats',     locale), s: '2',      g: '3',       x: '10' },
+  { row: t('pricing.compare.row.trial',     locale), s: '30d',    g: '30d',     x: '30d' },
+  { row: t('pricing.compare.row.region',    locale), s: 'EU · Ireland', g: 'EU · Ireland', x: 'EU · Ireland' },
+  { row: t('pricing.compare.row.support',   locale),
+    s: t('pricing.compare.val.email', locale),
+    g: t('pricing.compare.val.priority', locale),
+    x: t('pricing.compare.val.priorityChat', locale) },
 ];
 
 const faqKeys = [1, 2, 3, 4, 5, 6, 7];
@@ -53,9 +59,9 @@ const jsonLd = {
   brand: { '@type': 'Brand', name: 'ScanFence' },
   offers: {
     '@type': 'AggregateOffer',
-    priceCurrency: 'EUR',
-    lowPrice: '29',
-    highPrice: '199',
+    priceCurrency: 'USD',
+    lowPrice: '4.99',
+    highPrice: '44.99',
     offerCount: tiers.length,
     availability: 'https://schema.org/InStock',
     url: canonical,
@@ -84,7 +90,7 @@ const faqJsonLd = {
         </h1>
         <p class="pricing-lede">{t('pricing.hero.lede', locale)}</p>
         <div class="metadata-strip">
-          <span>{t('common.metadata.eurNet', locale)}</span>
+          <span>{t('common.metadata.usdNet', locale)}</span>
           <span>{t('common.metadata.trial', locale)}</span>
           <span>{t('common.metadata.euIreland', locale)}</span>
           <span>{t('common.metadata.soc2', locale)}</span>
@@ -92,8 +98,17 @@ const faqJsonLd = {
       </div>
     </section>
 
-    <section class="pricing-tiers section">
+    <section class="pricing-tiers section" data-billing="monthly">
       <div class="container">
+        <div class="pricing-billing-toggle" role="tablist" aria-label={t('pricing.billing.label', locale)}>
+          <button type="button" data-billing="monthly" class="pricing-billing-btn is-active" role="tab" aria-selected="true">
+            {t('pricing.billing.monthly', locale)}
+          </button>
+          <button type="button" data-billing="annual" class="pricing-billing-btn" role="tab" aria-selected="false">
+            {t('pricing.billing.annual', locale)} <span class="pricing-billing-save">{t('pricing.billing.save', locale)}</span>
+          </button>
+        </div>
+
         <ul class="pricing-grid">
           {tiers.map(tier => (
             <li class={`pricing-card${tier.featured ? ' pricing-card--featured' : ''}`}>
@@ -103,9 +118,17 @@ const faqJsonLd = {
                 <p class="pricing-card-blurb">{tier.blurb}</p>
               </header>
               <div class="pricing-card-price">
-                <span class="pricing-card-currency">€</span>
-                <span class="pricing-card-amount">{tier.price}</span>
-                <span class="pricing-card-cadence">{tier.cadence}</span>
+                <span class="pricing-card-currency">$</span>
+                <span
+                  class="pricing-card-amount"
+                  data-monthly={tier.priceMonthly}
+                  data-annual={tier.priceAnnual}
+                >{tier.priceMonthly}</span>
+                <span
+                  class="pricing-card-cadence"
+                  data-monthly={t('pricing.cadenceMonth', locale)}
+                  data-annual={t('pricing.cadenceYear', locale)}
+                >{t('pricing.cadenceMonth', locale)}</span>
               </div>
               <a href={tier.cta.href} class={`btn ${tier.featured ? 'btn-primary' : 'btn-ghost'} btn-lg pricing-card-cta`}>
                 {tier.cta.label}
@@ -139,9 +162,9 @@ const faqJsonLd = {
             <thead>
               <tr>
                 <th scope="col"></th>
+                <th scope="col">{t('pricing.compare.col.basic', locale)}</th>
                 <th scope="col">{t('pricing.compare.col.starter', locale)}</th>
-                <th scope="col">{t('pricing.compare.col.growth', locale)}</th>
-                <th scope="col">{t('pricing.compare.col.scale', locale)}</th>
+                <th scope="col">{t('pricing.compare.col.professional', locale)}</th>
               </tr>
             </thead>
             <tbody>
@@ -392,8 +415,64 @@ const faqJsonLd = {
     max-width: 64ch;
   }
 
+  /* Billing toggle */
+  .pricing-billing-toggle {
+    display: inline-flex;
+    gap: 0;
+    margin: 0 0 var(--space-6);
+    padding: 4px;
+    background: var(--d01-paper);
+    border: var(--rule-hard);
+  }
+  .pricing-billing-btn {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 10px 18px;
+    background: transparent;
+    color: var(--d01-mute);
+    border: 0;
+    cursor: pointer;
+    transition: background-color 120ms ease, color 120ms ease;
+  }
+  .pricing-billing-btn.is-active {
+    background: var(--d01-ink);
+    color: var(--d01-paper-hi);
+  }
+  .pricing-billing-save {
+    color: var(--d01-signal);
+    margin-inline-start: 6px;
+  }
+  .pricing-billing-btn.is-active .pricing-billing-save { color: var(--d01-paper-hi); }
+
   @media (max-width: 900px) {
     .pricing-grid { grid-template-columns: 1fr; }
     .pricing-enterprise { grid-template-columns: 1fr; }
   }
 </style>
+
+<script>
+  const root = document.querySelector('.pricing-tiers');
+  if (root) {
+    const buttons = root.querySelectorAll<HTMLButtonElement>('.pricing-billing-btn');
+    const setBilling = (mode: 'monthly' | 'annual') => {
+      root.setAttribute('data-billing', mode);
+      buttons.forEach(b => {
+        const active = b.dataset.billing === mode;
+        b.classList.toggle('is-active', active);
+        b.setAttribute('aria-selected', String(active));
+      });
+      root.querySelectorAll<HTMLElement>('.pricing-card-amount').forEach(el => {
+        el.textContent = el.dataset[mode] ?? el.textContent;
+      });
+      root.querySelectorAll<HTMLElement>('.pricing-card-cadence').forEach(el => {
+        el.textContent = el.dataset[mode] ?? el.textContent;
+      });
+    };
+    buttons.forEach(b => b.addEventListener('click', () => {
+      const mode = b.dataset.billing as 'monthly' | 'annual';
+      if (mode) setBilling(mode);
+    }));
+  }
+</script>

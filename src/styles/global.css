@@ -1371,3 +1371,33 @@ ul {
 [dir="rtl"] .footer-meta {
   direction: ltr;
 }
+
+/* Pricing billing toggle (shared across English + localized pricing routes) */
+.pricing-billing-toggle {
+  display: inline-flex;
+  margin: 0 0 var(--space-6);
+  padding: 4px;
+  background: var(--d01-paper);
+  border: var(--rule-hard);
+}
+.pricing-billing-btn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 10px 18px;
+  background: transparent;
+  color: var(--d01-mute);
+  border: 0;
+  cursor: pointer;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+.pricing-billing-btn.is-active {
+  background: var(--d01-ink);
+  color: var(--d01-paper-hi);
+}
+.pricing-billing-save {
+  color: var(--d01-signal);
+  margin-inline-start: 6px;
+}
+.pricing-billing-btn.is-active .pricing-billing-save { color: var(--d01-paper-hi); }
