@@ -2,6 +2,7 @@
 import BaseLayout from './BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import type { Locale } from '../i18n/config';
 
 interface Props {
   title: string;
@@ -14,9 +15,10 @@ interface Props {
   featuredImageAlt?: string;
   jsonLd?: object;
   locale?: string;
+  availableLocales?: ReadonlyArray<Locale>;
 }
 
-const { title, description, canonical, ogImage, date, category, featuredImage, featuredImageAlt, jsonLd, locale } = Astro.props;
+const { title, description, canonical, ogImage, date, category, featuredImage, featuredImageAlt, jsonLd, locale, availableLocales } = Astro.props;
 ---
 
 <BaseLayout
@@ -27,6 +29,7 @@ const { title, description, canonical, ogImage, date, category, featuredImage, f
   ogType="article"
   jsonLd={jsonLd}
   locale={locale}
+  availableLocales={availableLocales}
 >
   <Header />
   <main>

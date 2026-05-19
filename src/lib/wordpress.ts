@@ -137,6 +137,26 @@ export function stripHtml(html: string): string {
   return html.replace(/<[^>]*>/g, '').trim();
 }
 
+/**
+ * Trim a string to roughly N chars on a word boundary, appending an ellipsis.
+ * Used to derive meta-description fallbacks from page content when Yoast didn't
+ * set one — keeps each WP page from inheriting the same global site description.
+ * Strips `<style>` / `<script>` blocks (and tags) so inline CSS doesn't leak
+ * into the description.
+ */
+export function descriptionExcerpt(html: string, maxChars = 155): string {
+  const cleaned = html
+    .replace(/<style\b[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<script\b[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<noscript\b[\s\S]*?<\/noscript>/gi, ' ');
+  const text = stripHtml(cleaned).replace(/\s+/g, ' ').trim();
+  if (text.length <= maxChars) return text;
+  const slice = text.slice(0, maxChars);
+  const lastSpace = slice.lastIndexOf(' ');
+  const cut = lastSpace > maxChars - 30 ? slice.slice(0, lastSpace) : slice;
+  return cut.replace(/[.,;:!?\-—]+$/, '') + '…';
+}
+
 const ROOT_SLUG_ALLOWLIST = new Set([
   '', 'pricing', 'features', 'faq', 'documentation', 'contact', 'blog',
   'about-raphael', 'support', 'datenschutzerklaerung', 'terms-and-conditions',
@@ -182,6 +202,28 @@ export function rewriteSchemaUrls<T>(schema: T, knownPostSlugs: Set<string>): T 
     return out as T;
   }
   return schema;
+}
+
+/**
+ * Rewrites a single canonical URL string the same way `rewriteSchemaUrls` does
+ * for JSON-LD payloads: any `https://scanfence.com/<slug>/` whose slug is a
+ * known post slug becomes `https://scanfence.com/blog/<slug>/`. Yoast emits
+ * canonicals against WP's permalink structure (no `/blog/` prefix), and the
+ * head tag was previously passed through as-is — this aligns it with the
+ * `/blog/` routing Astro actually serves.
+ */
+export function rewriteCanonicalUrl(url: string | undefined, knownPostSlugs: Set<string>): string | undefined {
+  if (!url) return url;
+  return url.replace(
+    /(https?:\/\/(?:www\.)?scanfence\.com)\/([^\/"'\s#?]+)\/?(#[^"'\s]*)?$/,
+    (match, origin, slug, hash) => {
+      if (ROOT_SLUG_ALLOWLIST.has(slug)) return match;
+      if (knownPostSlugs.has(slug)) {
+        return `${origin}/blog/${slug}/${hash ?? ''}`;
+      }
+      return match;
+    },
+  );
 }
 
 /**

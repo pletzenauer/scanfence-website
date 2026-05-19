@@ -1,7 +1,8 @@
 ---
-import { getPages, getAllPosts, rewriteWPLinks, rewriteSchemaUrls, demoteExtraH1s } from '../lib/wordpress';
+import { getPages, getAllPosts, rewriteWPLinks, rewriteSchemaUrls, rewriteCanonicalUrl, descriptionExcerpt, demoteExtraH1s } from '../lib/wordpress';
 import PageLayout from '../layouts/PageLayout.astro';
 import { DEFAULT_LOCALE } from '../i18n/config';
+import { pageAvailableLocales } from '../i18n/wp-cache';
 
 export async function getStaticPaths() {
   const [pages, posts] = await Promise.all([getPages(), getAllPosts()]);
@@ -20,16 +21,20 @@ const rewrittenContent = demoteExtraH1s(rewriteWPLinks(page.content.rendered, kn
 const fixedSchema = seo?.schema
   ? rewriteSchemaUrls(seo.schema, knownPostSlugs)
   : undefined;
+const canonical = rewriteCanonicalUrl(seo?.canonical, knownPostSlugs);
+const description = seo?.description || descriptionExcerpt(page.content.rendered);
+const availableLocales = pageAvailableLocales(page.slug);
 ---
 
 <PageLayout
   title={seo?.title || page.title.rendered}
   pageTitle={page.title.rendered}
-  description={seo?.description}
-  canonical={seo?.canonical}
+  description={description}
+  canonical={canonical}
   ogImage={seo?.og_image?.[0]?.url}
   jsonLd={fixedSchema}
   locale={locale}
+  availableLocales={availableLocales}
 >
   <Fragment set:html={rewrittenContent} />
 </PageLayout>
