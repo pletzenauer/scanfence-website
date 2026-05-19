@@ -65,6 +65,21 @@ const jsonLd = {
     offerCount: tiers.length,
     availability: 'https://schema.org/InStock',
     url: canonical,
+    offers: tiers.map(tier => ({
+      '@type': 'Offer',
+      name: tier.name,
+      price: tier.priceMonthly,
+      priceCurrency: 'USD',
+      url: tier.cta.href,
+      availability: 'https://schema.org/InStock',
+      priceSpecification: {
+        '@type': 'UnitPriceSpecification',
+        price: tier.priceMonthly,
+        priceCurrency: 'USD',
+        billingDuration: 'P1M',
+        unitCode: 'MON',
+      },
+    })),
   },
 };
 

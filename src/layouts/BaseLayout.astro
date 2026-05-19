@@ -7,6 +7,9 @@ interface Props {
   description?: string;
   canonical?: string;
   ogImage?: string;
+  ogImageAlt?: string;
+  ogImageWidth?: number;
+  ogImageHeight?: number;
   ogType?: 'website' | 'article';
   robots?: string;
   jsonLd?: object | object[];
@@ -22,6 +25,8 @@ interface Props {
 const SITE_NAME = 'ScanFence';
 const SITE_URL = 'https://scanfence.com';
 const DEFAULT_OG_IMAGE = `${SITE_URL}/assets/scanfence-logo-black.png`;
+const DEFAULT_OG_IMAGE_WIDTH = 425;
+const DEFAULT_OG_IMAGE_HEIGHT = 425;
 
 const locale = resolveLocale(Astro.props.locale ?? Astro.currentLocale);
 const DEFAULT_DESCRIPTION = t('site.description', locale);
@@ -31,14 +36,25 @@ const {
   description = DEFAULT_DESCRIPTION,
   canonical,
   ogImage = DEFAULT_OG_IMAGE,
+  ogImageAlt,
+  ogImageWidth,
+  ogImageHeight,
   ogType = 'website',
   robots = 'index,follow',
   jsonLd,
   availableLocales,
 } = Astro.props;
 
+const isCustomOgImage = ogImage !== DEFAULT_OG_IMAGE;
 const resolvedCanonical = canonical ?? `${SITE_URL}${Astro.url.pathname}`;
 const resolvedOgImage = ogImage.startsWith('http') ? ogImage : `${SITE_URL}${ogImage}`;
+// Dimensions: explicit prop wins; otherwise fall back to the default-logo dims
+// only when we're actually serving the default logo (custom routes that omit
+// dims will simply not emit width/height tags, which is valid).
+const resolvedOgWidth = ogImageWidth ?? (isCustomOgImage ? undefined : DEFAULT_OG_IMAGE_WIDTH);
+const resolvedOgHeight = ogImageHeight ?? (isCustomOgImage ? undefined : DEFAULT_OG_IMAGE_HEIGHT);
+const resolvedOgAlt = ogImageAlt
+  ?? (title.includes(SITE_NAME) ? title : `${SITE_NAME} — ${title}`);
 const alternates = alternatesFor(Astro.url.pathname, SITE_URL, availableLocales);
 const htmlLang = hreflangFor(locale);
 const htmlDir = isRTL(locale) ? 'rtl' : 'ltr';
@@ -79,6 +95,9 @@ import '../styles/global.css';
   <meta property="og:type" content={ogType} />
   <meta property="og:url" content={resolvedCanonical} />
   <meta property="og:image" content={resolvedOgImage} />
+  <meta property="og:image:alt" content={resolvedOgAlt} />
+  {resolvedOgWidth && <meta property="og:image:width" content={String(resolvedOgWidth)} />}
+  {resolvedOgHeight && <meta property="og:image:height" content={String(resolvedOgHeight)} />}
   <meta property="og:locale" content={ogLocale} />
 
   <!-- Twitter -->
@@ -86,6 +105,7 @@ import '../styles/global.css';
   <meta name="twitter:title" content={title} />
   <meta name="twitter:description" content={description} />
   <meta name="twitter:image" content={resolvedOgImage} />
+  <meta name="twitter:image:alt" content={resolvedOgAlt} />
 
   <link rel="icon" type="image/png" href="/assets/favicon.png">
   <link rel="preload" as="font" type="font/woff2" href={spaceGroteskUrl} crossorigin />

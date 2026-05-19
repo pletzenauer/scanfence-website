@@ -35,6 +35,7 @@ import { LOCALES, DEFAULT_LOCALE, LOCALE_META, type Locale } from '../../i18n/co
 import { t, localizedUrl } from '../../i18n/t';
 import { homeGraph, breadcrumbList, type BreadcrumbItem } from '../../lib/schema';
 import { getPageTranslation, getPostTranslation, pageAvailableLocales, postAvailableLocales } from '../../i18n/wp-cache';
+import { recordLastmod } from '../../lib/lastmod-store';
 
 const POSTS_PER_PAGE = 12;
 
@@ -72,6 +73,30 @@ export async function getStaticPaths() {
   const totalBlogPages = Math.max(1, Math.ceil(posts.length / POSTS_PER_PAGE_LOCAL));
   const wpPages = pages.filter(p => !EXCLUDED_WP_SLUGS.has(p.slug));
   const activeCategories = categories.filter(c => c.count > 0);
+
+  // ---- record sitemap lastmod from WP modified dates ----
+  // English routes record the canonical /path/ form. Locale variants currently
+  // canonical to English when no translation exists, so we only stamp the
+  // English URL — the locale variants get their lastmod via fallback in
+  // astro.config.mjs's serialize().
+  const latestPostModified = posts.reduce<string>((acc, p) => p.modified > acc ? p.modified : acc, '');
+  if (latestPostModified) {
+    recordLastmod('/blog/', latestPostModified);
+    for (let n = 2; n <= totalBlogPages; n++) recordLastmod(`/blog/page/${n}/`, latestPostModified);
+  }
+  for (const post of posts) {
+    if (post.modified) recordLastmod(`/blog/${post.slug}/`, post.modified);
+  }
+  for (const p of wpPages) {
+    if (p.modified) recordLastmod(`/${p.slug}/`, p.modified);
+  }
+  for (const cat of activeCategories) {
+    // Category lastmod = most-recent post.modified in that category.
+    const catLatest = posts
+      .filter(p => p.categories.includes(cat.id))
+      .reduce<string>((acc, p) => p.modified > acc ? p.modified : acc, '');
+    if (catLatest) recordLastmod(`/category/${cat.slug}/`, catLatest);
+  }
 
   const paths: Array<{ params: { locale: Locale; path: string | undefined }; props: RouteProps }> = [];
 
@@ -212,6 +237,21 @@ if (kind === 'pricing') {
       offerCount: tiers.length,
       availability: 'https://schema.org/InStock',
       url: canonical,
+      offers: tiers.map(tier => ({
+        '@type': 'Offer',
+        name: tier.name,
+        price: tier.priceMonthly,
+        priceCurrency: 'USD',
+        url: tier.cta.href,
+        availability: 'https://schema.org/InStock',
+        priceSpecification: {
+          '@type': 'UnitPriceSpecification',
+          price: tier.priceMonthly,
+          priceCurrency: 'USD',
+          billingDuration: 'P1M',
+          unitCode: 'MON',
+        },
+      })),
     },
   };
   const faqJsonLd = {
@@ -364,7 +404,7 @@ if (kind === 'blog-index' || kind === 'blog-page') {
         name: 'ScanFence Blog',
         description,
         url: canonical,
-        publisher: { '@type': 'Organization', name: 'ScanFence', url: 'https://scanfence.com/' },
+        publisher: { '@id': 'https://scanfence.com/#organization' },
         blogPost: postsWithData.map(p => ({
           '@type': 'BlogPosting',
           headline: p.title,
