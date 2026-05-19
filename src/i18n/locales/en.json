@@ -235,6 +235,15 @@
   "blog.pageDescription": "Page {page} of the ScanFence blog — QR codes, geofencing, and location-based marketing.",
   "blog.pageName": "ScanFence Blog — Page {page}",
   "blog.pageNameDescription": "Page {page} of the ScanFence blog.",
+  "blog.related.heading": "Related articles",
+  "blog.related.eyebrow": "Keep reading",
+  "blog.breadcrumbAria": "Breadcrumb",
+
+  "home.deepDive.eyebrow": "Go deeper",
+  "home.deepDive.features": "All features",
+  "home.deepDive.faq": "Read the FAQ",
+  "home.deepDive.blog": "On the blog",
+  "cta.tertiary": "Read the blog",
 
   "category.title": "{name} — ScanFence Blog",
   "category.description": "Browse all {name} articles on the ScanFence blog.",

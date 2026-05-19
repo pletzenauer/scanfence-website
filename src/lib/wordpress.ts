@@ -43,6 +43,10 @@ export interface WPMedia {
   id: number;
   source_url: string;
   alt_text: string;
+  media_details?: {
+    width?: number;
+    height?: number;
+  };
 }
 
 // Retries transient 5xx + network failures from cms.scanfence.com.
@@ -224,6 +228,20 @@ export function rewriteCanonicalUrl(url: string | undefined, knownPostSlugs: Set
       return match;
     },
   );
+}
+
+/**
+ * Adds `loading="lazy"` and `decoding="async"` to every `<img>` in body
+ * content that doesn't already specify a loading hint. The featured image
+ * (which lives outside the body slot in PostLayout) stays eager so LCP is
+ * fast — but everything below the fold should defer.
+ */
+export function lazyLoadBodyImages(html: string): string {
+  return html.replace(/<img\b([^>]*)>/gi, (full, attrs) => {
+    if (/\bloading\s*=/i.test(attrs)) return full;
+    const decodingAttr = /\bdecoding\s*=/i.test(attrs) ? '' : ' decoding="async"';
+    return `<img${attrs} loading="lazy"${decodingAttr}>`;
+  });
 }
 
 /**

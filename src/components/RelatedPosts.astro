@@ -1,0 +1,62 @@
+---
+import BlogCard from './BlogCard.astro';
+
+interface Post {
+  title: string;
+  slug: string;
+  excerpt: string;
+  date: string;
+  imageUrl?: string;
+  category?: string;
+}
+
+interface Props {
+  posts: Post[];
+  heading: string;
+  eyebrow?: string;
+}
+
+const { posts, heading, eyebrow } = Astro.props;
+---
+
+{posts.length > 0 && (
+  <section class="related-posts section">
+    <div class="container">
+      {eyebrow && <span class="eyebrow">{eyebrow}</span>}
+      <h2>{heading}</h2>
+      <div class="related-posts-grid">
+        {posts.map(p => (
+          <BlogCard
+            title={p.title}
+            slug={p.slug}
+            excerpt={p.excerpt}
+            date={p.date}
+            imageUrl={p.imageUrl}
+            category={p.category}
+          />
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .related-posts {
+    border-top: var(--rule-hard);
+    background: var(--d01-paper-hi);
+  }
+  .related-posts h2 {
+    font-size: clamp(28px, 3vw, 40px);
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    margin: var(--space-3) 0 var(--space-6);
+  }
+  .related-posts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-5);
+  }
+  @media (max-width: 900px) {
+    .related-posts-grid { grid-template-columns: 1fr; }
+  }
+</style>
