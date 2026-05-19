@@ -1,6 +1,6 @@
 ---
 import { resolveLocale, alternatesFor, t } from '../i18n/t';
-import { LOCALE_META, isRTL, hreflangFor, ogLocaleFor } from '../i18n/config';
+import { LOCALE_META, isRTL, hreflangFor, ogLocaleFor, type Locale } from '../i18n/config';
 
 interface Props {
   title: string;
@@ -11,6 +11,12 @@ interface Props {
   robots?: string;
   jsonLd?: object;
   locale?: string;
+  /**
+   * Locales for which a real translation exists. Pass only when the route
+   * falls back to English in missing locales (WP pages, blog posts) — leaving
+   * this undefined keeps the prior behavior of fanning hreflang to all 10.
+   */
+  availableLocales?: ReadonlyArray<Locale>;
 }
 
 const SITE_NAME = 'ScanFence';
@@ -28,11 +34,12 @@ const {
   ogType = 'website',
   robots = 'index,follow',
   jsonLd,
+  availableLocales,
 } = Astro.props;
 
 const resolvedCanonical = canonical ?? `${SITE_URL}${Astro.url.pathname}`;
 const resolvedOgImage = ogImage.startsWith('http') ? ogImage : `${SITE_URL}${ogImage}`;
-const alternates = alternatesFor(Astro.url.pathname, SITE_URL);
+const alternates = alternatesFor(Astro.url.pathname, SITE_URL, availableLocales);
 const htmlLang = hreflangFor(locale);
 const htmlDir = isRTL(locale) ? 'rtl' : 'ltr';
 const ogLocale = ogLocaleFor(locale);

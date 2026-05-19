@@ -21,7 +21,15 @@ const jsonLd = {
   operatingSystem: 'Web',
   description,
   url: canonical,
-  offers: { '@type': 'Offer', priceCurrency: 'EUR', availability: 'https://schema.org/InStock' },
+  offers: {
+    '@type': 'AggregateOffer',
+    priceCurrency: 'USD',
+    lowPrice: '4.99',
+    highPrice: '44.99',
+    offerCount: 3,
+    availability: 'https://schema.org/InStock',
+    url: `https://scanfence.com${localizedUrl('/pricing/', locale)}`,
+  },
 };
 ---
 

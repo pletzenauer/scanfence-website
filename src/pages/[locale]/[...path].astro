@@ -7,6 +7,8 @@ import {
   getMedia,
   rewriteWPLinks,
   rewriteSchemaUrls,
+  rewriteCanonicalUrl,
+  descriptionExcerpt,
   demoteExtraH1s,
   demoteAllH1s,
   stripHtml,
@@ -28,7 +30,7 @@ import BlogCard from '../../components/BlogCard.astro';
 import Pagination from '../../components/Pagination.astro';
 import { LOCALES, DEFAULT_LOCALE, type Locale } from '../../i18n/config';
 import { t, localizedUrl } from '../../i18n/t';
-import { getPageTranslation, getPostTranslation } from '../../i18n/wp-cache';
+import { getPageTranslation, getPostTranslation, pageAvailableLocales, postAvailableLocales } from '../../i18n/wp-cache';
 
 const POSTS_PER_PAGE = 12;
 
@@ -131,7 +133,15 @@ if (kind === 'home') {
       operatingSystem: 'Web',
       description,
       url: canonical,
-      offers: { '@type': 'Offer', priceCurrency: 'EUR', availability: 'https://schema.org/InStock' },
+      offers: {
+        '@type': 'AggregateOffer',
+        priceCurrency: 'USD',
+        lowPrice: '4.99',
+        highPrice: '44.99',
+        offerCount: 3,
+        availability: 'https://schema.org/InStock',
+        url: `https://scanfence.com${localizedUrl('/pricing/', locale)}`,
+      },
     },
   };
 }
@@ -275,7 +285,7 @@ if (kind === 'contact') {
 let wpPageView: {
   title: string; pageTitle: string; description?: string;
   canonical: string; ogImage?: string; jsonLd?: object;
-  content: string;
+  content: string; availableLocales: Locale[];
 } | null = null;
 if (kind === 'wp-page' && props.page) {
   const page = props.page;
@@ -285,7 +295,10 @@ if (kind === 'wp-page' && props.page) {
   const content = translation?.content ?? sourceContent;
   const titleText = translation?.title ?? page.title.rendered;
   const yoastTitle = translation?.yoastTitle ?? seo?.title;
-  const description = translation?.yoastDescription ?? seo?.description;
+  const description =
+    translation?.yoastDescription
+    ?? seo?.description
+    ?? descriptionExcerpt(content);
   const rewritten = demoteExtraH1s(rewriteWPLinks(content, knownPostSlugs));
   const canonical = `https://scanfence.com${localizedUrl(`/${page.slug}/`, locale)}`;
   const fixedSchema = seo?.schema ? rewriteSchemaUrls(seo.schema, knownPostSlugs) : undefined;
@@ -297,6 +310,7 @@ if (kind === 'wp-page' && props.page) {
     ogImage: seo?.og_image?.[0]?.url,
     jsonLd: fixedSchema,
     content: rewritten,
+    availableLocales: pageAvailableLocales(page.slug),
   };
 }
 
@@ -372,7 +386,7 @@ let blogPostView: {
   canonical: string; ogImage?: string;
   date: string; category?: string;
   featuredImage?: string; featuredImageAlt?: string;
-  content: string; jsonLd?: object;
+  content: string; jsonLd?: object; availableLocales: Locale[];
 } | null = null;
 if (kind === 'blog-post' && props.post) {
   const post = props.post;
@@ -385,7 +399,10 @@ if (kind === 'blog-post' && props.post) {
   const content = translation?.content ?? sourceContent;
   const titleText = translation?.title ?? post.title.rendered;
   const yoastTitle = translation?.yoastTitle ?? seo?.title;
-  const description = translation?.yoastDescription ?? seo?.description;
+  const description =
+    translation?.yoastDescription
+    ?? seo?.description
+    ?? descriptionExcerpt(translation?.excerpt || post.excerpt.rendered || content);
   const rewritten = demoteAllH1s(rewriteWPLinks(content, knownPostSlugs));
   const canonical = `https://scanfence.com${localizedUrl(`/blog/${post.slug}/`, locale)}`;
   const fixedSchema = seo?.schema ? rewriteSchemaUrls(seo.schema, knownPostSlugs) : undefined;
@@ -400,6 +417,7 @@ if (kind === 'blog-post' && props.post) {
     featuredImageAlt: media?.alt_text,
     content: rewritten,
     jsonLd: fixedSchema,
+    availableLocales: postAvailableLocales(post.slug),
   };
 }
 
@@ -783,6 +801,7 @@ if (kind === 'category' && props.category) {
     ogImage={wpPageView.ogImage}
     jsonLd={wpPageView.jsonLd}
     locale={locale}
+    availableLocales={wpPageView.availableLocales}
   >
     <Fragment set:html={wpPageView.content} />
   </PageLayout>
@@ -800,6 +819,7 @@ if (kind === 'category' && props.category) {
     featuredImageAlt={blogPostView.featuredImageAlt}
     jsonLd={blogPostView.jsonLd}
     locale={locale}
+    availableLocales={blogPostView.availableLocales}
   >
     <Fragment set:html={blogPostView.content} />
   </PostLayout>

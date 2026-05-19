@@ -67,13 +67,29 @@ export function stripLocalePrefix(pathname: string): { locale: Locale; path: str
 }
 
 /**
- * Generate hreflang alternates for every locale, given the *current* localized
- * pathname. Returns an array including x-default (pointing at the default locale).
+ * Generate hreflang alternates for the *current* localized pathname.
+ *
+ * `availableLocales` — when provided, only those locales get a hreflang.
+ * The default locale is always included (as `x-default` and its own tag) so
+ * search engines have a fallback for users whose language doesn't match.
+ * When `availableLocales` is omitted, behaves as before and emits all locales.
+ *
+ * Use the gated form on routes that fall back to English when a translation
+ * is missing (WP pages, blog posts). Skip the parameter for routes that are
+ * truly localized in every locale (home, pricing, contact, blog index).
  */
-export function alternatesFor(pathname: string, siteUrl: string): Array<{ hreflang: string; href: string }> {
+export function alternatesFor(
+  pathname: string,
+  siteUrl: string,
+  availableLocales?: ReadonlyArray<Locale> | ReadonlySet<Locale>,
+): Array<{ hreflang: string; href: string }> {
   const { path } = stripLocalePrefix(pathname);
   const base = siteUrl.replace(/\/$/, '');
-  const alts = LOCALES.map(loc => ({
+  const available: ReadonlySet<Locale> = availableLocales
+    ? (availableLocales instanceof Set ? availableLocales : new Set(availableLocales))
+    : new Set(LOCALES);
+  const emit = LOCALES.filter(loc => available.has(loc) || loc === DEFAULT_LOCALE);
+  const alts = emit.map(loc => ({
     hreflang: LOCALE_META[loc].hreflang,
     href: base + localizedUrl(path, loc),
   }));

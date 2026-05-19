@@ -1,7 +1,8 @@
 ---
-import { getAllPosts, getPost, getMedia, getCategories, formatDate, rewriteWPLinks, rewriteSchemaUrls, demoteAllH1s } from '../../lib/wordpress';
+import { getAllPosts, getPost, getMedia, getCategories, formatDate, rewriteWPLinks, rewriteSchemaUrls, demoteAllH1s, descriptionExcerpt } from '../../lib/wordpress';
 import PostLayout from '../../layouts/PostLayout.astro';
 import { DEFAULT_LOCALE } from '../../i18n/config';
+import { postAvailableLocales } from '../../i18n/wp-cache';
 
 export async function getStaticPaths() {
   const posts = await getAllPosts();
@@ -29,11 +30,13 @@ const canonical = `https://scanfence.com/blog/${post.slug}/`;
 const fixedSchema = seo?.schema
   ? rewriteSchemaUrls(seo.schema, knownPostSlugs)
   : undefined;
+const description = seo?.description || descriptionExcerpt(post.excerpt.rendered || post.content.rendered);
+const availableLocales = postAvailableLocales(post.slug);
 ---
 
 <PostLayout
   title={seo?.title || post.title.rendered}
-  description={seo?.description}
+  description={description}
   canonical={canonical}
   ogImage={seo?.og_image?.[0]?.url || media?.source_url}
   date={formatDate(post.date)}
@@ -42,6 +45,7 @@ const fixedSchema = seo?.schema
   featuredImageAlt={media?.alt_text}
   jsonLd={fixedSchema}
   locale={locale}
+  availableLocales={availableLocales}
 >
   <Fragment set:html={rewrittenContent} />
 </PostLayout>
