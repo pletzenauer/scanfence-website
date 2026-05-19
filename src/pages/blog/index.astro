@@ -32,9 +32,9 @@ const blogJsonLd = {
   '@type': 'Blog',
   '@id': 'https://scanfence.com/blog/',
   name: 'ScanFence Blog',
-  description: 'Articles about QR codes, geofencing, and location-based marketing.',
+  description: t('blog.description', locale),
   url: 'https://scanfence.com/blog/',
-  publisher: { '@type': 'Organization', name: 'ScanFence', url: 'https://scanfence.com/' },
+  publisher: { '@type': 'Organization', '@id': 'https://scanfence.com/#organization', name: 'ScanFence', url: 'https://scanfence.com/' },
   blogPost: postsWithData.map(p => ({
     '@type': 'BlogPosting',
     headline: p.title,

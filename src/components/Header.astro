@@ -54,6 +54,7 @@ const nav = [
     <a
       href={localizedUrl(item.href, locale)}
       class:list={[{ 'is-active': isActive(item.href) }]}
+      aria-current={isActive(item.href) ? 'page' : undefined}
     >{t(item.key, locale)}</a>
   ))}
   <hr class="rule-hard" />

@@ -7,6 +7,7 @@ export interface WPPost {
   excerpt: { rendered: string };
   content: { rendered: string };
   date: string;
+  modified: string;
   categories: number[];
   featured_media: number;
   yoast_head_json?: {
@@ -23,6 +24,7 @@ export interface WPPage {
   slug: string;
   title: { rendered: string };
   content: { rendered: string };
+  modified: string;
   yoast_head_json?: {
     title?: string;
     description?: string;
