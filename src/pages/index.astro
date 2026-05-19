@@ -9,7 +9,7 @@ import CTA from '../components/CTA.astro';
 import { resolveLocale, localizedUrl, t } from '../i18n/t';
 
 const locale = resolveLocale(Astro.currentLocale);
-const title = 'ScanFence — Dynamic QR Codes with GPS Geofencing';
+const title = t('home.title', locale);
 const description = t('site.description', locale);
 const canonical = `https://scanfence.com${localizedUrl('/', locale)}`;
 

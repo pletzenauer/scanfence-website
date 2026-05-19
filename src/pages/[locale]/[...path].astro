@@ -120,7 +120,7 @@ if (kind === 'home') {
   const description = t('site.description', locale);
   const canonical = `https://scanfence.com${localizedUrl('/', locale)}`;
   homeData = {
-    title: 'ScanFence — Dynamic QR Codes with GPS Geofencing',
+    title: t('home.title', locale),
     description,
     canonical,
     jsonLd: {

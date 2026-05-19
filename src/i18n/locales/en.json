@@ -1,5 +1,6 @@
 {
   "site.description": "Dynamic QR codes with GPS geofencing and time-based routing. Print the code once. Route it forever.",
+  "home.title": "ScanFence — Dynamic QR Codes with GPS Geofencing",
 
   "nav.home": "Home",
   "nav.features": "Features",
