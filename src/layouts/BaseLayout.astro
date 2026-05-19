@@ -9,7 +9,7 @@ interface Props {
   ogImage?: string;
   ogType?: 'website' | 'article';
   robots?: string;
-  jsonLd?: object;
+  jsonLd?: object | object[];
   locale?: string;
   /**
    * Locales for which a real translation exists. Pass only when the route
@@ -90,7 +90,9 @@ import '../styles/global.css';
   <link rel="icon" type="image/png" href="/assets/favicon.png">
   <link rel="preload" as="font" type="font/woff2" href={spaceGroteskUrl} crossorigin />
   <link rel="preload" as="font" type="font/woff2" href={interUrl} crossorigin />
-  {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+  {jsonLd && (Array.isArray(jsonLd)
+    ? jsonLd.map(block => <script type="application/ld+json" set:html={JSON.stringify(block)} />)
+    : <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />)}
 </head>
 <body>
   <slot />

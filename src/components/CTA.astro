@@ -3,6 +3,25 @@ import { resolveLocale, localizedUrl, t } from '../i18n/t';
 
 const locale = resolveLocale(Astro.currentLocale);
 ---
+<style>
+  .cta-tertiary {
+    display: inline-flex;
+    align-items: center;
+    align-self: center;
+    margin-inline-start: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--d01-mute);
+    text-decoration: none;
+    transition: color 120ms ease;
+  }
+  .cta-tertiary:hover { color: var(--d01-ink); }
+  @media (max-width: 640px) {
+    .cta-tertiary { margin-inline-start: 0; margin-top: var(--space-2); }
+  }
+</style>
 <section class="cta">
   <div class="container">
     <div class="cta-card">
@@ -12,6 +31,7 @@ const locale = resolveLocale(Astro.currentLocale);
       <div class="cta-buttons">
         <a href="https://app.scanfence.com/signup" class="btn btn-primary btn-lg">{t('cta.primary', locale)}</a>
         <a href={localizedUrl('/contact/', locale)} class="btn btn-ghost btn-lg">{t('cta.secondary', locale)}</a>
+        <a href={localizedUrl('/blog/', locale)} class="cta-tertiary">{t('cta.tertiary', locale)} →</a>
       </div>
     </div>
   </div>

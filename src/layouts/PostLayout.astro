@@ -2,7 +2,10 @@
 import BaseLayout from './BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
 import type { Locale } from '../i18n/config';
+
+interface Crumb { name: string; href?: string; }
 
 interface Props {
   title: string;
@@ -10,15 +13,35 @@ interface Props {
   canonical?: string;
   ogImage?: string;
   date?: string;
+  dateISO?: string;
   category?: string;
   featuredImage?: string;
   featuredImageAlt?: string;
-  jsonLd?: object;
+  featuredImageWidth?: number;
+  featuredImageHeight?: number;
+  breadcrumbs?: Crumb[];
+  jsonLd?: object | object[];
   locale?: string;
   availableLocales?: ReadonlyArray<Locale>;
 }
 
-const { title, description, canonical, ogImage, date, category, featuredImage, featuredImageAlt, jsonLd, locale, availableLocales } = Astro.props;
+const {
+  title,
+  description,
+  canonical,
+  ogImage,
+  date,
+  dateISO,
+  category,
+  featuredImage,
+  featuredImageAlt,
+  featuredImageWidth,
+  featuredImageHeight,
+  breadcrumbs,
+  jsonLd,
+  locale,
+  availableLocales,
+} = Astro.props;
 ---
 
 <BaseLayout
@@ -34,22 +57,32 @@ const { title, description, canonical, ogImage, date, category, featuredImage, f
   <Header />
   <main>
     <div class="container">
+      {breadcrumbs && breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
       <div class="post-header">
         <div class="post-eyebrow-row">
           {category && <span class="eyebrow">{category}</span>}
-          {date && <time class="post-date">{date}</time>}
+          {date && <time class="post-date" datetime={dateISO}>{date}</time>}
         </div>
         <h1>{title}</h1>
       </div>
       {featuredImage && (
         <div class="post-featured-image">
-          <img src={featuredImage} alt={featuredImageAlt || title} />
+          <img
+            src={featuredImage}
+            alt={featuredImageAlt || title}
+            width={featuredImageWidth}
+            height={featuredImageHeight}
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
         </div>
       )}
       <div class="wp-content">
         <slot />
       </div>
     </div>
+    <slot name="after-content" />
   </main>
   <Footer />
 </BaseLayout>

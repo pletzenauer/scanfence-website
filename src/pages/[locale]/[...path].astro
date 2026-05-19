@@ -11,6 +11,7 @@ import {
   descriptionExcerpt,
   demoteExtraH1s,
   demoteAllH1s,
+  lazyLoadBodyImages,
   stripHtml,
   formatDate,
   type WPPage,
@@ -28,8 +29,11 @@ import Receipt from '../../components/Receipt.astro';
 import CTA from '../../components/CTA.astro';
 import BlogCard from '../../components/BlogCard.astro';
 import Pagination from '../../components/Pagination.astro';
-import { LOCALES, DEFAULT_LOCALE, type Locale } from '../../i18n/config';
+import RelatedPosts from '../../components/RelatedPosts.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { LOCALES, DEFAULT_LOCALE, LOCALE_META, type Locale } from '../../i18n/config';
 import { t, localizedUrl } from '../../i18n/t';
+import { homeGraph, breadcrumbList, type BreadcrumbItem } from '../../lib/schema';
 import { getPageTranslation, getPostTranslation, pageAvailableLocales, postAvailableLocales } from '../../i18n/wp-cache';
 
 const POSTS_PER_PAGE = 12;
@@ -125,24 +129,11 @@ if (kind === 'home') {
     title: t('home.title', locale),
     description,
     canonical,
-    jsonLd: {
-      '@context': 'https://schema.org',
-      '@type': 'SoftwareApplication',
-      name: 'ScanFence',
-      applicationCategory: 'BusinessApplication',
-      operatingSystem: 'Web',
+    jsonLd: homeGraph({
+      homeUrl: canonical,
       description,
-      url: canonical,
-      offers: {
-        '@type': 'AggregateOffer',
-        priceCurrency: 'USD',
-        lowPrice: '4.99',
-        highPrice: '44.99',
-        offerCount: 3,
-        availability: 'https://schema.org/InStock',
-        url: `https://scanfence.com${localizedUrl('/pricing/', locale)}`,
-      },
-    },
+      inLanguage: LOCALE_META[locale].hreflang,
+    }),
   };
 }
 
@@ -300,7 +291,10 @@ if (kind === 'wp-page' && props.page) {
     ?? seo?.description
     ?? descriptionExcerpt(content);
   const rewritten = demoteExtraH1s(rewriteWPLinks(content, knownPostSlugs));
-  const canonical = `https://scanfence.com${localizedUrl(`/${page.slug}/`, locale)}`;
+  // English-fallback canonical handling — same rationale as the blog-post branch.
+  const canonical = translation
+    ? `https://scanfence.com${localizedUrl(`/${page.slug}/`, locale)}`
+    : `https://scanfence.com/${page.slug}/`;
   const fixedSchema = seo?.schema ? rewriteSchemaUrls(seo.schema, knownPostSlugs) : undefined;
   wpPageView = {
     title: yoastTitle || titleText,
@@ -384,9 +378,13 @@ if (kind === 'blog-index' || kind === 'blog-page') {
 let blogPostView: {
   title: string; description?: string;
   canonical: string; ogImage?: string;
-  date: string; category?: string;
+  date: string; dateISO: string;
+  category?: string;
   featuredImage?: string; featuredImageAlt?: string;
-  content: string; jsonLd?: object; availableLocales: Locale[];
+  featuredImageWidth?: number; featuredImageHeight?: number;
+  breadcrumbs: Array<{ name: string; href?: string }>;
+  related: Array<{ title: string; slug: string; excerpt: string; date: string; imageUrl?: string; category?: string }>;
+  content: string; jsonLd: object[]; availableLocales: Locale[];
 } | null = null;
 if (kind === 'blog-post' && props.post) {
   const post = props.post;
@@ -403,20 +401,57 @@ if (kind === 'blog-post' && props.post) {
     translation?.yoastDescription
     ?? seo?.description
     ?? descriptionExcerpt(translation?.excerpt || post.excerpt.rendered || content);
-  const rewritten = demoteAllH1s(rewriteWPLinks(content, knownPostSlugs));
-  const canonical = `https://scanfence.com${localizedUrl(`/blog/${post.slug}/`, locale)}`;
+  const rewritten = lazyLoadBodyImages(demoteAllH1s(rewriteWPLinks(content, knownPostSlugs)));
+  // No translation cached → we're rendering English fallback. Canonical the
+  // localized URL to its English counterpart so Google consolidates signal on
+  // the real source, instead of treating /xx/blog/slug/ as a competing copy.
+  const canonical = translation
+    ? `https://scanfence.com${localizedUrl(`/blog/${post.slug}/`, locale)}`
+    : `https://scanfence.com/blog/${post.slug}/`;
   const fixedSchema = seo?.schema ? rewriteSchemaUrls(seo.schema, knownPostSlugs) : undefined;
+  const breadcrumbs = [
+    { name: t('nav.home', locale), href: `https://scanfence.com${localizedUrl('/', locale)}` },
+    { name: t('nav.blog', locale), href: `https://scanfence.com${localizedUrl('/blog/', locale)}` },
+    ...(postCategory ? [{ name: postCategory.name, href: `https://scanfence.com${localizedUrl(`/category/${postCategory.slug}/`, locale)}` }] : []),
+    { name: titleText },
+  ];
+  const breadcrumbSchema = breadcrumbList(breadcrumbs.map(b => ({ name: b.name, url: b.href })));
+
+  // Related posts: 3 most recent from same category, excluding this post.
+  let related: Array<{ title: string; slug: string; excerpt: string; date: string; imageUrl?: string; category?: string }> = [];
+  if (postCategory) {
+    const { posts: catPosts } = await getPostsByCategory(postCategory.id, 1, 6);
+    const others = catPosts.filter(p => p.slug !== post.slug).slice(0, 3);
+    related = await Promise.all(others.map(async p => {
+      const m = p.featured_media ? await getMedia(p.featured_media) : null;
+      const rt = getPostTranslation(locale, p.slug);
+      return {
+        title: rt?.title ?? p.title.rendered,
+        slug: p.slug,
+        excerpt: (rt?.excerpt ?? stripHtml(p.excerpt.rendered)).slice(0, 160),
+        date: formatDate(p.date),
+        imageUrl: m?.source_url,
+        category: postCategory.name,
+      };
+    }));
+  }
+
   blogPostView = {
     title: titleText,
     description,
     canonical,
     ogImage: seo?.og_image?.[0]?.url || media?.source_url,
     date: formatDate(post.date),
+    dateISO: post.date,
     category: postCategory?.name,
     featuredImage: media?.source_url,
     featuredImageAlt: media?.alt_text,
+    featuredImageWidth: media?.media_details?.width,
+    featuredImageHeight: media?.media_details?.height,
+    breadcrumbs,
+    related,
     content: rewritten,
-    jsonLd: fixedSchema,
+    jsonLd: [fixedSchema, breadcrumbSchema].filter(Boolean) as object[],
     availableLocales: postAvailableLocales(post.slug),
   };
 }
@@ -425,7 +460,9 @@ if (kind === 'blog-post' && props.post) {
 let categoryView: {
   categoryName: string;
   postsWithData: Array<{ title: string; slug: string; excerpt: string; date: string; imageUrl?: string; category?: string }>;
-  canonical: string; title: string; description: string; jsonLd: object;
+  canonical: string; title: string; description: string;
+  breadcrumbs: Array<{ name: string; href?: string }>;
+  jsonLd: object[];
 } | null = null;
 if (kind === 'category' && props.category) {
   const cat = props.category;
@@ -461,7 +498,21 @@ if (kind === 'category' && props.category) {
       url: `https://scanfence.com${localizedUrl(`/blog/${p.slug}/`, locale)}`,
     })),
   };
-  categoryView = { categoryName: cat.name, postsWithData, canonical, title, description, jsonLd };
+  const breadcrumbs = [
+    { name: t('nav.home', locale), href: `https://scanfence.com${localizedUrl('/', locale)}` },
+    { name: t('nav.blog', locale), href: `https://scanfence.com${localizedUrl('/blog/', locale)}` },
+    { name: cat.name },
+  ];
+  const breadcrumbSchema = breadcrumbList(breadcrumbs.map(b => ({ name: b.name, url: b.href })));
+  categoryView = {
+    categoryName: cat.name,
+    postsWithData,
+    canonical,
+    title,
+    description,
+    breadcrumbs,
+    jsonLd: [jsonLd, breadcrumbSchema],
+  };
 }
 ---
 
@@ -487,6 +538,16 @@ if (kind === 'category' && props.category) {
       </div>
       <Features />
       <Receipt />
+      <nav class="home-deep-dive" aria-label={t('home.deepDive.eyebrow', locale)}>
+        <div class="container">
+          <span class="eyebrow eyebrow--mute">{t('home.deepDive.eyebrow', locale)}</span>
+          <ul>
+            <li><a href={localizedUrl('/features/', locale)}>{t('home.deepDive.features', locale)} →</a></li>
+            <li><a href={localizedUrl('/faq/', locale)}>{t('home.deepDive.faq', locale)} →</a></li>
+            <li><a href={localizedUrl('/blog/', locale)}>{t('home.deepDive.blog', locale)} →</a></li>
+          </ul>
+        </div>
+      </nav>
       <CTA />
     </main>
     <Footer />
@@ -814,14 +875,25 @@ if (kind === 'category' && props.category) {
     canonical={blogPostView.canonical}
     ogImage={blogPostView.ogImage}
     date={blogPostView.date}
+    dateISO={blogPostView.dateISO}
     category={blogPostView.category}
     featuredImage={blogPostView.featuredImage}
     featuredImageAlt={blogPostView.featuredImageAlt}
+    featuredImageWidth={blogPostView.featuredImageWidth}
+    featuredImageHeight={blogPostView.featuredImageHeight}
+    breadcrumbs={blogPostView.breadcrumbs}
     jsonLd={blogPostView.jsonLd}
     locale={locale}
     availableLocales={blogPostView.availableLocales}
   >
     <Fragment set:html={blogPostView.content} />
+    <Fragment slot="after-content">
+      <RelatedPosts
+        posts={blogPostView.related}
+        heading={t('blog.related.heading', locale)}
+        eyebrow={t('blog.related.eyebrow', locale)}
+      />
+    </Fragment>
   </PostLayout>
 )}
 
@@ -871,6 +943,7 @@ if (kind === 'category' && props.category) {
     <main>
       <div class="page-header">
         <div class="container">
+          <Breadcrumbs items={categoryView.breadcrumbs} />
           <h1>{categoryView.categoryName}</h1>
         </div>
       </div>

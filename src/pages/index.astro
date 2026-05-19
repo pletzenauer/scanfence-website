@@ -7,30 +7,19 @@ import Features from '../components/Features.astro';
 import Receipt from '../components/Receipt.astro';
 import CTA from '../components/CTA.astro';
 import { resolveLocale, localizedUrl, t } from '../i18n/t';
+import { LOCALE_META } from '../i18n/config';
+import { homeGraph } from '../lib/schema';
 
 const locale = resolveLocale(Astro.currentLocale);
 const title = t('home.title', locale);
 const description = t('site.description', locale);
 const canonical = `https://scanfence.com${localizedUrl('/', locale)}`;
 
-const jsonLd = {
-  '@context': 'https://schema.org',
-  '@type': 'SoftwareApplication',
-  name: 'ScanFence',
-  applicationCategory: 'BusinessApplication',
-  operatingSystem: 'Web',
+const jsonLd = homeGraph({
+  homeUrl: canonical,
   description,
-  url: canonical,
-  offers: {
-    '@type': 'AggregateOffer',
-    priceCurrency: 'USD',
-    lowPrice: '4.99',
-    highPrice: '44.99',
-    offerCount: 3,
-    availability: 'https://schema.org/InStock',
-    url: `https://scanfence.com${localizedUrl('/pricing/', locale)}`,
-  },
-};
+  inLanguage: LOCALE_META[locale].hreflang,
+});
 ---
 
 <BaseLayout title={title} description={description} canonical={canonical} jsonLd={jsonLd}>
@@ -48,6 +37,16 @@ const jsonLd = {
     </div>
     <Features />
     <Receipt />
+    <nav class="home-deep-dive" aria-label={t('home.deepDive.eyebrow', locale)}>
+      <div class="container">
+        <span class="eyebrow eyebrow--mute">{t('home.deepDive.eyebrow', locale)}</span>
+        <ul>
+          <li><a href={localizedUrl('/features/', locale)}>{t('home.deepDive.features', locale)} →</a></li>
+          <li><a href={localizedUrl('/faq/', locale)}>{t('home.deepDive.faq', locale)} →</a></li>
+          <li><a href={localizedUrl('/blog/', locale)}>{t('home.deepDive.blog', locale)} →</a></li>
+        </ul>
+      </div>
+    </nav>
     <CTA />
   </main>
   <Footer />

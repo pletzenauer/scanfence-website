@@ -1401,3 +1401,31 @@ ul {
   margin-inline-start: 6px;
 }
 .pricing-billing-btn.is-active .pricing-billing-save { color: var(--d01-paper-hi); }
+
+/* Home deep-dive internal-link strip (shared across English + localized home routes) */
+.home-deep-dive {
+  border-top: var(--rule-hard);
+  padding: var(--space-6) 0;
+  background: var(--d01-paper);
+}
+.home-deep-dive ul {
+  list-style: none;
+  padding: 0;
+  margin: var(--space-3) 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-5);
+}
+.home-deep-dive a {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--d01-ink);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 120ms ease, color 120ms ease;
+}
+.home-deep-dive a:hover {
+  color: var(--d01-signal);
+  border-bottom-color: currentColor;
+}
