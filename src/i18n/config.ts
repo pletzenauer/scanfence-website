@@ -1,6 +1,6 @@
 export const DEFAULT_LOCALE = 'en' as const;
 
-export const LOCALES = ['en', 'zh', 'es', 'ar', 'pt', 'id', 'fr', 'ja', 'ru', 'de'] as const;
+export const LOCALES = ['en', 'zh', 'es', 'ar', 'pt', 'id', 'fr', 'ja', 'ru', 'de', 'nl', 'hi'] as const;
 
 export type Locale = (typeof LOCALES)[number];
 
@@ -26,6 +26,8 @@ export const LOCALE_META: Record<Locale, LocaleMeta> = {
   ja: { code: 'ja', hreflang: 'ja',    ogLocale: 'ja_JP', nativeName: '日本語',            englishName: 'Japanese',    dir: 'ltr', dateLocale: 'ja-JP', promptHint: 'Japanese (standard です/ます polite register for marketing copy).' },
   ru: { code: 'ru', hreflang: 'ru',    ogLocale: 'ru_RU', nativeName: 'Русский',          englishName: 'Russian',     dir: 'ltr', dateLocale: 'ru-RU', promptHint: 'Russian, modern neutral business register.' },
   de: { code: 'de', hreflang: 'de',    ogLocale: 'de_DE', nativeName: 'Deutsch',          englishName: 'German',      dir: 'ltr', dateLocale: 'de-DE', promptHint: 'German, Sie-form (formal), neutral business tone.' },
+  nl: { code: 'nl', hreflang: 'nl',    ogLocale: 'nl_NL', nativeName: 'Nederlands',       englishName: 'Dutch',       dir: 'ltr', dateLocale: 'nl-NL', promptHint: 'Dutch (Netherlands), formal u-form, neutral business tone.' },
+  hi: { code: 'hi', hreflang: 'hi',    ogLocale: 'hi_IN', nativeName: 'हिन्दी',            englishName: 'Hindi',       dir: 'ltr', dateLocale: 'hi-IN', promptHint: 'Modern Standard Hindi (Devanagari). Keep Western digits in prices, versions, and code.' },
 };
 
 export function isLocale(value: string | undefined | null): value is Locale {
