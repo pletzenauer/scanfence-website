@@ -26,7 +26,7 @@ const ROOT = join(__dirname, '..');
 
 // ---- locale config (mirrors src/i18n/config.ts) ----
 const DEFAULT_LOCALE = 'en' as const;
-const LOCALES = ['en', 'zh', 'es', 'ar', 'pt', 'id', 'fr', 'ja', 'ru', 'de'] as const;
+const LOCALES = ['en', 'zh', 'es', 'ar', 'pt', 'id', 'fr', 'ja', 'ru', 'de', 'nl', 'hi'] as const;
 type Locale = (typeof LOCALES)[number];
 const NON_DEFAULT: Locale[] = LOCALES.filter(l => l !== DEFAULT_LOCALE) as Locale[];
 
@@ -41,6 +41,8 @@ const LOCALE_PROMPTS: Record<Locale, string> = {
   ja: 'Japanese, standard です/ます polite register for marketing copy.',
   ru: 'Russian, modern neutral business register.',
   de: 'German, Sie-form (formal), neutral business tone.',
+  nl: 'Dutch (Netherlands), formal u-form, neutral business tone.',
+  hi: 'Modern Standard Hindi (Devanagari). Keep Western digits in prices, dates, code, and version numbers.',
 };
 
 const WP_API = process.env.WP_API_URL || 'https://cms.scanfence.com/wp-json/wp/v2';

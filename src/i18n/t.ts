@@ -9,6 +9,8 @@ import fr from './locales/fr.json';
 import ja from './locales/ja.json';
 import ru from './locales/ru.json';
 import de from './locales/de.json';
+import nl from './locales/nl.json';
+import hi from './locales/hi.json';
 
 type Catalog = Record<string, string>;
 
@@ -23,6 +25,8 @@ const CATALOGS: Record<Locale, Catalog> = {
   ja: ja as Catalog,
   ru: ru as Catalog,
   de: de as Catalog,
+  nl: nl as Catalog,
+  hi: hi as Catalog,
 };
 
 export function resolveLocale(value: string | undefined | null): Locale {

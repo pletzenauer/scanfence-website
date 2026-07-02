@@ -1,7 +1,7 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
-const LOCALES = ['en', 'zh', 'es', 'ar', 'pt', 'id', 'fr', 'ja', 'ru', 'de'];
+const LOCALES = ['en', 'zh', 'es', 'ar', 'pt', 'id', 'fr', 'ja', 'ru', 'de', 'nl', 'hi'];
 
 export default defineConfig({
   site: 'https://scanfence.com',
@@ -40,6 +40,8 @@ export default defineConfig({
           ja: 'ja',
           ru: 'ru',
           de: 'de',
+          nl: 'nl',
+          hi: 'hi',
         },
       },
       serialize(item) {
