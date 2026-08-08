@@ -2,6 +2,7 @@
 import { getPages, getAllPosts, rewriteWPLinks, rewriteSchemaUrls, demoteExtraH1s } from '../lib/wordpress';
 import PageLayout from '../layouts/PageLayout.astro';
 import { DEFAULT_LOCALE } from '../i18n/config';
+import { descriptionForPage } from '../lib/seo';
 
 export async function getStaticPaths() {
   const [pages, posts] = await Promise.all([getPages(), getAllPosts()]);
@@ -25,7 +26,7 @@ const fixedSchema = seo?.schema
 <PageLayout
   title={seo?.title || page.title.rendered}
   pageTitle={page.title.rendered}
-  description={seo?.description}
+  description={descriptionForPage(page.slug, seo?.description)}
   canonical={seo?.canonical}
   ogImage={seo?.og_image?.[0]?.url}
   jsonLd={fixedSchema}

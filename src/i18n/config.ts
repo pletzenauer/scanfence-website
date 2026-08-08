@@ -4,6 +4,32 @@ export const LOCALES = ['en', 'zh', 'es', 'ar', 'pt', 'id', 'fr', 'ja', 'ru', 'd
 
 export type Locale = (typeof LOCALES)[number];
 
+/**
+ * Locales Google is allowed to index.
+ *
+ * All 12 locales stay BUILT and reachable — the language switcher keeps
+ * working and no translation work is thrown away. The non-indexed ones just
+ * emit `noindex,follow`, drop out of the sitemap, and drop out of the
+ * hreflang set (pointing hreflang at a noindexed URL is a contradictory
+ * signal, so the two lists must stay in sync).
+ *
+ * Why: the July 2026 i18n rollout put 1,001 machine-translated URLs into the
+ * index. Over the following three months they returned 780 impressions and
+ * ONE click at a weighted average position of 52.3, against 40.2 for the 91
+ * English pages. In the week of 2026-07-30 — roughly four weeks after the
+ * deploy, i.e. as the translated set finished indexing — sitewide impressions
+ * tripled to 565 while average position collapsed from 44.1 to 54.6.
+ *
+ * de and nl are retained because they are the only non-English locales with
+ * a real signal (154 and 133 impressions). Re-add others here once the
+ * English pages they translate actually rank.
+ */
+export const INDEXED_LOCALES = ['en', 'de', 'nl'] as const satisfies readonly Locale[];
+
+export function isIndexedLocale(locale: Locale): boolean {
+  return (INDEXED_LOCALES as readonly string[]).includes(locale);
+}
+
 interface LocaleMeta {
   code: Locale;
   hreflang: string;

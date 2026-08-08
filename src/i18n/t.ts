@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE, LOCALES, LOCALE_META, isLocale, type Locale } from './config';
+import { DEFAULT_LOCALE, LOCALES, INDEXED_LOCALES, LOCALE_META, isLocale, isIndexedLocale, type Locale } from './config';
 import en from './locales/en.json';
 import zh from './locales/zh.json';
 import es from './locales/es.json';
@@ -71,13 +71,19 @@ export function stripLocalePrefix(pathname: string): { locale: Locale; path: str
 }
 
 /**
- * Generate hreflang alternates for every locale, given the *current* localized
- * pathname. Returns an array including x-default (pointing at the default locale).
+ * Generate hreflang alternates for the *indexable* locales, given the current
+ * localized pathname. Returns an array including x-default (pointing at the
+ * default locale).
+ *
+ * Only INDEXED_LOCALES appear. A page that is served `noindex` must not be
+ * advertised as an hreflang alternate — that tells Google to index it and not
+ * to index it at the same time, and Search Console reports the pair as an
+ * error rather than picking a winner.
  */
 export function alternatesFor(pathname: string, siteUrl: string): Array<{ hreflang: string; href: string }> {
   const { path } = stripLocalePrefix(pathname);
   const base = siteUrl.replace(/\/$/, '');
-  const alts = LOCALES.map(loc => ({
+  const alts = INDEXED_LOCALES.map(loc => ({
     hreflang: LOCALE_META[loc].hreflang,
     href: base + localizedUrl(path, loc),
   }));
@@ -85,5 +91,5 @@ export function alternatesFor(pathname: string, siteUrl: string): Array<{ hrefla
   return alts;
 }
 
-export { LOCALES, LOCALE_META, DEFAULT_LOCALE, isLocale } from './config';
+export { LOCALES, INDEXED_LOCALES, LOCALE_META, DEFAULT_LOCALE, isLocale, isIndexedLocale } from './config';
 export type { Locale } from './config';

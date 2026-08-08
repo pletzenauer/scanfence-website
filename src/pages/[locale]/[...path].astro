@@ -15,6 +15,7 @@ import {
   type WPPost,
   type WPCategory,
 } from '../../lib/wordpress';
+import { ORG_ID } from '../../lib/seo';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageLayout from '../../layouts/PageLayout.astro';
 import PostLayout from '../../layouts/PostLayout.astro';
@@ -123,6 +124,7 @@ if (kind === 'home') {
     title: t('home.title', locale),
     description,
     canonical,
+    // Mirrors src/pages/index.astro — USD, priced, matching /pricing/.
     jsonLd: {
       '@context': 'https://schema.org',
       '@type': 'SoftwareApplication',
@@ -131,7 +133,16 @@ if (kind === 'home') {
       operatingSystem: 'Web',
       description,
       url: canonical,
-      offers: { '@type': 'Offer', priceCurrency: 'EUR', availability: 'https://schema.org/InStock' },
+      publisher: { '@id': ORG_ID },
+      offers: {
+        '@type': 'AggregateOffer',
+        priceCurrency: 'USD',
+        lowPrice: '4.99',
+        highPrice: '44.99',
+        offerCount: 3,
+        availability: 'https://schema.org/InStock',
+        url: `https://scanfence.com${localizedUrl('/pricing/', locale)}`,
+      },
     },
   };
 }

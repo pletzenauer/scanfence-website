@@ -4,6 +4,36 @@
 
 RewriteEngine On
 
+# 0a) HOST CANONICALIZATION — must run before every other rule.
+#
+#     Until 2026-08 the site answered 200 on all four host/protocol combos
+#     (http, https, http://www, https://www), so 1,092 URLs were reachable as
+#     ~4,368. GSC confirmed Google indexed the duplicates rather than folding
+#     them into the canonical: http://…/how-does-a-qr-code-work-step-by-step/
+#     had 140 impressions and https://www…/importance-of-qr-code-analytics/
+#     had 37, both independent of their https+non-www originals.
+#     rel=canonical alone did not consolidate them. HSTS does not help —
+#     Googlebot ignores it for canonicalization, and it says nothing about www.
+#
+#     LOOP SAFETY: nginx sits in front of Apache here, so %{HTTPS} may read
+#     "off" on requests that arrived over TLS. The scheme rule therefore also
+#     accepts X-Forwarded-Proto before redirecting. If the proxy sends neither
+#     signal this rule would loop, so verify immediately after the first deploy:
+#       curl -sI http://scanfence.com/       | head -1   # expect 301
+#       curl -sI https://www.scanfence.com/  | head -1   # expect 301
+#       curl -sI https://scanfence.com/      | head -1   # expect 200, NOT 301
+#     A 301 on the third line means the scheme rule is looping — delete rule
+#     0a-i below and redeploy; 0a-ii (www) is loop-safe and can stay.
+
+# 0a-i) http -> https
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+# 0a-ii) www -> non-www (loop-safe: the target host differs from the matched one)
+RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L]
+
 # 0) Disable mod_pagespeed on this vhost.
 #    The site is already an optimized static Astro build; mod_pagespeed adds
 #    nothing and was injecting a /mod_pagespeed_beacon/ script that 404s

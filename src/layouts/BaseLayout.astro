@@ -1,6 +1,7 @@
 ---
 import { resolveLocale, alternatesFor, t } from '../i18n/t';
-import { LOCALE_META, isRTL, hreflangFor, ogLocaleFor } from '../i18n/config';
+import { LOCALE_META, isRTL, hreflangFor, ogLocaleFor, isIndexedLocale } from '../i18n/config';
+import { ORGANIZATION_SCHEMA } from '../lib/seo';
 
 interface Props {
   title: string;
@@ -26,9 +27,14 @@ const {
   canonical,
   ogImage = DEFAULT_OG_IMAGE,
   ogType = 'website',
-  robots = 'index,follow',
+  robots: robotsProp,
   jsonLd,
 } = Astro.props;
+
+// Locales outside INDEXED_LOCALES are built and reachable but kept out of the
+// index. An explicit `robots` prop still wins — a page that asks to be
+// noindexed stays noindexed regardless of locale.
+const robots = isIndexedLocale(locale) ? (robotsProp ?? 'index,follow') : 'noindex,follow';
 
 const resolvedCanonical = canonical ?? `${SITE_URL}${Astro.url.pathname}`;
 const resolvedOgImage = ogImage.startsWith('http') ? ogImage : `${SITE_URL}${ogImage}`;
@@ -83,6 +89,10 @@ import '../styles/global.css';
   <link rel="icon" type="image/png" href="/assets/favicon.png">
   <link rel="preload" as="font" type="font/woff2" href={spaceGroteskUrl} crossorigin />
   <link rel="preload" as="font" type="font/woff2" href={interUrl} crossorigin />
+  {/* Sitewide publisher identity. Emitted once per page so every entity
+      (Product, Article, SoftwareApplication) has an Organization to hang off
+      via its stable @id, instead of each page asserting a nameless brand. */}
+  <script type="application/ld+json" set:html={JSON.stringify(ORGANIZATION_SCHEMA)} />
   {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
 
   {/* Matomo analytics (self-hosted, cookieless — site id 4) */}

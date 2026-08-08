@@ -1,0 +1,84 @@
+### ScanFence blog consolidation map — generated 2026-08-08 from GSC (2026-05-07 → 2026-08-06)
+###
+### 70 English posts -> 27 survivors. 43 merged away.
+### `impressions` and `position` are the 3-month GSC figures for the SOURCE url.
+### Survivors were chosen by impressions first, position second — never by slug aesthetics.
+###
+### Nothing here is executed automatically. Review, then:
+###   1. fold the source's unique content into the survivor (do NOT just delete),
+###   2. add the 301 to public/.htaccess,
+###   3. unpublish the source in WordPress,
+###   4. re-run the build so the sitemap drops it.
+###
+### Column `action`: MERGE = redirect after folding content in. KEEP = survivor, do not touch.
+cluster,action,source_url,target_url,impressions,position,note
+A-analytics,KEEP,/blog/best-qr-code-analytics-tools/,,645,36.16,"Beachhead page. 674 impressions of analytics demand sitewide funnel here. Expand into the definitive guide."
+A-analytics,MERGE,/blog/importance-of-qr-code-analytics/,/blog/best-qr-code-analytics-tools/,20,40.55,
+A-analytics,MERGE,/blog/understanding-qr-code-analytics/,/blog/best-qr-code-analytics-tools/,0,,
+A-analytics,MERGE,/blog/the-ultimate-qr-code-analytics-guide-track-measure-and-optimize-your-campaigns/,/blog/best-qr-code-analytics-tools/,0,,
+A-analytics,MERGE,/blog/how-qr-code-data-revolutionizes-marketing-more-than-just-a-black-and-white-square/,/blog/best-qr-code-analytics-tools/,0,,
+B-geofencing,KEEP,/blog/qr-code-geofencing-explained-a-complete-guide-for-business-owners/,,1,16,"Pillar for the moat cluster. Currently invisible only because nothing links to it."
+B-geofencing,MERGE,/blog/what-is-gps-geofencing-and-how-can-it-transform-your-qr-code-strategy/,/blog/qr-code-geofencing-explained-a-complete-guide-for-business-owners/,0,,
+B-geofencing,MERGE,/blog/geofenced-qr-codes-marketing-strategies/,/blog/qr-code-geofencing-explained-a-complete-guide-for-business-owners/,0,,
+B-geofencing,MERGE,/blog/how-dynamic-qr-codes-are-revolutionizing-location-based-marketing-in-2026/,/blog/qr-code-geofencing-explained-a-complete-guide-for-business-owners/,1,45,
+C-geofence-marketing,KEEP,/blog/geofenced-qr-codes-marketing/,,14,11.71,"Kept separate from the B pillar: campaign application vs. what-it-is. Best-positioned geofencing URL — do not redirect."
+D-restaurant-apps,KEEP,/blog/best-qr-code-solutions-for-restaurants/,,338,47.35,"Absorbs the whole 6-page app pile-up: 729 combined impressions on ONE intent. Biggest single cannibalization win on the site."
+D-restaurant-apps,MERGE,/blog/choosing-the-right-qr-code-app-for-your-restaurant/,/blog/best-qr-code-solutions-for-restaurants/,244,28.23,"Better position than the survivor but 94 fewer impressions; equity passes via the 301."
+D-restaurant-apps,MERGE,/blog/best-5-free-qr-code-apps-for-restaurants-in-2026/,/blog/best-qr-code-solutions-for-restaurants/,95,35.29,
+D-restaurant-apps,MERGE,/blog/choosing-qr-code-apps-restaurants/,/blog/best-qr-code-solutions-for-restaurants/,45,29.07,
+D-restaurant-apps,MERGE,/blog/best-qr-code-apps-small-restaurants/,/blog/best-qr-code-solutions-for-restaurants/,7,28.57,
+D-restaurant-apps,MERGE,/blog/advanced-features-qr-code-apps-restaurants/,/blog/best-qr-code-solutions-for-restaurants/,0,,
+E-menus,KEEP,/blog/how-to-create-a-free-qr-code-menu-in-5-minutes/,,44,78.55,
+E-menus,MERGE,/blog/best-free-qr-menu-options/,/blog/how-to-create-a-free-qr-code-menu-in-5-minutes/,0,,
+E-menus,MERGE,/blog/best-practices-qr-codes-restaurant-menus/,/blog/how-to-create-a-free-qr-code-menu-in-5-minutes/,2,31.5,
+E-menus,MERGE,/blog/using-qr-codes-on-menus-best-practices-for-restaurants/,/blog/how-to-create-a-free-qr-code-menu-in-5-minutes/,0,,"Currently the target of an existing .htaccess redirect — update that rule to point here instead."
+E-menus,MERGE,/blog/creating-dynamic-qr-codes-restaurant-menus/,/blog/how-to-create-a-free-qr-code-menu-in-5-minutes/,0,,
+E-menus,MERGE,/blog/qr-code-menu-vs-physical-menus-cost-comparison-for-2026/,/blog/how-to-create-a-free-qr-code-menu-in-5-minutes/,0,,
+E-menus,MERGE,/blog/qr-codes-restaurant-menus-2/,/blog/how-to-create-a-free-qr-code-menu-in-5-minutes/,0,,
+F-restaurant-ops,KEEP,/blog/integrating-qr-codes-restaurant-management-systems/,,55,27,
+F-restaurant-ops,MERGE,/blog/how-to-use-qr-code-systems-in-restaurants-a-complete-guide/,/blog/integrating-qr-codes-restaurant-management-systems/,8,72.25,
+F-restaurant-ops,MERGE,/blog/benefits-of-qr-codes-in-restaurants/,/blog/integrating-qr-codes-restaurant-management-systems/,2,72,
+F-restaurant-ops,MERGE,/blog/how-to-implement-qr-codes-in-restaurants/,/blog/integrating-qr-codes-restaurant-management-systems/,1,95,
+F-restaurant-ops,MERGE,/blog/why-your-cafe-needs-qr-codes/,/blog/integrating-qr-codes-restaurant-management-systems/,1,90,
+F-restaurant-ops,MERGE,/blog/personalizing-restaurant-service-qr-codes/,/blog/integrating-qr-codes-restaurant-management-systems/,1,50,
+F-restaurant-ops,MERGE,/blog/optimize-restaurant-operations-qr-codes/,/blog/integrating-qr-codes-restaurant-management-systems/,0,,
+F-restaurant-ops,MERGE,/blog/enhancing-user-experience-qr-codes-restaurants/,/blog/integrating-qr-codes-restaurant-management-systems/,0,,
+F-restaurant-ops,MERGE,/blog/effective-qr-code-design-for-restaurants/,/blog/integrating-qr-codes-restaurant-management-systems/,0,,
+G-feedback,KEEP,/blog/leveraging-qr-codes-restaurant-customer-feedback/,,5,12.6,
+G-feedback,MERGE,/blog/using-qr-codes-customer-feedback-restaurants/,/blog/leveraging-qr-codes-restaurant-customer-feedback/,6,31.17,
+G-feedback,MERGE,/blog/qr-codes-customer-engagement-restaurants/,/blog/leveraging-qr-codes-restaurant-customer-feedback/,3,38,
+G-feedback,MERGE,/blog/how-qr-codes-improve-customer-engagement-in-restaurants/,/blog/leveraging-qr-codes-restaurant-customer-feedback/,1,62,
+H-creative-ideas,KEEP,/blog/10-creative-ways-to-use-qr-codes-in-your-business/,,6,39.5,"Broader framing than the restaurant variants — better fit once the site pivots off hospitality."
+H-creative-ideas,MERGE,/blog/10-creative-ways-restaurants-use-qr-codes-to-boost-revenue/,/blog/10-creative-ways-to-use-qr-codes-in-your-business/,4,52.5,
+H-creative-ideas,MERGE,/blog/innovative-qr-code-ideas-restaurants/,/blog/10-creative-ways-to-use-qr-codes-in-your-business/,3,98.67,
+H-creative-ideas,MERGE,/blog/creative-qr-code-ideas-for-marketing/,/blog/10-creative-ways-to-use-qr-codes-in-your-business/,0,,
+H-creative-ideas,MERGE,/blog/creative-uses-of-qr-codes-in-restaurants/,/blog/10-creative-ways-to-use-qr-codes-in-your-business/,0,,
+H-creative-ideas,MERGE,/blog/qr-code-marketing-strategies-for-restaurants/,/blog/10-creative-ways-to-use-qr-codes-in-your-business/,0,,
+H-creative-ideas,MERGE,/blog/qr-codes-marketing-tools-restaurants/,/blog/10-creative-ways-to-use-qr-codes-in-your-business/,0,,
+H-creative-ideas,MERGE,/blog/qr-codes-restaurant-marketing/,/blog/10-creative-ways-to-use-qr-codes-in-your-business/,0,,
+I-static-vs-dynamic,KEEP,/blog/dynamic-vs-static-qr-codes/,,0,,"Zero on https but the legacy /2026/02/18/ permalink drew 62 impressions and already 301s here."
+I-static-vs-dynamic,MERGE,/blog/static-vs-dynamic-qr-codes-whats-the-difference/,/blog/dynamic-vs-static-qr-codes/,0,,
+I-static-vs-dynamic,MERGE,/blog/static-vs-dynamic-qr-codes-infograph/,/blog/dynamic-vs-static-qr-codes/,0,,
+I-static-vs-dynamic,MERGE,/blog/5-reasons-why-your-business-needs-dynamic-qr-codes-instead-of-static-ones/,/blog/dynamic-vs-static-qr-codes/,0,,
+I-static-vs-dynamic,MERGE,/blog/benefits-of-dynamic-qr-codes/,/blog/dynamic-vs-static-qr-codes/,0,,
+I-static-vs-dynamic,MERGE,/blog/benefits-dynamic-qr-codes-marketing/,/blog/dynamic-vs-static-qr-codes/,0,,
+J-how-qr-works,KEEP,/blog/how-does-a-qr-code-work-step-by-step/,,140,78.03,"140 impressions arrived on the http:// host. Once rule 0a-i lands they consolidate onto https — which is why the host fix must ship BEFORE this merge."
+J-how-qr-works,MERGE,/blog/how-qr-codes-work-a-simple-beginners-guide/,/blog/how-does-a-qr-code-work-step-by-step/,24,41.42,
+K-case-studies,KEEP,/blog/successful-qr-code-marketing-case-studies/,,24,18.75,
+K-case-studies,MERGE,/blog/qr-code-marketing-success-stories/,/blog/successful-qr-code-marketing-case-studies/,0,,
+L-usecase,KEEP,/blog/field-service-management-made-easy-qr-codes-that-know-where-they-are/,,0,,"Moat content. Zero impressions because nothing links to it — fix with internal links from the B pillar, not by deleting."
+L-usecase,KEEP,/blog/event-management-simplified-time-based-qr-codes-for-seamless-attendee-experience/,,0,,"Moat content. Same treatment."
+L-usecase,KEEP,/blog/real-estate-marketing-in-2026-location-smart-qr-codes-for-property-listings/,,0,,"Moat content. Same treatment."
+L-usecase,KEEP,/blog/how-retail-chains-use-multi-location-qr-codes-to-drive-foot-traffic/,,8,75.38,"Moat content."
+L-usecase,KEEP,/blog/time-based-routing-serve-different-content-at-different-hours-from-one-qr-code/,,0,,"Moat content — time routing is a differentiator with no competitor coverage."
+L-usecase,KEEP,/blog/how-to-create-urgency-with-scan-limits-a-scarcity-marketing-guide/,,0,,"Moat content — scan limits are a differentiator."
+M-standalone,KEEP,/blog/qr-code-case-study-in-restaurants/,,34,6.35,"Best position on the entire site. Do not merge, do not rewrite the title, do not change the URL."
+M-standalone,KEEP,/blog/qr-codes-vs-nfc-which-is-better-for-your-use-case/,,11,51.27,
+M-standalone,KEEP,/blog/7-qr-code-marketing-mistakes-youre-probably-making-and-how-to-fix-them/,,8,20.25,
+M-standalone,KEEP,/blog/how-to-use-qr-codes-to-grow-your-email-list/,,4,28,
+M-standalone,KEEP,/blog/venue-qr-code-placement-infograph-guide/,,2,24.5,
+M-standalone,KEEP,/blog/qr-codes-in-print-marketing-from-flyers-to-billboards/,,1,7,
+M-standalone,KEEP,/blog/building-a-qr-code-strategy-from-planning-to-execution/,,0,,
+M-standalone,KEEP,/blog/the-future-of-qr-codes-trends-to-watch-in-the-next-5-years/,,0,,
+M-standalone,KEEP,/blog/qr-codes-for-restaurants-the-quick-win-strategy-infograph/,,0,,
+M-standalone,KEEP,/blog/qr-strategy-restaurants-profit-margin-presentation/,,0,,
