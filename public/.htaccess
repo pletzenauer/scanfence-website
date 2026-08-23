@@ -60,6 +60,30 @@ RewriteRule ^blog/([0-9])/?$    /blog/page/$1/            [R=301,L]
 RewriteRule ^blog/qr-codes-restaurant-menus-3/?$  /blog/using-qr-codes-on-menus-best-practices-for-restaurants/  [R=301,L]
 RewriteRule ^qr-codes-restaurant-menus-3/?$       /blog/using-qr-codes-on-menus-best-practices-for-restaurants/  [R=301,L]
 
+# 3c) 301 posts consolidated into a stronger article (2026-08-23).
+#     Slugs and the reasoning live in src/seo/consolidated-posts.ts;
+#     they are no longer built, so these rules catch the indexed old URLs.
+#     Two rules per pair: the default-locale path and the localised ones.
+#     The bare (no /blog/ prefix) form is covered by rule 1 only for date
+#     URLs, so it is listed explicitly here too.
+
+RewriteRule ^blog/importance-of-qr-code-analytics/?$ /blog/best-qr-code-analytics-tools/ [R=301,L]
+RewriteRule ^(zh|es|ar|pt|id|fr|ja|ru|de|nl|hi)/blog/importance-of-qr-code-analytics/?$ /$1/blog/best-qr-code-analytics-tools/ [R=301,L]
+RewriteRule ^importance-of-qr-code-analytics/?$ /blog/best-qr-code-analytics-tools/ [R=301,L]
+RewriteRule ^blog/understanding-qr-code-analytics/?$ /blog/best-qr-code-analytics-tools/ [R=301,L]
+RewriteRule ^(zh|es|ar|pt|id|fr|ja|ru|de|nl|hi)/blog/understanding-qr-code-analytics/?$ /$1/blog/best-qr-code-analytics-tools/ [R=301,L]
+RewriteRule ^understanding-qr-code-analytics/?$ /blog/best-qr-code-analytics-tools/ [R=301,L]
+RewriteRule ^blog/choosing-qr-code-apps-restaurants/?$ /blog/choosing-the-right-qr-code-app-for-your-restaurant/ [R=301,L]
+RewriteRule ^(zh|es|ar|pt|id|fr|ja|ru|de|nl|hi)/blog/choosing-qr-code-apps-restaurants/?$ /$1/blog/choosing-the-right-qr-code-app-for-your-restaurant/ [R=301,L]
+RewriteRule ^choosing-qr-code-apps-restaurants/?$ /blog/choosing-the-right-qr-code-app-for-your-restaurant/ [R=301,L]
+RewriteRule ^blog/best-5-free-qr-code-apps-for-restaurants-in-2026/?$ /blog/choosing-the-right-qr-code-app-for-your-restaurant/ [R=301,L]
+RewriteRule ^(zh|es|ar|pt|id|fr|ja|ru|de|nl|hi)/blog/best-5-free-qr-code-apps-for-restaurants-in-2026/?$ /$1/blog/choosing-the-right-qr-code-app-for-your-restaurant/ [R=301,L]
+RewriteRule ^best-5-free-qr-code-apps-for-restaurants-in-2026/?$ /blog/choosing-the-right-qr-code-app-for-your-restaurant/ [R=301,L]
+RewriteRule ^blog/how-does-a-qr-code-work-step-by-step/?$ /blog/how-qr-codes-work-a-simple-beginners-guide/ [R=301,L]
+RewriteRule ^(zh|es|ar|pt|id|fr|ja|ru|de|nl|hi)/blog/how-does-a-qr-code-work-step-by-step/?$ /$1/blog/how-qr-codes-work-a-simple-beginners-guide/ [R=301,L]
+RewriteRule ^how-does-a-qr-code-work-step-by-step/?$ /blog/how-qr-codes-work-a-simple-beginners-guide/ [R=301,L]
+
+
 # 4) Strip trailing index.html (clean URLs in the address bar)
 RewriteCond %{THE_REQUEST} \s/+(.*?)index\.html[\s?] [NC]
 RewriteRule ^ /%1 [R=301,L]

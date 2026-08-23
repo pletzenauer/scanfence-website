@@ -1,3 +1,4 @@
+import { CONSOLIDATED_POSTS } from '../seo/consolidated-posts';
 const WP_API = import.meta.env.WP_API_URL || 'https://cms.scanfence.com/wp-json/wp/v2';
 
 export interface WPPost {
@@ -95,7 +96,12 @@ export async function getAllPosts(): Promise<WPPost[]> {
     totalPages = parseInt(res.headers.get('X-WP-TotalPages') || '1');
     page++;
   } while (page <= totalPages);
-  return all;
+  // Consolidated posts are dropped here rather than per-route: every route,
+  // listing, category page and the sitemap read through this one function, so
+  // filtering once keeps them from being built at all. A built-but-redirected
+  // page would still be advertised in the sitemap, which is the contradiction
+  // we are trying to avoid.
+  return all.filter(p => !CONSOLIDATED_POSTS[p.slug]);
 }
 
 export async function getPost(slug: string): Promise<WPPost | null> {
@@ -228,6 +234,13 @@ export function rewriteWPLinks(html: string, knownPostSlugs: Set<string>): strin
       if (path.includes('/')) return match;
       const firstSeg = path.split('/')[0];
       if (ROOT_SLUG_ALLOWLIST.has(firstSeg)) return match;
+      // Point internal links at the surviving article instead of letting them
+      // ride the .htaccess 301 — a redirect hop inside our own content is
+      // avoidable, and `knownPostSlugs` no longer contains the retired slug.
+      const consolidated = CONSOLIDATED_POSTS[firstSeg];
+      if (consolidated) {
+        return `${prefix}/blog/${consolidated}/${suffix}`;
+      }
       if (knownPostSlugs.has(firstSeg)) {
         return `${prefix}/blog/${firstSeg}/${suffix}`;
       }
