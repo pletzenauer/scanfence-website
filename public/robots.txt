@@ -6,4 +6,32 @@ Allow: /
 Disallow: /wp-admin/
 Disallow: /wp-login.php
 
+# Answer engines, allowed explicitly rather than only by the wildcard above.
+# A blocked AI crawler is an invisible failure — the site just stops being
+# cited, with nothing in Search Console to show for it — so the intent is
+# stated per-agent instead of left to inference. Two distinct jobs are
+# covered: the *Bot / *-User agents fetch pages to answer a user's question,
+# while Google-Extended and Applebot-Extended govern AI grounding and training
+# only. Bingbot is named because it is what grounds Microsoft Copilot.
+#
+# One robots.txt rule to keep in mind when editing: an agent named in its own
+# group stops reading `User-agent: *` entirely, so the two Disallow lines
+# above are repeated here rather than inherited.
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: ClaudeBot
+User-agent: Claude-User
+User-agent: anthropic-ai
+User-agent: Google-Extended
+User-agent: Applebot-Extended
+User-agent: Bingbot
+User-agent: cohere-ai
+Allow: /
+Disallow: /wp-admin/
+Disallow: /wp-login.php
+
+# Curated entry point for answer engines: https://scanfence.com/llms.txt
 Sitemap: https://scanfence.com/sitemap-index.xml

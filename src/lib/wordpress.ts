@@ -212,6 +212,75 @@ export function demoteExtraH1s(html: string): string {
   });
 }
 
+/**
+ * Correct a leftover product name in CMS content.
+ *
+ * /documentation/ step 1.1 reads "Visit the GeoTrack signup page at /signup" —
+ * a name from before the product was ScanFence, which the translation pass
+ * then faithfully carried into all eleven locales. It is the first instruction
+ * a new user reads, and the first step of the first HowTo entity this site
+ * emits, so it is worth correcting on the way out rather than shipping a
+ * wrong brand name to answer engines.
+ *
+ * This is a stopgap over a CMS bug, not a fix for it: correct the source in
+ * WordPress and this override can be deleted. Until then it stays, because
+ * the next content sync would otherwise reintroduce the old name.
+ */
+export function fixLegacyProductName(html: string): string {
+  return html.replace(/\bGeoTrack\b/g, 'ScanFence');
+}
+
+/**
+ * Close a gap in a page's heading hierarchy by shifting every sub-heading up.
+ *
+ * /documentation/ renders its ten top-level sections as `<h3>` under a single
+ * `<h1>`, with no `<h2>` anywhere — an artefact of which Elementor heading
+ * widget the editor happened to pick. Extraction engines chunk a document by
+ * its heading tree, so a missing level makes ten sections that should read as
+ * peers of the page title read as orphans instead.
+ *
+ * Only the gap is closed: the shift is by exactly the distance between the
+ * shallowest sub-heading present and `<h2>`, so a page that already starts at
+ * `<h2>` (/features/, /faq/) is returned untouched. `<h1>` is never moved —
+ * the page keeps its single canonical title.
+ */
+export function normalizeHeadingLevels(html: string): string {
+  const levels = [...html.matchAll(/<h([2-6])(?:\s|>)/gi)].map(m => Number(m[1]));
+  if (levels.length === 0) return html;
+
+  const shallowest = Math.min(...levels);
+  const shift = shallowest - 2;
+  if (shift <= 0) return html;
+
+  // Ascending order is what keeps this idempotent: each level is rewritten to
+  // a shallower one the loop has already passed, so no heading is matched and
+  // shifted twice.
+  let out = html;
+  for (let level = shallowest; level <= 6; level++) {
+    const target = Math.max(2, level - shift);
+    out = out
+      .replace(new RegExp(`<h${level}((?:\\s[^>]*)?)>`, 'gi'), `<h${target}$1>`)
+      .replace(new RegExp(`</h${level}>`, 'gi'), `</h${target}>`);
+  }
+  return out;
+}
+
+/**
+ * Relabel Elementor's table-of-contents header.
+ *
+ * The widget renders its title in the *WordPress install's* language, not the
+ * page's, so the English /documentation/ page ships a heading reading
+ * "Inhaltsverzeichnis". Every translated copy is already correct (the
+ * translation pass rewrote the visible string), so this only ever fires on the
+ * English source.
+ */
+export function relabelElementorToc(html: string, label: string): string {
+  return html.replace(
+    /(<h[1-6][^>]*class=["'][^"']*elementor-toc__header-title[^"']*["'][^>]*>)[\s\S]*?(<\/h[1-6]>)/gi,
+    `$1${label}$2`,
+  );
+}
+
 export function rewriteWPLinks(html: string, knownPostSlugs: Set<string>): string {
   return html.replace(
     /(\bhref=["'])((?:https?:\/\/(?:www\.)?scanfence\.com)?)\/([^"'#?\s]*?)\/?(["'#?])/gi,

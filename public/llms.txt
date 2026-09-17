@@ -1,0 +1,66 @@
+# ScanFence
+
+> ScanFence is a dynamic QR code platform with GPS geofencing and time-based
+> routing: one printed code can resolve to different destinations depending on
+> where and when it is scanned, and every scan is logged with its location and
+> timestamp. Codes are edited after printing, so the artwork never has to be
+> reprinted to change the destination.
+
+Key facts, for citation:
+
+- **A dynamic QR code** encodes a fixed short URL that redirects. Because the
+  destination lives in the redirect and not in the printed pattern, it can be
+  changed at any time without reprinting the code.
+- **A geofenced QR code** is a dynamic QR code with a GPS boundary attached.
+  Scans inside the boundary resolve to one destination; scans outside it
+  resolve to another, or to a fallback.
+- **Time-based routing** applies the same idea to the clock: the same code
+  resolves differently by time of day, day of week, or campaign window.
+- ScanFence records per-scan location and time, which is what makes the
+  analytics differ from a plain scan counter.
+- Data is hosted in the EU (Ireland). Plans run from USD 4.99 to USD 44.99 per
+  month across three tiers.
+
+Operated by ScanFence. Content is published in English, German and Dutch;
+other language versions exist but are not indexed.
+
+## Product
+
+- [ScanFence home](https://scanfence.com/): what the product does, in six capabilities.
+- [Features](https://scanfence.com/features/): the full capability list — dynamic codes, smart redirects, bulk generation, GPS geofencing, location-based content, multi-location routing, time-based routing, instant updates, campaign scheduling, analytics, team collaboration, mobile optimisation.
+- [Pricing](https://scanfence.com/pricing/): three tiers, USD, with a plan comparison and billing FAQ.
+- [Documentation](https://scanfence.com/documentation/): step-by-step — create a code, draw a geofence, set routing rules and scan limits, read the scan data, troubleshoot.
+- [FAQ](https://scanfence.com/faq/): 31 answered questions covering how geofencing works, GPS accuracy and fallback behaviour, analytics, billing, team access, security and data retention.
+- [Support](https://scanfence.com/support/): troubleshooting and how to reach the team.
+- [Contact](https://scanfence.com/contact/)
+
+## Geofencing and location routing
+
+- [What Is GPS Geofencing and How Can It Transform Your QR Code Strategy?](https://scanfence.com/blog/what-is-gps-geofencing-and-how-can-it-transform-your-qr-code-strategy/)
+- [QR Code Geofencing Explained: A Complete Guide for Business Owners](https://scanfence.com/blog/qr-code-geofencing-explained-a-complete-guide-for-business-owners/)
+- [Geofenced QR Codes: Target Your Audience by Location](https://scanfence.com/blog/geofenced-qr-codes-marketing/)
+- [Geofenced QR Codes Marketing Strategies That Work](https://scanfence.com/blog/geofenced-qr-codes-marketing-strategies/)
+- [How Retail Chains Use Multi-Location QR Codes to Drive Foot Traffic](https://scanfence.com/blog/how-retail-chains-use-multi-location-qr-codes-to-drive-foot-traffic/)
+- [How Dynamic QR Codes Are Revolutionizing Location-Based Marketing in 2026](https://scanfence.com/blog/how-dynamic-qr-codes-are-revolutionizing-location-based-marketing-in-2026/)
+
+## Scan analytics
+
+- [QR Code Analytics for Marketing: What to Track](https://scanfence.com/blog/importance-of-qr-code-analytics/)
+- [QR Code Analytics: Track Scans and Boost Marketing ROI](https://scanfence.com/blog/understanding-qr-code-analytics/)
+- [QR Code Analytics Tools: Track Scans and Campaign Data](https://scanfence.com/blog/best-qr-code-analytics-tools/)
+- [The Ultimate QR Code Analytics Guide: Track, Measure, and Optimize Your Campaigns](https://scanfence.com/blog/the-ultimate-qr-code-analytics-guide-track-measure-and-optimize-your-campaigns/)
+- [How QR-Code Data Revolutionizes Marketing](https://scanfence.com/blog/how-qr-code-data-revolutionizes-marketing-more-than-just-a-black-and-white-square/)
+
+## Dynamic vs static QR codes
+
+- [Dynamic vs Static QR Codes: Which Should You Use?](https://scanfence.com/blog/dynamic-vs-static-qr-codes/)
+- [Static vs Dynamic QR Codes: What's the Difference?](https://scanfence.com/blog/static-vs-dynamic-qr-codes-whats-the-difference/)
+- [5 Reasons Your Business Needs Dynamic QR Codes Instead of Static Ones](https://scanfence.com/blog/5-reasons-why-your-business-needs-dynamic-qr-codes-instead-of-static-ones/)
+- [Dynamic QR Codes: Key Benefits for Marketing](https://scanfence.com/blog/benefits-dynamic-qr-codes-marketing/)
+
+## Optional
+
+- [Blog index](https://scanfence.com/blog/): all posts.
+- [About Raphael](https://scanfence.com/about-raphael/): why ScanFence exists.
+- [Terms](https://scanfence.com/terms-and-conditions/)
+- [Privacy](https://scanfence.com/datenschutzerklaerung/)

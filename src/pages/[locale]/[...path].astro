@@ -9,13 +9,21 @@ import {
   rewriteSchemaUrls,
   demoteExtraH1s,
   demoteAllH1s,
+  normalizeHeadingLevels,
+  fixLegacyProductName,
   stripHtml,
   formatDate,
   type WPPage,
   type WPPost,
   type WPCategory,
 } from '../../lib/wordpress';
-import { ORG_ID } from '../../lib/seo';
+import {
+  ORG_ID,
+  FEATURE_LIST,
+  faqSchemaFromAccordions,
+  howToSchemasFromDetails,
+  stripInlineFaqSchema,
+} from '../../lib/seo';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageLayout from '../../layouts/PageLayout.astro';
 import PostLayout from '../../layouts/PostLayout.astro';
@@ -132,6 +140,7 @@ if (kind === 'home') {
       applicationCategory: 'BusinessApplication',
       operatingSystem: 'Web',
       description,
+      featureList: [...FEATURE_LIST],
       url: canonical,
       publisher: { '@id': ORG_ID },
       offers: {
@@ -297,17 +306,31 @@ if (kind === 'wp-page' && props.page) {
   const titleText = translation?.title ?? page.title.rendered;
   const yoastTitle = translation?.yoastTitle ?? seo?.title;
   const description = translation?.yoastDescription ?? seo?.description;
-  const rewritten = demoteExtraH1s(rewriteWPLinks(content, knownPostSlugs));
+  // No ToC relabel here — the translated copies already carry the right
+  // word; only the English source inherits the CMS's own language.
+  const rewritten = normalizeHeadingLevels(
+    demoteExtraH1s(fixLegacyProductName(rewriteWPLinks(content, knownPostSlugs))),
+  );
   const canonical = `https://scanfence.com${localizedUrl(`/${page.slug}/`, locale)}`;
   const fixedSchema = seo?.schema ? rewriteSchemaUrls(seo.schema, knownPostSlugs) : undefined;
+  // Same answer-engine pass as the English /faq/ route: one FAQPage built from
+  // the accordions actually rendered (translated ones included), replacing
+  // WordPress's three partial inline FAQPage blocks.
+  const faqSchema =
+    page.slug === 'faq' ? faqSchemaFromAccordions(rewritten, canonical) : undefined;
+  const howToSchemas =
+    page.slug === 'documentation' ? howToSchemasFromDetails(rewritten, canonical) : [];
+  const extraSchemas = [...(faqSchema ? [faqSchema] : []), ...howToSchemas];
   wpPageView = {
     title: yoastTitle || titleText,
     pageTitle: titleText,
     description,
     canonical,
     ogImage: seo?.og_image?.[0]?.url,
-    jsonLd: fixedSchema,
-    content: rewritten,
+    jsonLd: extraSchemas.length
+      ? [...(fixedSchema ? [fixedSchema] : []), ...extraSchemas]
+      : fixedSchema,
+    content: faqSchema ? stripInlineFaqSchema(rewritten) : rewritten,
   };
 }
 

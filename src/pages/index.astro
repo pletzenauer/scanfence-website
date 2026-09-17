@@ -7,7 +7,7 @@ import Features from '../components/Features.astro';
 import Receipt from '../components/Receipt.astro';
 import CTA from '../components/CTA.astro';
 import { resolveLocale, localizedUrl, t } from '../i18n/t';
-import { ORG_ID } from '../lib/seo';
+import { ORG_ID, FEATURE_LIST } from '../lib/seo';
 
 const locale = resolveLocale(Astro.currentLocale);
 const title = t('home.title', locale);
@@ -24,6 +24,7 @@ const jsonLd = {
   applicationCategory: 'BusinessApplication',
   operatingSystem: 'Web',
   description,
+  featureList: [...FEATURE_LIST],
   url: canonical,
   publisher: { '@id': ORG_ID },
   offers: {
