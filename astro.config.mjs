@@ -48,7 +48,9 @@ export default defineConfig({
         } else if (
           item.url === 'https://scanfence.com/pricing/' ||
           item.url === 'https://scanfence.com/features/' ||
-          item.url === 'https://scanfence.com/contact/'
+          item.url === 'https://scanfence.com/contact/' ||
+          item.url === 'https://scanfence.com/qr-code-analytics/' ||
+          item.url === 'https://scanfence.com/qr-codes-for-restaurants/'
         ) {
           item.priority = 0.9;
         } else if (item.url.includes('/blog/')) {

@@ -1,0 +1,182 @@
+---
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import Receipt from './Receipt.astro';
+import CTA from './CTA.astro';
+import { localizedUrl, t, type Locale } from '../i18n/t';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const canonical = `https://scanfence.com${localizedUrl('/qr-codes-for-restaurants/', locale)}`;
+
+const uses = [1, 2, 3].map(i => ({
+  title: t(`qrrestaurants.uses.case${i}.title`, locale),
+  body: t(`qrrestaurants.uses.case${i}.body`, locale),
+}));
+
+const appPoints = [1, 2, 3].map(i => ({
+  title: t(`qrrestaurants.app.point${i}.title`, locale),
+  body: t(`qrrestaurants.app.point${i}.body`, locale),
+}));
+
+const steps = [1, 2, 3, 4].map(i => ({
+  num: String(i).padStart(2, '0'),
+  title: t(`qrrestaurants.integrate.step${i}.title`, locale),
+  body: t(`qrrestaurants.integrate.step${i}.body`, locale),
+}));
+
+const faqs = [1, 2, 3, 4, 5, 6].map(i => ({
+  q: t(`qrrestaurants.faq.q${i}`, locale),
+  a: t(`qrrestaurants.faq.a${i}`, locale),
+}));
+
+const productJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  '@id': canonical,
+  name: 'ScanFence — QR Codes for Restaurants',
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'Web',
+  description: t('qrrestaurants.description', locale),
+  url: canonical,
+  offers: {
+    '@type': 'Offer',
+    priceCurrency: 'USD',
+    price: '4.99',
+    availability: 'https://schema.org/InStock',
+  },
+};
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<Header />
+<main>
+  <section class="lp-hero">
+    <div class="container">
+      <span class="eyebrow">{t('qrrestaurants.hero.eyebrow', locale)}</span>
+      <h1>
+        {t('qrrestaurants.hero.heading.line1', locale)} <span class="serif-accent">{t('qrrestaurants.hero.heading.line2', locale)}</span>
+      </h1>
+      <p class="lp-lede">{t('qrrestaurants.hero.lede', locale)}</p>
+      <div class="lp-cta-row">
+        <a href="https://app.scanfence.com/signup" class="btn btn-primary btn-lg">{t('qrrestaurants.hero.ctaPrimary', locale)}</a>
+        <a href={localizedUrl('/pricing/', locale)} class="btn btn-ghost btn-lg">{t('qrrestaurants.hero.ctaSecondary', locale)}</a>
+      </div>
+      <div class="metadata-strip">
+        <span>{t('common.metadata.qrDynamic', locale)}</span>
+        <span>{t('common.metadata.gpsGeofenced', locale)}</span>
+        <span>{t('common.metadata.timeAware', locale)}</span>
+        <span>{t('common.metadata.euIreland', locale)}</span>
+        <span>{t('common.metadata.soc2', locale)}</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="lp-head">
+        <span class="eyebrow">{t('qrrestaurants.uses.eyebrow', locale)}</span>
+        <h2>
+          {t('qrrestaurants.uses.heading.line1', locale)} <span class="serif-accent">{t('qrrestaurants.uses.heading.line2', locale)}</span>
+        </h2>
+        <p class="lp-lede">{t('qrrestaurants.uses.lede', locale)}</p>
+      </div>
+      <div class="lp-grid lp-grid--3">
+        {uses.map(u => (
+          <div class="lp-cell">
+            <h3>{u.title}</h3>
+            <p>{u.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Receipt />
+
+  <section class="section">
+    <div class="container">
+      <div class="lp-head">
+        <span class="eyebrow">{t('qrrestaurants.app.eyebrow', locale)}</span>
+        <h2>
+          {t('qrrestaurants.app.heading.line1', locale)} <span class="serif-accent">{t('qrrestaurants.app.heading.line2', locale)}</span>
+        </h2>
+        <p class="lp-lede">{t('qrrestaurants.app.lede', locale)}</p>
+      </div>
+      <div class="lp-grid lp-grid--3">
+        {appPoints.map(p => (
+          <div class="lp-cell">
+            <h3>{p.title}</h3>
+            <p>{p.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="lp-head">
+        <span class="eyebrow">{t('qrrestaurants.integrate.eyebrow', locale)}</span>
+        <h2>{t('qrrestaurants.integrate.heading', locale)}</h2>
+        <p class="lp-lede">{t('qrrestaurants.integrate.lede', locale)}</p>
+      </div>
+      <div class="lp-grid lp-grid--4">
+        {steps.map(s => (
+          <div class="lp-cell">
+            <span class="lp-cell-label">{s.num}</span>
+            <h3>{s.title}</h3>
+            <p>{s.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="pricing-enterprise">
+        <div class="pricing-enterprise-copy">
+          <span class="eyebrow eyebrow--mute">{t('qrrestaurants.pricing.eyebrow', locale)}</span>
+          <h3>{t('qrrestaurants.pricing.heading', locale)}</h3>
+          <p>{t('qrrestaurants.pricing.body', locale)}</p>
+        </div>
+        <a href={localizedUrl('/pricing/', locale)} class="btn btn-ghost btn-lg">{t('qrrestaurants.pricing.cta', locale)}</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section pricing-faq">
+    <div class="container pricing-faq-container">
+      <span class="eyebrow">{t('qrrestaurants.faq.eyebrow', locale)}</span>
+      <h2>{t('qrrestaurants.faq.heading', locale)}</h2>
+      <div class="pricing-faq-list">
+        {faqs.map((f, i) => (
+          <details open={i === 0}>
+            <summary>{f.q}</summary>
+            <div class="pricing-faq-answer">{f.a}</div>
+          </details>
+        ))}
+      </div>
+      <p class="lp-crosslink">
+        <a href={localizedUrl('/qr-code-analytics/', locale)}>{t('qrrestaurants.crosslink.label', locale)}</a>
+      </p>
+    </div>
+  </section>
+
+  <CTA />
+</main>
+<Footer />
+<script type="application/ld+json" set:html={JSON.stringify(productJsonLd)} />
+<script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />

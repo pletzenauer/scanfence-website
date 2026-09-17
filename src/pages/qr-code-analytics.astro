@@ -1,0 +1,14 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import QrAnalyticsPage from '../components/QrAnalyticsPage.astro';
+import { resolveLocale, localizedUrl, t } from '../i18n/t';
+
+const locale = resolveLocale(Astro.currentLocale);
+const title = t('qranalytics.title', locale);
+const description = t('qranalytics.description', locale);
+const canonical = `https://scanfence.com${localizedUrl('/qr-code-analytics/', locale)}`;
+---
+
+<BaseLayout title={title} description={description} canonical={canonical} locale={locale}>
+  <QrAnalyticsPage locale={locale} />
+</BaseLayout>

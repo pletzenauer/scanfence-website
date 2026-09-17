@@ -1,0 +1,170 @@
+---
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import Receipt from './Receipt.astro';
+import CTA from './CTA.astro';
+import { localizedUrl, t, type Locale } from '../i18n/t';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const canonical = `https://scanfence.com${localizedUrl('/qr-code-analytics/', locale)}`;
+
+const fields = [1, 2, 3, 4].map(i => ({
+  label: t(`qranalytics.records.field${i}.label`, locale),
+  body: t(`qranalytics.records.field${i}.body`, locale),
+}));
+
+const campaignPoints = [1, 2, 3].map(i => ({
+  title: t(`qranalytics.campaign.point${i}.title`, locale),
+  body: t(`qranalytics.campaign.point${i}.body`, locale),
+}));
+
+const beyondItems = [1, 2, 3, 4].map(i => ({
+  title: t(`qranalytics.beyond.item${i}.title`, locale),
+  body: t(`qranalytics.beyond.item${i}.body`, locale),
+}));
+
+const faqs = [1, 2, 3, 4, 5, 6].map(i => ({
+  q: t(`qranalytics.faq.q${i}`, locale),
+  a: t(`qranalytics.faq.a${i}`, locale),
+}));
+
+const productJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  '@id': canonical,
+  name: 'ScanFence — QR Code Analytics',
+  applicationCategory: 'BusinessApplication',
+  operatingSystem: 'Web',
+  description: t('qranalytics.description', locale),
+  url: canonical,
+  offers: {
+    '@type': 'Offer',
+    priceCurrency: 'USD',
+    price: '4.99',
+    availability: 'https://schema.org/InStock',
+  },
+};
+
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map(f => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<Header />
+<main>
+  <section class="lp-hero">
+    <div class="container">
+      <span class="eyebrow">{t('qranalytics.hero.eyebrow', locale)}</span>
+      <h1>
+        {t('qranalytics.hero.heading.line1', locale)} <span class="serif-accent">{t('qranalytics.hero.heading.line2', locale)}</span>
+      </h1>
+      <p class="lp-lede">{t('qranalytics.hero.lede', locale)}</p>
+      <div class="lp-cta-row">
+        <a href="https://app.scanfence.com/signup" class="btn btn-primary btn-lg">{t('qranalytics.hero.ctaPrimary', locale)}</a>
+        <a href={localizedUrl('/pricing/', locale)} class="btn btn-ghost btn-lg">{t('qranalytics.hero.ctaSecondary', locale)}</a>
+      </div>
+      <div class="metadata-strip">
+        <span>{t('common.metadata.qrDynamic', locale)}</span>
+        <span>{t('common.metadata.gpsGeofenced', locale)}</span>
+        <span>{t('common.metadata.timeAware', locale)}</span>
+        <span>{t('common.metadata.euIreland', locale)}</span>
+        <span>{t('common.metadata.soc2', locale)}</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="lp-head">
+        <span class="eyebrow">{t('qranalytics.records.eyebrow', locale)}</span>
+        <h2>
+          {t('qranalytics.records.heading.line1', locale)} <span class="serif-accent">{t('qranalytics.records.heading.line2', locale)}</span>
+        </h2>
+        <p class="lp-lede">{t('qranalytics.records.lede', locale)}</p>
+      </div>
+      <div class="lp-grid">
+        {fields.map(f => (
+          <div class="lp-cell">
+            <span class="lp-cell-label">{f.label}</span>
+            <p>{f.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <Receipt />
+
+  <section class="section">
+    <div class="container">
+      <div class="lp-head">
+        <span class="eyebrow">{t('qranalytics.campaign.eyebrow', locale)}</span>
+        <h2>
+          {t('qranalytics.campaign.heading.line1', locale)} <span class="serif-accent">{t('qranalytics.campaign.heading.line2', locale)}</span>
+        </h2>
+        <p class="lp-lede">{t('qranalytics.campaign.lede', locale)}</p>
+      </div>
+      <div class="lp-grid lp-grid--3">
+        {campaignPoints.map(p => (
+          <div class="lp-cell">
+            <h3>{p.title}</h3>
+            <p>{p.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="lp-head">
+        <span class="eyebrow">{t('qranalytics.beyond.eyebrow', locale)}</span>
+        <h2>{t('qranalytics.beyond.heading', locale)}</h2>
+        <p class="lp-lede">{t('qranalytics.beyond.lede', locale)}</p>
+      </div>
+      <div class="lp-grid">
+        {beyondItems.map(item => (
+          <div class="lp-cell">
+            <h3>{item.title}</h3>
+            <p>{item.body}</p>
+          </div>
+        ))}
+      </div>
+      <div class="lp-beyond-cta">
+        <a href={localizedUrl('/pricing/', locale)} class="btn btn-ghost btn-lg">{t('qranalytics.beyond.cta', locale)}</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section pricing-faq">
+    <div class="container pricing-faq-container">
+      <span class="eyebrow">{t('qranalytics.faq.eyebrow', locale)}</span>
+      <h2>{t('qranalytics.faq.heading', locale)}</h2>
+      <div class="pricing-faq-list">
+        {faqs.map((f, i) => (
+          <details open={i === 0}>
+            <summary>{f.q}</summary>
+            <div class="pricing-faq-answer">{f.a}</div>
+          </details>
+        ))}
+      </div>
+      <p class="lp-crosslink">
+        <a href={localizedUrl('/qr-codes-for-restaurants/', locale)}>{t('qranalytics.crosslink.label', locale)}</a>
+      </p>
+    </div>
+  </section>
+
+  <CTA />
+</main>
+<Footer />
+<script type="application/ld+json" set:html={JSON.stringify(productJsonLd)} />
+<script type="application/ld+json" set:html={JSON.stringify(faqJsonLd)} />

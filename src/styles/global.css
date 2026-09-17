@@ -1624,3 +1624,118 @@ ul {
   .pricing-grid { grid-template-columns: 1fr; }
   .pricing-enterprise { grid-template-columns: 1fr; }
 }
+
+/* ───────────────────────────────────────────────────────────
+   Footer navigation — site-wide internal links.
+   ─────────────────────────────────────────────────────────── */
+.footer-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3) var(--space-5);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  border-top: var(--rule);
+  padding-top: var(--space-5);
+}
+.footer-nav a { color: var(--d01-steel); text-decoration: none; }
+.footer-nav a:hover { color: var(--d01-ink); }
+
+/* ───────────────────────────────────────────────────────────
+   Landing pages — shared across the English routes
+   (qr-code-analytics.astro, qr-codes-for-restaurants.astro) and
+   their localized variants ([locale]/[...path].astro). Global so
+   every route renders identically. Prefix: .lp-
+   ─────────────────────────────────────────────────────────── */
+.lp-hero {
+  padding: var(--space-8) 0 var(--space-7);
+  background: var(--d01-paper);
+  border-bottom: var(--rule-hard);
+}
+.lp-hero h1 {
+  font-size: clamp(44px, 6vw, 80px);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  margin: var(--space-3) 0 var(--space-5);
+}
+.lp-lede {
+  font-size: 18px;
+  color: var(--d01-steel);
+  line-height: 1.55;
+  max-width: 60ch;
+}
+.lp-hero .lp-lede { margin-bottom: var(--space-6); }
+.lp-cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+.lp-head { max-width: 760px; margin-bottom: var(--space-7); }
+.lp-head h2 {
+  font-size: clamp(34px, 4vw, 54px);
+  font-weight: 500;
+  line-height: 1.05;
+  letter-spacing: -0.015em;
+}
+.lp-head .lp-lede { margin-top: var(--space-4); }
+
+.lp-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  border-top: var(--rule-hard);
+  border-inline-start: var(--rule-hard);
+}
+.lp-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.lp-grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+.lp-cell {
+  padding: var(--space-6);
+  border-inline-end: var(--rule-hard);
+  border-bottom: var(--rule-hard);
+  background: var(--d01-paper);
+}
+.lp-cell-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--d01-signal);
+  margin-bottom: var(--space-3);
+}
+.lp-cell h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 22px;
+  margin-bottom: var(--space-2);
+  color: var(--d01-ink);
+}
+.lp-cell p {
+  font-size: 15px;
+  color: var(--d01-steel);
+  line-height: 1.55;
+  max-width: 46ch;
+}
+.lp-beyond-cta { margin-top: var(--space-6); }
+.lp-crosslink {
+  text-align: center;
+  padding-top: var(--space-7);
+  margin-top: var(--space-7);
+  border-top: var(--rule);
+}
+.lp-crosslink a {
+  font-family: var(--font-ui);
+  font-size: 16px;
+  color: var(--d01-ink);
+  text-underline-offset: 4px;
+}
+
+@media (max-width: 900px) {
+  .lp-grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 768px) {
+  .lp-grid,
+  .lp-grid--3,
+  .lp-grid--4 { grid-template-columns: 1fr; }
+}

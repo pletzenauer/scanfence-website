@@ -16,6 +16,14 @@ const year = new Date().getFullYear();
       </p>
       <a href="mailto:hello@scanfence.com" class="footer-email">hello@scanfence.com →</a>
     </div>
+    <nav class="footer-nav" aria-label={t('footer.navAria', locale)}>
+      <a href={localizedUrl('/features/', locale)}>{t('nav.features', locale)}</a>
+      <a href={localizedUrl('/pricing/', locale)}>{t('nav.pricing', locale)}</a>
+      <a href={localizedUrl('/qr-code-analytics/', locale)}>{t('footer.qranalytics', locale)}</a>
+      <a href={localizedUrl('/qr-codes-for-restaurants/', locale)}>{t('footer.qrrestaurants', locale)}</a>
+      <a href={localizedUrl('/blog/', locale)}>{t('nav.blog', locale)}</a>
+      <a href={localizedUrl('/contact/', locale)}>{t('nav.contact', locale)}</a>
+    </nav>
     <div class="footer-meta metadata-strip">
       <span>{t('footer.copyright', locale, { year })}</span>
       <span>{t('footer.region', locale)}</span>

@@ -26,6 +26,8 @@ import Receipt from '../../components/Receipt.astro';
 import CTA from '../../components/CTA.astro';
 import BlogCard from '../../components/BlogCard.astro';
 import Pagination from '../../components/Pagination.astro';
+import QrAnalyticsPage from '../../components/QrAnalyticsPage.astro';
+import QrRestaurantsPage from '../../components/QrRestaurantsPage.astro';
 import { LOCALES, DEFAULT_LOCALE, type Locale } from '../../i18n/config';
 import { t, localizedUrl } from '../../i18n/t';
 import { getPageTranslation, getPostTranslation } from '../../i18n/wp-cache';
@@ -36,6 +38,8 @@ type Kind =
   | 'home'
   | 'pricing'
   | 'contact'
+  | 'qr-analytics'
+  | 'qr-restaurants'
   | 'wp-page'
   | 'blog-index'
   | 'blog-post'
@@ -74,6 +78,8 @@ export async function getStaticPaths() {
     paths.push({ params: { locale, path: undefined },  props: { kind: 'home',    postSlugs } });
     paths.push({ params: { locale, path: 'pricing' },   props: { kind: 'pricing', postSlugs } });
     paths.push({ params: { locale, path: 'contact' },   props: { kind: 'contact', postSlugs } });
+    paths.push({ params: { locale, path: 'qr-code-analytics' },       props: { kind: 'qr-analytics',    postSlugs } });
+    paths.push({ params: { locale, path: 'qr-codes-for-restaurants' }, props: { kind: 'qr-restaurants', postSlugs } });
 
     // WP pages.
     for (const p of wpPages) {
@@ -771,6 +777,28 @@ if (kind === 'category' && props.category) {
         });
       })();
     </script>
+  </BaseLayout>
+)}
+
+{kind === 'qr-analytics' && (
+  <BaseLayout
+    title={t('qranalytics.title', locale)}
+    description={t('qranalytics.description', locale)}
+    canonical={`https://scanfence.com${localizedUrl('/qr-code-analytics/', locale)}`}
+    locale={locale}
+  >
+    <QrAnalyticsPage locale={locale} />
+  </BaseLayout>
+)}
+
+{kind === 'qr-restaurants' && (
+  <BaseLayout
+    title={t('qrrestaurants.title', locale)}
+    description={t('qrrestaurants.description', locale)}
+    canonical={`https://scanfence.com${localizedUrl('/qr-codes-for-restaurants/', locale)}`}
+    locale={locale}
+  >
+    <QrRestaurantsPage locale={locale} />
   </BaseLayout>
 )}
 
