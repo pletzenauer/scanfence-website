@@ -96,11 +96,19 @@ import '../styles/global.css';
   {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
 
   {/* Matomo analytics (self-hosted, cookieless — site id 4).
-      app.scanfence.com reports into the same site and calls the same two
-      cross-domain functions; that is what keeps "ad click -> pricing ->
-      signup -> paid" one visit with one campaign on it. Remove either
-      setDomains or enableCrossDomainLinking here and every conversion in
-      the app starts showing up as direct traffic, with no error anywhere. */}
+      app.scanfence.com reports into the same site, so "ad click -> pricing ->
+      signup -> paid" lands in one visit with one campaign on it.
+
+      The two cross-domain calls below are currently INERT, and deliberately
+      kept. Matomo's decorateLink() begins `if (!getVisitorId()) return`, and
+      disableCookies leaves the visitor id empty — so no pk_vid is ever put on
+      the links into the app. (Its reader also demands a 32-char value, and
+      getCrossDomainLinkingUrlParameter() returns 16 without a visitor id.)
+      What actually joins the two domains today is Matomo's cookieless visitor
+      matching: same device, ~30-minute window. Verified working, but it splits
+      if the visitor's IP changes mid-funnel, e.g. a phone leaving wi-fi.
+      These calls start working by themselves the day cookies are enabled —
+      which is also the day this site needs a consent banner. */}
   <script is:inline>
     var _paq = (window._paq = window._paq || []);
     _paq.push(["disableCookies"]);
