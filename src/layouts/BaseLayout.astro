@@ -95,10 +95,17 @@ import '../styles/global.css';
   <script type="application/ld+json" set:html={JSON.stringify(ORGANIZATION_SCHEMA)} />
   {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
 
-  {/* Matomo analytics (self-hosted, cookieless — site id 4) */}
+  {/* Matomo analytics (self-hosted, cookieless — site id 4).
+      app.scanfence.com reports into the same site and calls the same two
+      cross-domain functions; that is what keeps "ad click -> pricing ->
+      signup -> paid" one visit with one campaign on it. Remove either
+      setDomains or enableCrossDomainLinking here and every conversion in
+      the app starts showing up as direct traffic, with no error anywhere. */}
   <script is:inline>
     var _paq = (window._paq = window._paq || []);
     _paq.push(["disableCookies"]);
+    _paq.push(["setDomains", ["*.scanfence.com"]]);
+    _paq.push(["enableCrossDomainLinking"]);
     _paq.push(["trackPageView"]);
     _paq.push(["enableLinkTracking"]);
     (function () {
