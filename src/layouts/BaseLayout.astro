@@ -205,59 +205,85 @@ import '../styles/global.css';
         return false;
       }
 
-      var click = capture();
+      /* Matomo runs on the live site only. Site 4 had already collected
+         actions from localhost:4321 and from scanfence.alphawebsol.com, the
+         host's staging domain. On a site this size a handful of stray visits
+         is enough to move a bounce rate or a conversion rate, and those are
+         the numbers ad spend gets judged on — so dev and staging must not
+         reach it at all.
 
-      var _paq = (window._paq = window._paq || []);
-      _paq.push(["disableCookies"]);
-      _paq.push(["setDomains", ["*.scanfence.com"]]);
-      _paq.push(["enableCrossDomainLinking"]);
-      /* Without this, Matomo only ever learns when a page was opened, so every
-         single-page visit is 0 seconds and a four-minute read of a blog post is
-         indistinguishable from an instant bounce. The timer pings while the tab
-         is actually focused, so time on page and bounce rate become usable —
-         which is what ad spend has to be judged on. 15s is Matomo's default. */
-      _paq.push(["enableHeartBeatTimer", 15]);
+         A hostname check rather than a build-time flag, because `astro build`
+         sets PROD for a local production build too, and it would miss the
+         staging domain entirely. To smoke-test locally, set
+         localStorage.sf_matomo_debug = "1" in devtools — a stored flag rather
+         than a query parameter, so no link can switch tracking on for someone
+         else. */
+      var LIVE_HOSTS = ["scanfence.com", "www.scanfence.com"];
 
-      /* Matomo reads the campaign off the URL it is given, and gclid alone
-         means nothing to it — an ad click with Google's auto-tagging and no
-         tracking template lands in the same bucket as an organic google
-         result, which makes paid traffic unreadable. So when a click id is
-         present and nothing has tagged the visit, say so explicitly.
-         A tracking template set in Google Ads (see the app repo's
-         docs/analytics.md) is still the better source, because it carries
-         campaign, ad group and keyword; this is the floor, not the ceiling.
-
-         All three names below are in Matomo's core campaign_var_name list, so
-         Matomo strips them back out of the page URL before storing it and the
-         Pages report is unaffected. That is also why they are not mtm_source /
-         mtm_medium, which read the same but are only known to the Marketing
-         Campaigns Reporting plugin — without it installed they would survive
-         into the stored URL and split the landing page in two. */
-      if (landedFromAds() && !alreadyTagged()) {
+      function trackingEnabled() {
         try {
-          var tagged = new URL(window.location.href);
-          tagged.searchParams.set("mtm_campaign", "google-ads");
-          tagged.searchParams.set("utm_source", "google");
-          tagged.searchParams.set("utm_medium", "cpc");
-          _paq.push(["setCustomUrl", tagged.toString()]);
+          if (window.localStorage.getItem("sf_matomo_debug") === "1") return true;
         } catch (e) {
-          /* leave Matomo to read the real URL */
+          /* private mode: fall through to the host check */
         }
+        return LIVE_HOSTS.indexOf(window.location.hostname) !== -1;
       }
 
-      _paq.push(["trackPageView"]);
-      _paq.push(["enableLinkTracking"]);
-      (function () {
-        var u = "https://matomo.pletzenauer.com/";
-        _paq.push(["setTrackerUrl", u + "matomo.php"]);
-        _paq.push(["setSiteId", "4"]);
-        var d = document,
-          g = d.createElement("script"),
-          s = d.getElementsByTagName("script")[0];
-        g.async = true;
-        g.src = u + "matomo.js";
-        s.parentNode.insertBefore(g, s);
-      })();
+      var click = capture();
+
+      if (trackingEnabled()) {
+        var _paq = (window._paq = window._paq || []);
+        _paq.push(["disableCookies"]);
+        _paq.push(["setDomains", ["*.scanfence.com"]]);
+        _paq.push(["enableCrossDomainLinking"]);
+        /* Without this, Matomo only ever learns when a page was opened, so every
+           single-page visit is 0 seconds and a four-minute read of a blog post is
+           indistinguishable from an instant bounce. The timer pings while the tab
+           is actually focused, so time on page and bounce rate become usable —
+           which is what ad spend has to be judged on. 15s is Matomo's default. */
+        _paq.push(["enableHeartBeatTimer", 15]);
+
+        /* Matomo reads the campaign off the URL it is given, and gclid alone
+           means nothing to it — an ad click with Google's auto-tagging and no
+           tracking template lands in the same bucket as an organic google
+           result, which makes paid traffic unreadable. So when a click id is
+           present and nothing has tagged the visit, say so explicitly.
+           A tracking template set in Google Ads (see the app repo's
+           docs/analytics.md) is still the better source, because it carries
+           campaign, ad group and keyword; this is the floor, not the ceiling.
+
+           All three names below are in Matomo's core campaign_var_name list, so
+           Matomo strips them back out of the page URL before storing it and the
+           Pages report is unaffected. That is also why they are not mtm_source /
+           mtm_medium, which read the same but are only known to the Marketing
+           Campaigns Reporting plugin — without it installed they would survive
+           into the stored URL and split the landing page in two. */
+        if (landedFromAds() && !alreadyTagged()) {
+          try {
+            var tagged = new URL(window.location.href);
+            tagged.searchParams.set("mtm_campaign", "google-ads");
+            tagged.searchParams.set("utm_source", "google");
+            tagged.searchParams.set("utm_medium", "cpc");
+            _paq.push(["setCustomUrl", tagged.toString()]);
+          } catch (e) {
+            /* leave Matomo to read the real URL */
+          }
+        }
+
+        _paq.push(["trackPageView"]);
+        _paq.push(["enableLinkTracking"]);
+        (function () {
+          var u = "https://matomo.pletzenauer.com/";
+          _paq.push(["setTrackerUrl", u + "matomo.php"]);
+          _paq.push(["setSiteId", "4"]);
+          var d = document,
+            g = d.createElement("script"),
+            s = d.getElementsByTagName("script")[0];
+          g.async = true;
+          g.src = u + "matomo.js";
+          s.parentNode.insertBefore(g, s);
+        })();
+      }
 
       if (!click) return;
 
