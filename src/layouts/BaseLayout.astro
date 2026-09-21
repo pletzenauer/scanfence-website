@@ -95,7 +95,10 @@ import '../styles/global.css';
   <script type="application/ld+json" set:html={JSON.stringify(ORGANIZATION_SCHEMA)} />
   {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
 
-  {/* Matomo analytics (self-hosted, cookieless — site id 4).
+  {/* Matomo analytics (self-hosted, cookieless — site id 4) plus Google Ads
+      click-id capture. One block on purpose: the campaign fallback below has to
+      run before trackPageView, and splitting it would hide that ordering.
+
       app.scanfence.com reports into the same site, so "ad click -> pricing ->
       signup -> paid" lands in one visit with one campaign on it.
 
@@ -108,24 +111,176 @@ import '../styles/global.css';
       matching: same device, ~30-minute window. Verified working, but it splits
       if the visitor's IP changes mid-funnel, e.g. a phone leaving wi-fi.
       These calls start working by themselves the day cookies are enabled —
-      which is also the day this site needs a consent banner. */}
+      which is also the day this site needs a consent banner.
+
+      Google Ads conversions are imported offline, from the app's Stripe
+      webhook, rather than with a gtag conversion tag — gtag writes _gcl cookies
+      and would force a consent banner onto a deliberately cookieless site, then
+      report only the conversions of people who accepted it. The cost of doing
+      it ourselves is that nothing stores the click id for us: the ad lands
+      here, the purchase happens on app.scanfence.com. So we keep the id for the
+      tab and append it to links into the app, which is the only boundary it
+      ever has to cross. sessionStorage rather than a cookie or localStorage: it
+      dies with the tab, so no durable identifier is written to the visitor's
+      device and the no-consent-banner position holds. Mirrors scanfence →
+      src/lib/adClickId.ts; the parameter names and the validation pattern must
+      stay in step. */}
   <script is:inline>
-    var _paq = (window._paq = window._paq || []);
-    _paq.push(["disableCookies"]);
-    _paq.push(["setDomains", ["*.scanfence.com"]]);
-    _paq.push(["enableCrossDomainLinking"]);
-    _paq.push(["trackPageView"]);
-    _paq.push(["enableLinkTracking"]);
     (function () {
-      var u = "https://matomo.pletzenauer.com/";
-      _paq.push(["setTrackerUrl", u + "matomo.php"]);
-      _paq.push(["setSiteId", "4"]);
-      var d = document,
-        g = d.createElement("script"),
-        s = d.getElementsByTagName("script")[0];
-      g.async = true;
-      g.src = u + "matomo.js";
-      s.parentNode.insertBefore(g, s);
+      /* gclid is the default; gbraid and wbraid replace it for iOS traffic.
+         Precedence order — gclid wins if Google ever sends more than one. */
+      var CLICK_PARAMS = ["gclid", "gbraid", "wbraid"];
+      var STORAGE_KEY = "sf_ad_click";
+      /* Click ids are opaque but always URL-safe and bounded. Anything else is
+         someone poking at the query string, and we would rather drop it than
+         post junk to the Google Ads API later. */
+      var VALID_CLICK_ID = /^[A-Za-z0-9_-]{16,256}$/;
+      /* Any of these on the URL means the visit is already tagged — a Google
+         Ads tracking template, a newsletter, anything. Leave it alone. */
+      var CAMPAIGN_PARAMS = [
+        "mtm_campaign",
+        "mtm_source",
+        "mtm_cid",
+        "pk_campaign",
+        "piwik_campaign",
+        "matomo_campaign",
+        "utm_campaign",
+        "utm_source",
+      ];
+
+      var query;
+      try {
+        query = new URLSearchParams(window.location.search);
+      } catch (e) {
+        query = null;
+      }
+
+      function stored() {
+        try {
+          var raw = JSON.parse(window.sessionStorage.getItem(STORAGE_KEY) || "null");
+          return raw && VALID_CLICK_ID.test(raw.id) ? raw : null;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      /* First click id in a tab wins: Google credits the click that led to the
+         conversion, and overwriting on a second ad click would disagree. */
+      function capture() {
+        var existing = stored();
+        if (existing) return existing;
+        if (!query) return null;
+        try {
+          for (var i = 0; i < CLICK_PARAMS.length; i++) {
+            var id = query.get(CLICK_PARAMS[i]);
+            if (id && VALID_CLICK_ID.test(id)) {
+              var click = { id: id, source: CLICK_PARAMS[i] };
+              window.sessionStorage.setItem(STORAGE_KEY, JSON.stringify(click));
+              return click;
+            }
+          }
+        } catch (e) {
+          /* private mode, full quota: never break the page over analytics */
+        }
+        return null;
+      }
+
+      /* True only when a click id is on the URL being loaded right now, not
+         when one is merely remembered from an earlier page in this tab. The
+         campaign belongs to the landing page. */
+      function landedFromAds() {
+        if (!query) return false;
+        for (var i = 0; i < CLICK_PARAMS.length; i++) {
+          var id = query.get(CLICK_PARAMS[i]);
+          if (id && VALID_CLICK_ID.test(id)) return true;
+        }
+        return false;
+      }
+
+      function alreadyTagged() {
+        if (!query) return false;
+        for (var i = 0; i < CAMPAIGN_PARAMS.length; i++) {
+          if (query.get(CAMPAIGN_PARAMS[i])) return true;
+        }
+        return false;
+      }
+
+      var click = capture();
+
+      var _paq = (window._paq = window._paq || []);
+      _paq.push(["disableCookies"]);
+      _paq.push(["setDomains", ["*.scanfence.com"]]);
+      _paq.push(["enableCrossDomainLinking"]);
+      /* Without this, Matomo only ever learns when a page was opened, so every
+         single-page visit is 0 seconds and a four-minute read of a blog post is
+         indistinguishable from an instant bounce. The timer pings while the tab
+         is actually focused, so time on page and bounce rate become usable —
+         which is what ad spend has to be judged on. 15s is Matomo's default. */
+      _paq.push(["enableHeartBeatTimer", 15]);
+
+      /* Matomo reads the campaign off the URL it is given, and gclid alone
+         means nothing to it — an ad click with Google's auto-tagging and no
+         tracking template lands in the same bucket as an organic google
+         result, which makes paid traffic unreadable. So when a click id is
+         present and nothing has tagged the visit, say so explicitly.
+         A tracking template set in Google Ads (see the app repo's
+         docs/analytics.md) is still the better source, because it carries
+         campaign, ad group and keyword; this is the floor, not the ceiling.
+
+         All three names below are in Matomo's core campaign_var_name list, so
+         Matomo strips them back out of the page URL before storing it and the
+         Pages report is unaffected. That is also why they are not mtm_source /
+         mtm_medium, which read the same but are only known to the Marketing
+         Campaigns Reporting plugin — without it installed they would survive
+         into the stored URL and split the landing page in two. */
+      if (landedFromAds() && !alreadyTagged()) {
+        try {
+          var tagged = new URL(window.location.href);
+          tagged.searchParams.set("mtm_campaign", "google-ads");
+          tagged.searchParams.set("utm_source", "google");
+          tagged.searchParams.set("utm_medium", "cpc");
+          _paq.push(["setCustomUrl", tagged.toString()]);
+        } catch (e) {
+          /* leave Matomo to read the real URL */
+        }
+      }
+
+      _paq.push(["trackPageView"]);
+      _paq.push(["enableLinkTracking"]);
+      (function () {
+        var u = "https://matomo.pletzenauer.com/";
+        _paq.push(["setTrackerUrl", u + "matomo.php"]);
+        _paq.push(["setSiteId", "4"]);
+        var d = document,
+          g = d.createElement("script"),
+          s = d.getElementsByTagName("script")[0];
+        g.async = true;
+        g.src = u + "matomo.js";
+        s.parentNode.insertBefore(g, s);
+      })();
+
+      if (!click) return;
+
+      /* Rewritten at click time, not on load: catches links rendered later and
+         costs nothing until somebody actually leaves for the app. */
+      document.addEventListener(
+        "click",
+        function (event) {
+          var target = event.target;
+          var a = target && target.closest ? target.closest("a[href]") : null;
+          if (!a) return;
+          try {
+            var url = new URL(a.href, window.location.href);
+            if (url.hostname !== "app.scanfence.com") return;
+            if (url.searchParams.has(click.source)) return;
+            url.searchParams.set(click.source, click.id);
+            a.href = url.toString();
+          } catch (e) {
+            /* leave the link exactly as authored */
+          }
+        },
+        true
+      );
     })();
   </script>
 </head>
