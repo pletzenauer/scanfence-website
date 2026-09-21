@@ -1,7 +1,6 @@
 {
   "site.description": "رموز QR ديناميكية مع تحديد جغرافي بنظام GPS وتوجيه حسب الوقت. اطبع الرمز مرة واحدة. وجّهه إلى الأبد.",
   "home.title": "ScanFence — رموز QR ديناميكية مع تحديد جغرافي بـ GPS",
-
   "nav.home": "الرئيسية",
   "nav.features": "المزايا",
   "nav.pricing": "الأسعار",
@@ -15,7 +14,6 @@
   "nav.primary": "التنقل الرئيسي",
   "nav.languageSwitcherLabel": "اللغة",
   "nav.languageSwitcherAria": "اختر اللغة",
-
   "footer.tagline.lead": "رموز تعرف",
   "footer.tagline.accent": "أين هي.",
   "footer.copyright": "© {year} ScanFence",
@@ -25,7 +23,6 @@
   "footer.privacy": "الخصوصية",
   "footer.terms": "الشروط",
   "footer.logoAria": "ScanFence — الرئيسية",
-
   "common.metadata.qrDynamic": "QR · DYNAMIC",
   "common.metadata.gpsGeofenced": "GPS · GEOFENCED",
   "common.metadata.timeAware": "TIME-AWARE",
@@ -33,7 +30,6 @@
   "common.metadata.soc2": "SOC-2 TYPE II",
   "common.metadata.usdNet": "USD · NET",
   "common.metadata.trial": "30 يوم · تجربة",
-
   "hero.eyebrow": "QR · GEOFENCED · TIME-AWARE",
   "hero.heading.line1": "كل عملية مسح،",
   "hero.heading.line2": "على المحيط.",
@@ -45,7 +41,6 @@
   "hero.receipt.eyebrow": "LIVE · SAMPLE",
   "hero.receipt.regionLabel": "EU · IRELAND-1",
   "hero.receipt.latency": "P50 · 117MS",
-
   "features.eyebrow": "المراقبة",
   "features.heading.line1": "ستة أشياء يقوم بها الرمز",
   "features.heading.line2": "بينما لا تنظر.",
@@ -61,7 +56,6 @@
   "features.05.body": "أضف الأشخاص الذين يحملون المفاتيح. مبني على الأدوار. تدقيق نظيف.",
   "features.06.title": "بدون إعادة طباعة",
   "features.06.body": "غيّر الوجهة في 11:47. تصبح فعّالة في 11:47.",
-
   "receipt.eyebrow": "الإيصال",
   "receipt.heading.line1": "نسجّله لأنّك",
   "receipt.heading.line2": "ستريد قراءته.",
@@ -75,25 +69,21 @@
   "receipt.stats.routing": "P50 · ROUTING",
   "receipt.stats.residency": "مكان حفظ البيانات",
   "receipt.stats.residencyValue": "EU · IRELAND",
-
   "cta.eyebrow": "سؤال واحد",
   "cta.heading": "هل طبعت الرمز؟",
   "cta.lede": "30 يومًا. بدون بطاقة. ألغِ في أي وقت.",
   "cta.primary": "ابدأ خطة →",
   "cta.secondary": "تواصل معنا",
-
   "pricing.title": "الأسعار — ScanFence",
   "pricing.description": "أسعار بسيطة ويمكن التنبؤ بها لرموز QR ديناميكية مع تحديد جغرافي بـ GPS. مستضافة في الاتحاد الأوروبي. تجربة مجانية 30 يومًا على كل خطة. ألغِ في أي وقت.",
   "pricing.hero.eyebrow": "الأسعار",
   "pricing.hero.heading.line1": "رمز واحد،",
   "pricing.hero.heading.line2": "بسعر صادق.",
   "pricing.hero.lede": "ثلاث خطط، فوترة شهرية أو سنوية. تجربة مجانية 30 يومًا على كل خطة، بطاقة عند الدفع، ألغِ في أي وقت. مستضافة في الاتحاد الأوروبي. اطبع مرة واحدة، وجّه إلى الأبد.",
-
   "pricing.billing.label": "دورة الفوترة",
   "pricing.billing.monthly": "شهري",
   "pricing.billing.annual": "سنوي",
   "pricing.billing.save": "−17 ٪",
-
   "pricing.tier.basic.name": "Basic",
   "pricing.tier.basic.eyebrow": "TIER · 01",
   "pricing.tier.basic.blurb": "لموقع واحد، قائمة واحدة، مشغّل واحد.",
@@ -102,9 +92,8 @@
   "pricing.tier.basic.feature2": "25,000 عملية مسح / شهر",
   "pricing.tier.basic.feature3": "100 نطاق تحديد جغرافي",
   "pricing.tier.basic.feature4": "مقعدا فريق",
-  "pricing.tier.basic.feature5": "حفظ البيانات في EU · أيرلندا",
-  "pricing.tier.basic.feature6": "دعم بالبريد الإلكتروني",
-
+  "pricing.tier.basic.feature5": "إعادة توجيه غير محدودة متعددة المواقع",
+  "pricing.tier.basic.feature6": "التحليلات والتوجيه حسب الوقت",
   "pricing.tier.starter.name": "Starter",
   "pricing.tier.starter.eyebrow": "TIER · 02 · شائع",
   "pricing.tier.starter.blurb": "لمشغّلي المواقع المتعددة والحملات.",
@@ -113,9 +102,8 @@
   "pricing.tier.starter.feature2": "125,000 عملية مسح / شهر",
   "pricing.tier.starter.feature3": "500 نطاق تحديد جغرافي",
   "pricing.tier.starter.feature4": "3 مقاعد فريق",
-  "pricing.tier.starter.feature5": "حفظ البيانات في EU · أيرلندا",
-  "pricing.tier.starter.feature6": "دعم بريد إلكتروني ذو أولوية",
-
+  "pricing.tier.starter.feature5": "إعادة توجيه غير محدودة متعددة المواقع",
+  "pricing.tier.starter.feature6": "التحليلات والتوجيه حسب الوقت",
   "pricing.tier.professional.name": "Professional",
   "pricing.tier.professional.eyebrow": "TIER · 03",
   "pricing.tier.professional.blurb": "للسلاسل والوكالات وعمليات الإعلان.",
@@ -124,16 +112,14 @@
   "pricing.tier.professional.feature2": "1,250,000 عملية مسح / شهر",
   "pricing.tier.professional.feature3": "2,500 نطاق تحديد جغرافي",
   "pricing.tier.professional.feature4": "10 مقاعد فريق",
-  "pricing.tier.professional.feature5": "حفظ البيانات في EU · أيرلندا",
-  "pricing.tier.professional.feature6": "بريد إلكتروني ذو أولوية + دردشة",
-
+  "pricing.tier.professional.feature5": "إعادة توجيه غير محدودة متعددة المواقع",
+  "pricing.tier.professional.feature6": "التحليلات والتوجيه حسب الوقت",
   "pricing.cadenceMonth": "/شهر",
   "pricing.cadenceYear": "/سنة",
   "pricing.enterprise.eyebrow": "TIER · 04 · ENTERPRISE",
   "pricing.enterprise.heading": "بحاجة إلى حجم أكبر أو حفظ بيانات إقليمي أو MSA موقّع؟",
   "pricing.enterprise.body": "خطط مخصّصة للسلاسل والوكالات وعمليات الإعلان. استضافة مخصّصة، توجيه حسب المنطقة، SLAs مخصّصة، ووثائق ملائمة لإجراءات الشراء.",
   "pricing.enterprise.cta": "تواصل معنا →",
-
   "pricing.compare.eyebrow": "مقارنة",
   "pricing.compare.heading": "خطّة مقابل خطّة.",
   "pricing.compare.col.basic": "Basic",
@@ -146,10 +132,6 @@
   "pricing.compare.row.trial": "تجربة مجانية",
   "pricing.compare.row.region": "مكان حفظ البيانات",
   "pricing.compare.row.support": "الدعم",
-  "pricing.compare.val.email": "بريد إلكتروني",
-  "pricing.compare.val.priority": "بريد إلكتروني ذو أولوية",
-  "pricing.compare.val.priorityChat": "بريد إلكتروني ذو أولوية + دردشة",
-
   "pricing.faq.eyebrow": "الأسئلة الشائعة",
   "pricing.faq.heading": "الأسئلة الصادقة.",
   "pricing.faq.q1": "هل توجد فترة تجربة مجانية؟",
@@ -166,7 +148,6 @@
   "pricing.faq.a6": "نعم — استخدم المفتاح أعلى الخطط. السنوي يوفّر نحو 17٪ مقارنةً بالشهري.",
   "pricing.faq.q7": "Enterprise، الشراء، MSAs مخصّصة؟",
   "pricing.faq.a7": "تواصل معنا. حجم مخصّص، استضافة خاصّة، حفظ بيانات إقليمي، واتفاقيات موقّعة متوفّرة في خطة Enterprise.",
-
   "contact.title": "تواصل مع ScanFence — أرسل إشارة",
   "contact.description": "تواصل مع ScanFence. مكتب في الاتحاد الأوروبي. نردّ خلال يوم عمل واحد.",
   "contact.hero.eyebrow": "تواصل معنا",
@@ -212,7 +193,6 @@
   "contact.faq.a3": "SLAs مخصّصة في خطّتَي Business وEnterprise، مع التزامات توفّر 99.9 ٪ ودعم ذي أولوية.",
   "contact.faq.q4": "أين أجد الوثائق التقنية؟",
   "contact.faq.a4": "اذهب إلى /docs للحصول على مرجع API وحمولات Webhook وأمثلة SDK.",
-
   "error.title": "404 — الصفحة غير موجودة — ScanFence",
   "error.description": "لم يتم العثور على هذا المسار على scanfence.com.",
   "error.eyebrow": "خطأ · 404",
@@ -227,7 +207,6 @@
   "error.link.contact": "تواصل معنا",
   "error.cta.home": "العودة إلى الرئيسية →",
   "error.cta.email": "راسلنا",
-
   "blog.title": "المدوّنة — ScanFence",
   "blog.description": "اقرأ أحدث المقالات حول رموز QR والتحديد الجغرافي والتسويق القائم على الموقع من ScanFence.",
   "blog.heading": "المدوّنة",
@@ -235,11 +214,14 @@
   "blog.pageDescription": "الصفحة {page} من مدوّنة ScanFence — رموز QR والتحديد الجغرافي والتسويق القائم على الموقع.",
   "blog.pageName": "مدوّنة ScanFence — الصفحة {page}",
   "blog.pageNameDescription": "الصفحة {page} من مدوّنة ScanFence.",
-
   "category.title": "{name} — مدوّنة ScanFence",
   "category.description": "تصفّح جميع مقالات {name} في مدوّنة ScanFence.",
-
   "pagination.prev": "← السابق",
   "pagination.next": "التالي →",
-  "pagination.aria": "ترقيم الصفحات"
+  "pagination.aria": "ترقيم الصفحات",
+  "pricing.compare.row.retention": "سجل المسح",
+  "pricing.compare.val.d7": "7 أيام",
+  "pricing.compare.val.d30": "30 يومًا",
+  "pricing.compare.val.d90": "90 يومًا",
+  "pricing.compare.val.limited": "محدود"
 }

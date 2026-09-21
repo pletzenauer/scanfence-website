@@ -1,7 +1,6 @@
 {
   "site.description": "QR code dinamis dengan geofencing GPS dan routing berbasis waktu. Cetak kodenya sekali. Arahkan selamanya.",
   "home.title": "ScanFence — QR code dinamis dengan geofencing GPS",
-
   "nav.home": "Beranda",
   "nav.features": "Fitur",
   "nav.pricing": "Harga",
@@ -15,7 +14,6 @@
   "nav.primary": "Navigasi utama",
   "nav.languageSwitcherLabel": "Bahasa",
   "nav.languageSwitcherAria": "Pilih bahasa",
-
   "footer.tagline.lead": "Kode yang tahu",
   "footer.tagline.accent": "di mana mereka berada.",
   "footer.copyright": "© {year} ScanFence",
@@ -25,7 +23,6 @@
   "footer.privacy": "Privasi",
   "footer.terms": "Ketentuan",
   "footer.logoAria": "ScanFence — beranda",
-
   "common.metadata.qrDynamic": "QR · DYNAMIC",
   "common.metadata.gpsGeofenced": "GPS · GEOFENCED",
   "common.metadata.timeAware": "TIME-AWARE",
@@ -33,7 +30,6 @@
   "common.metadata.soc2": "SOC-2 TYPE II",
   "common.metadata.usdNet": "USD · NET",
   "common.metadata.trial": "30H · UJI COBA",
-
   "hero.eyebrow": "QR · GEOFENCED · TIME-AWARE",
   "hero.heading.line1": "Setiap pemindaian,",
   "hero.heading.line2": "di perimeter.",
@@ -45,7 +41,6 @@
   "hero.receipt.eyebrow": "LIVE · SAMPLE",
   "hero.receipt.regionLabel": "EU · IRELAND-1",
   "hero.receipt.latency": "P50 · 117MS",
-
   "features.eyebrow": "PENGAWASAN",
   "features.heading.line1": "Enam hal yang kode lakukan",
   "features.heading.line2": "saat Anda tidak melihat.",
@@ -61,7 +56,6 @@
   "features.05.body": "Tambahkan orang yang memegang kunci. Berbasis peran. Audit bersih.",
   "features.06.title": "Tanpa cetak ulang",
   "features.06.body": "Ubah tujuan pukul 11:47. Aktif pukul 11:47.",
-
   "receipt.eyebrow": "STRUK",
   "receipt.heading.line1": "Kami mencatatnya karena",
   "receipt.heading.line2": "Anda akan ingin membacanya.",
@@ -75,25 +69,21 @@
   "receipt.stats.routing": "P50 · ROUTING",
   "receipt.stats.residency": "RESIDENSI DATA",
   "receipt.stats.residencyValue": "EU · IRELAND",
-
   "cta.eyebrow": "SATU PERTANYAAN",
   "cta.heading": "Sudah cetak kodenya?",
   "cta.lede": "30 hari. Tanpa kartu. Batalkan kapan saja.",
   "cta.primary": "Mulai paket →",
   "cta.secondary": "Hubungi kami",
-
   "pricing.title": "Harga — ScanFence",
   "pricing.description": "Harga sederhana dan dapat diprediksi untuk QR code dinamis dengan geofencing GPS. Dihosting di UE. Uji coba 30 hari di setiap paket. Batalkan kapan saja.",
   "pricing.hero.eyebrow": "HARGA",
   "pricing.hero.heading.line1": "Satu kode,",
   "pricing.hero.heading.line2": "harga yang jujur.",
   "pricing.hero.lede": "Tiga paket, ditagih bulanan atau tahunan. Uji coba 30 hari di setiap paket, kartu saat checkout, batalkan kapan saja. Dihosting di UE. Cetak sekali, arahkan selamanya.",
-
   "pricing.billing.label": "Periode penagihan",
   "pricing.billing.monthly": "Bulanan",
   "pricing.billing.annual": "Tahunan",
   "pricing.billing.save": "−17 %",
-
   "pricing.tier.basic.name": "Basic",
   "pricing.tier.basic.eyebrow": "TIER · 01",
   "pricing.tier.basic.blurb": "Untuk satu lokasi, satu menu, satu operator.",
@@ -102,9 +92,8 @@
   "pricing.tier.basic.feature2": "25.000 pemindaian / bulan",
   "pricing.tier.basic.feature3": "100 geofence",
   "pricing.tier.basic.feature4": "2 kursi tim",
-  "pricing.tier.basic.feature5": "Residensi EU · Irlandia",
-  "pricing.tier.basic.feature6": "Dukungan email",
-
+  "pricing.tier.basic.feature5": "Pengalihan multi-lokasi tanpa batas",
+  "pricing.tier.basic.feature6": "Analitik & perutean berbasis waktu",
   "pricing.tier.starter.name": "Starter",
   "pricing.tier.starter.eyebrow": "TIER · 02 · POPULER",
   "pricing.tier.starter.blurb": "Untuk operator multi-lokasi dan kampanye.",
@@ -113,9 +102,8 @@
   "pricing.tier.starter.feature2": "125.000 pemindaian / bulan",
   "pricing.tier.starter.feature3": "500 geofence",
   "pricing.tier.starter.feature4": "3 kursi tim",
-  "pricing.tier.starter.feature5": "Residensi EU · Irlandia",
-  "pricing.tier.starter.feature6": "Dukungan email prioritas",
-
+  "pricing.tier.starter.feature5": "Pengalihan multi-lokasi tanpa batas",
+  "pricing.tier.starter.feature6": "Analitik & perutean berbasis waktu",
   "pricing.tier.professional.name": "Professional",
   "pricing.tier.professional.eyebrow": "TIER · 03",
   "pricing.tier.professional.blurb": "Untuk jaringan, agensi, dan operasi iklan.",
@@ -124,16 +112,14 @@
   "pricing.tier.professional.feature2": "1.250.000 pemindaian / bulan",
   "pricing.tier.professional.feature3": "2.500 geofence",
   "pricing.tier.professional.feature4": "10 kursi tim",
-  "pricing.tier.professional.feature5": "Residensi EU · Irlandia",
-  "pricing.tier.professional.feature6": "Email prioritas + chat",
-
+  "pricing.tier.professional.feature5": "Pengalihan multi-lokasi tanpa batas",
+  "pricing.tier.professional.feature6": "Analitik & perutean berbasis waktu",
   "pricing.cadenceMonth": "/bln",
   "pricing.cadenceYear": "/thn",
   "pricing.enterprise.eyebrow": "TIER · 04 · ENTERPRISE",
   "pricing.enterprise.heading": "Butuh volume lebih besar, residensi regional, atau MSA bertandatangan?",
   "pricing.enterprise.body": "Paket kustom untuk jaringan, agensi, dan operasi iklan. Tenancy khusus, routing per wilayah, SLA uptime kustom, dan dokumen yang ramah procurement.",
   "pricing.enterprise.cta": "Hubungi kami →",
-
   "pricing.compare.eyebrow": "BANDINGKAN",
   "pricing.compare.heading": "Paket demi paket.",
   "pricing.compare.col.basic": "Basic",
@@ -146,10 +132,6 @@
   "pricing.compare.row.trial": "Uji coba gratis",
   "pricing.compare.row.region": "Residensi data",
   "pricing.compare.row.support": "Dukungan",
-  "pricing.compare.val.email": "Email",
-  "pricing.compare.val.priority": "Email prioritas",
-  "pricing.compare.val.priorityChat": "Email prioritas + chat",
-
   "pricing.faq.eyebrow": "FAQ",
   "pricing.faq.heading": "Pertanyaan yang jujur.",
   "pricing.faq.q1": "Apakah ada uji coba gratis?",
@@ -166,7 +148,6 @@
   "pricing.faq.a6": "Ya — gunakan tombol di atas paket. Tahunan menghemat sekitar 17 % dibanding bulanan.",
   "pricing.faq.q7": "Enterprise, procurement, MSA kustom?",
   "pricing.faq.a7": "Hubungi kami. Volume kustom, tenancy khusus, residensi regional, dan perjanjian bertandatangan tersedia di paket Enterprise.",
-
   "contact.title": "Hubungi ScanFence — Kirim sinyal",
   "contact.description": "Hubungi ScanFence. Kantor UE. Kami membalas dalam satu hari kerja.",
   "contact.hero.eyebrow": "KONTAK",
@@ -212,7 +193,6 @@
   "contact.faq.a3": "SLA kustom di paket Business dan Enterprise, termasuk komitmen uptime 99,9 % dan dukungan prioritas.",
   "contact.faq.q4": "Di mana dokumentasi teknis?",
   "contact.faq.a4": "Buka /docs untuk referensi API, payload webhook, dan contoh SDK.",
-
   "error.title": "404 — Halaman tidak ditemukan — ScanFence",
   "error.description": "Rute itu tidak ditemukan di scanfence.com.",
   "error.eyebrow": "ERROR · 404",
@@ -227,7 +207,6 @@
   "error.link.contact": "Kontak",
   "error.cta.home": "Kembali ke beranda →",
   "error.cta.email": "Email kami",
-
   "blog.title": "Blog — ScanFence",
   "blog.description": "Baca artikel terbaru tentang QR code, geofencing, dan pemasaran berbasis lokasi dari ScanFence.",
   "blog.heading": "Blog",
@@ -235,11 +214,14 @@
   "blog.pageDescription": "Halaman {page} blog ScanFence — QR code, geofencing, dan pemasaran berbasis lokasi.",
   "blog.pageName": "ScanFence Blog — Halaman {page}",
   "blog.pageNameDescription": "Halaman {page} blog ScanFence.",
-
   "category.title": "{name} — ScanFence Blog",
   "category.description": "Telusuri semua artikel {name} di blog ScanFence.",
-
   "pagination.prev": "← Sebelumnya",
   "pagination.next": "Berikutnya →",
-  "pagination.aria": "Paginasi"
+  "pagination.aria": "Paginasi",
+  "pricing.compare.row.retention": "Riwayat pemindaian",
+  "pricing.compare.val.d7": "7 hari",
+  "pricing.compare.val.d30": "30 hari",
+  "pricing.compare.val.d90": "90 hari",
+  "pricing.compare.val.limited": "Terbatas"
 }

@@ -1,7 +1,6 @@
 {
   "site.description": "支持 GPS 地理围栏和按时间路由的动态二维码。代码只需打印一次,长期可用。",
   "home.title": "ScanFence — 带 GPS 地理围栏的动态二维码",
-
   "nav.home": "首页",
   "nav.features": "功能",
   "nav.pricing": "价格",
@@ -15,7 +14,6 @@
   "nav.primary": "主导航",
   "nav.languageSwitcherLabel": "语言",
   "nav.languageSwitcherAria": "选择语言",
-
   "footer.tagline.lead": "知道自己位置的",
   "footer.tagline.accent": "二维码。",
   "footer.copyright": "© {year} ScanFence",
@@ -25,7 +23,6 @@
   "footer.privacy": "隐私",
   "footer.terms": "条款",
   "footer.logoAria": "ScanFence — 首页",
-
   "common.metadata.qrDynamic": "QR · DYNAMIC",
   "common.metadata.gpsGeofenced": "GPS · GEOFENCED",
   "common.metadata.timeAware": "TIME-AWARE",
@@ -33,7 +30,6 @@
   "common.metadata.soc2": "SOC-2 TYPE II",
   "common.metadata.usdNet": "USD · NET",
   "common.metadata.trial": "30天 · 免费试用",
-
   "hero.eyebrow": "QR · GEOFENCED · TIME-AWARE",
   "hero.heading.line1": "每一次扫描,",
   "hero.heading.line2": "都在边界之内。",
@@ -45,7 +41,6 @@
   "hero.receipt.eyebrow": "LIVE · SAMPLE",
   "hero.receipt.regionLabel": "EU · IRELAND-1",
   "hero.receipt.latency": "P50 · 117MS",
-
   "features.eyebrow": "守望",
   "features.heading.line1": "你不在看的时候,",
   "features.heading.line2": "代码做的六件事。",
@@ -61,7 +56,6 @@
   "features.05.body": "加入持有钥匙的人。基于角色。审计清晰。",
   "features.06.title": "无需重新打印",
   "features.06.body": "11:47 修改目标地址,11:47 就生效。",
-
   "receipt.eyebrow": "小票",
   "receipt.heading.line1": "我们记录它,",
   "receipt.heading.line2": "因为你会想看。",
@@ -75,25 +69,21 @@
   "receipt.stats.routing": "P50 · ROUTING",
   "receipt.stats.residency": "数据驻留",
   "receipt.stats.residencyValue": "EU · IRELAND",
-
   "cta.eyebrow": "一个问题",
   "cta.heading": "代码打印了吗?",
   "cta.lede": "30 天。无需信用卡。随时取消。",
   "cta.primary": "开始方案 →",
   "cta.secondary": "联系我们",
-
   "pricing.title": "价格 — ScanFence",
   "pricing.description": "支持 GPS 地理围栏的动态二维码,价格简单可预期。欧盟托管。每个方案均提供 30 天免费试用。随时取消。",
   "pricing.hero.eyebrow": "价格",
   "pricing.hero.heading.line1": "一个代码,",
   "pricing.hero.heading.line2": "诚实定价。",
   "pricing.hero.lede": "三个方案,可按月或按年计费。每个方案均提供 30 天免费试用,结账时绑定信用卡,随时可取消。欧盟托管。打印一次,长期路由。",
-
   "pricing.billing.label": "计费周期",
   "pricing.billing.monthly": "月付",
   "pricing.billing.annual": "年付",
   "pricing.billing.save": "−17%",
-
   "pricing.tier.basic.name": "Basic",
   "pricing.tier.basic.eyebrow": "TIER · 01",
   "pricing.tier.basic.blurb": "适用于单一门店、单一菜单、单一运营者。",
@@ -102,9 +92,8 @@
   "pricing.tier.basic.feature2": "25,000 次扫描 / 月",
   "pricing.tier.basic.feature3": "100 个地理围栏",
   "pricing.tier.basic.feature4": "2 个团队席位",
-  "pricing.tier.basic.feature5": "EU · 爱尔兰数据驻留",
-  "pricing.tier.basic.feature6": "邮件支持",
-
+  "pricing.tier.basic.feature5": "无限多地点跳转",
+  "pricing.tier.basic.feature6": "分析与按时间路由",
   "pricing.tier.starter.name": "Starter",
   "pricing.tier.starter.eyebrow": "TIER · 02 · 热门",
   "pricing.tier.starter.blurb": "适用于多门店运营者和营销活动。",
@@ -113,9 +102,8 @@
   "pricing.tier.starter.feature2": "125,000 次扫描 / 月",
   "pricing.tier.starter.feature3": "500 个地理围栏",
   "pricing.tier.starter.feature4": "3 个团队席位",
-  "pricing.tier.starter.feature5": "EU · 爱尔兰数据驻留",
-  "pricing.tier.starter.feature6": "优先邮件支持",
-
+  "pricing.tier.starter.feature5": "无限多地点跳转",
+  "pricing.tier.starter.feature6": "分析与按时间路由",
   "pricing.tier.professional.name": "Professional",
   "pricing.tier.professional.eyebrow": "TIER · 03",
   "pricing.tier.professional.blurb": "适用于连锁、代理商和广告运营。",
@@ -124,16 +112,14 @@
   "pricing.tier.professional.feature2": "1,250,000 次扫描 / 月",
   "pricing.tier.professional.feature3": "2,500 个地理围栏",
   "pricing.tier.professional.feature4": "10 个团队席位",
-  "pricing.tier.professional.feature5": "EU · 爱尔兰数据驻留",
-  "pricing.tier.professional.feature6": "优先邮件 + 聊天",
-
+  "pricing.tier.professional.feature5": "无限多地点跳转",
+  "pricing.tier.professional.feature6": "分析与按时间路由",
   "pricing.cadenceMonth": "/月",
   "pricing.cadenceYear": "/年",
   "pricing.enterprise.eyebrow": "TIER · 04 · ENTERPRISE",
   "pricing.enterprise.heading": "需要更大用量、区域数据驻留或正式签署的 MSA?",
   "pricing.enterprise.body": "为连锁、代理商和广告运营提供定制方案。专属租户、按区域路由、定制可用性 SLA,以及对采购友好的合同文件。",
   "pricing.enterprise.cta": "联系我们 →",
-
   "pricing.compare.eyebrow": "对比",
   "pricing.compare.heading": "逐方案对比。",
   "pricing.compare.col.basic": "Basic",
@@ -146,10 +132,6 @@
   "pricing.compare.row.trial": "免费试用",
   "pricing.compare.row.region": "数据驻留",
   "pricing.compare.row.support": "支持",
-  "pricing.compare.val.email": "邮件",
-  "pricing.compare.val.priority": "优先邮件",
-  "pricing.compare.val.priorityChat": "优先邮件 + 聊天",
-
   "pricing.faq.eyebrow": "常见问题",
   "pricing.faq.heading": "诚实的提问。",
   "pricing.faq.q1": "有免费试用吗?",
@@ -166,7 +148,6 @@
   "pricing.faq.a6": "有 — 在方案上方切换开关。年付比月付节省约 17%。",
   "pricing.faq.q7": "Enterprise、采购、定制 MSA 怎么办?",
   "pricing.faq.a7": "联系我们。Enterprise 方案提供定制用量、专属租户、区域数据驻留和签署协议。",
-
   "contact.title": "联系 ScanFence — 发送信号",
   "contact.description": "与 ScanFence 取得联系。欧盟办公室。一个工作日内回复。",
   "contact.hero.eyebrow": "联系我们",
@@ -212,7 +193,6 @@
   "contact.faq.a3": "Business 与 Enterprise 方案提供定制 SLA,包含 99.9% 可用性承诺与优先支持。",
   "contact.faq.q4": "技术文档在哪里?",
   "contact.faq.a4": "前往 /docs 查看 API 参考、Webhook 负载与 SDK 示例。",
-
   "error.title": "404 — 页面未找到 — ScanFence",
   "error.description": "scanfence.com 上没有找到该路径。",
   "error.eyebrow": "错误 · 404",
@@ -227,7 +207,6 @@
   "error.link.contact": "联系我们",
   "error.cta.home": "返回首页 →",
   "error.cta.email": "邮件联系我们",
-
   "blog.title": "博客 — ScanFence",
   "blog.description": "阅读 ScanFence 关于二维码、地理围栏和基于位置的营销的最新文章。",
   "blog.heading": "博客",
@@ -235,11 +214,14 @@
   "blog.pageDescription": "ScanFence 博客第 {page} 页 — 二维码、地理围栏和基于位置的营销。",
   "blog.pageName": "ScanFence 博客 — 第 {page} 页",
   "blog.pageNameDescription": "ScanFence 博客第 {page} 页。",
-
   "category.title": "{name} — ScanFence 博客",
   "category.description": "浏览 ScanFence 博客中所有 {name} 类目的文章。",
-
   "pagination.prev": "← 上一页",
   "pagination.next": "下一页 →",
-  "pagination.aria": "分页"
+  "pagination.aria": "分页",
+  "pricing.compare.row.retention": "扫描历史",
+  "pricing.compare.val.d7": "7 天",
+  "pricing.compare.val.d30": "30 天",
+  "pricing.compare.val.d90": "90 天",
+  "pricing.compare.val.limited": "有限"
 }
