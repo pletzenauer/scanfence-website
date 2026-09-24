@@ -6,6 +6,7 @@ import Hero from '../components/Hero.astro';
 import Features from '../components/Features.astro';
 import Receipt from '../components/Receipt.astro';
 import CTA from '../components/CTA.astro';
+import DemoTeaser from '../components/DemoTeaser.astro';
 import { resolveLocale, localizedUrl, t } from '../i18n/t';
 import { ORG_ID } from '../lib/seo';
 
@@ -52,6 +53,7 @@ const jsonLd = {
       </div>
     </div>
     <Features />
+    <DemoTeaser />
     <Receipt />
     <CTA />
   </main>

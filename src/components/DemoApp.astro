@@ -1,0 +1,503 @@
+---
+/**
+ * Interactive ScanFence dashboard mock. Plain HTML/SVG plus a small vanilla
+ * script: no screenshots, no third-party embed, no cookies. All data is
+ * sample data generated deterministically at build time.
+ *
+ * Several instances may share a page; each needs its own `id`.
+ */
+import { resolveLocale, t } from '../i18n/t';
+
+interface Props {
+  id: string;
+  initial?: 'codes' | 'geofence' | 'time' | 'analytics';
+}
+
+const { id, initial = 'codes' } = Astro.props;
+const locale = resolveLocale(Astro.currentLocale);
+
+// Deterministic PRNG so every build renders the same "sample" dashboard.
+function rng(seed: number) {
+  let s = seed >>> 0;
+  return () => {
+    s = (s * 1664525 + 1013904223) >>> 0;
+    return s / 4294967296;
+  };
+}
+
+// A QR-looking module grid: three finder patterns plus seeded noise.
+// Decorative only — it is not a scannable code.
+function qrPath(seed: number, size = 25): string {
+  const r = rng(seed);
+  const cells: string[] = [];
+  const inFinder = (x: number, y: number) =>
+    (x < 8 && y < 8) || (x >= size - 8 && y < 8) || (x < 8 && y >= size - 8);
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      if (inFinder(x, y)) continue;
+      if (r() > 0.52) cells.push(`M${x} ${y}h1v1h-1z`);
+    }
+  }
+  const finder = (ox: number, oy: number) =>
+    `M${ox} ${oy}h7v7h-7zM${ox + 1} ${oy + 1}v5h5v-5zM${ox + 2} ${oy + 2}h3v3h-3z`;
+  return finder(0, 0) + finder(size - 7, 0) + finder(0, size - 7) + cells.join('');
+}
+
+const tabs = [
+  { key: 'codes',     label: t('demo.app.tab.codes', locale),     icon: 'M3 3h7v7H3zM14 3h7v7h-7zM3 14h7v7H3zM14 14h3v3h-3zM18 18h3v3h-3z' },
+  { key: 'geofence',  label: t('demo.app.tab.geofence', locale),  icon: 'M12 2a7 7 0 0 1 7 7c0 5-7 13-7 13S5 14 5 9a7 7 0 0 1 7-7zm0 4.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z' },
+  { key: 'time',      label: t('demo.app.tab.time', locale),      icon: 'M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20zm0 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16zm1 3v5.4l3.6 2.1-1 1.7L11 13.6V7z' },
+  { key: 'analytics', label: t('demo.app.tab.analytics', locale), icon: 'M3 21V3h2v16h16v2zm4-4V9h3v8zm5 0V5h3v12zm5 0v-6h3v6z' },
+] as const;
+
+const codes = [
+  { key: 'menu',   name: 'Café Mozart · Menu',  id: 'K7Q2', dest: 'cafe-mozart.example/menu', scans: '1,284', last: '2 min', seed: 11 },
+  { key: 'poster', name: 'Summer sale · Poster', id: 'P9X4', dest: 'shop.example/summer',      scans: '842',   last: '9 min', seed: 23 },
+  { key: 'flyer',  name: 'Open house · Flyer',  id: 'F3M8', dest: 'agency.example/open-house', scans: '311',   last: '1 h',   seed: 37 },
+];
+
+const timeRules = [
+  { key: 'breakfast', from: 6,  to: 11, dest: '/breakfast', tone: 'mustard' },
+  { key: 'lunch',     from: 11, to: 17, dest: '/lunch',     tone: 'signal' },
+  { key: 'bar',       from: 17, to: 26, dest: '/bar',       tone: 'sky' },
+];
+
+// Analytics series: 90 days of scans, bucketed on the client per range.
+const series = (() => {
+  const r = rng(90);
+  return Array.from({ length: 90 }, (_, i) => {
+    const weekday = i % 7;
+    const base = weekday >= 5 ? 58 : 38;
+    return Math.round(base + i * 0.35 + r() * 22);
+  });
+})();
+
+const cities = ['VIENNA', 'SALZBURG', 'MUNICH', 'ZURICH', 'GRAZ', 'LINZ', 'INNSBRUCK'];
+
+const strings = {
+  routed: t('demo.app.routed', locale),
+  blocked: t('demo.app.blocked', locale),
+  outside: t('demo.app.geo.outside', locale),
+  inside: t('demo.app.geo.inside', locale),
+  closed: t('demo.app.time.closedDest', locale),
+  saved: t('demo.app.codes.saved', locale),
+  meters: t('demo.app.geo.meters', locale),
+  scansIn: t('demo.app.analytics.scansIn', locale),
+};
+---
+
+<div
+  class="demo"
+  id={id}
+  data-demo
+  data-initial={initial}
+  data-series={JSON.stringify(series)}
+  data-cities={JSON.stringify(cities)}
+  data-strings={JSON.stringify(strings)}
+>
+  <div class="demo-chrome" aria-hidden="true">
+    <span class="demo-chrome-dots"><i></i><i></i><i></i></span>
+    <span class="demo-chrome-url">app.scanfence.com/dashboard</span>
+    <span class="demo-chrome-badge">{t('demo.app.sample', locale)}</span>
+  </div>
+
+  <div class="demo-body">
+    <div class="demo-rail" role="tablist" aria-label={t('demo.app.railAria', locale)}>
+      {tabs.map(tab => (
+        <button
+          type="button"
+          role="tab"
+          class="demo-tab"
+          id={`${id}-tab-${tab.key}`}
+          aria-controls={`${id}-panel-${tab.key}`}
+          aria-selected={tab.key === initial ? 'true' : 'false'}
+          tabindex={tab.key === initial ? 0 : -1}
+          data-tab={tab.key}
+        >
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d={tab.icon} fill="currentColor" fill-rule="evenodd" /></svg>
+          <span>{tab.label}</span>
+        </button>
+      ))}
+    </div>
+
+    <div class="demo-stage">
+      <!-- ── QR codes ─────────────────────────────── -->
+      <section class="demo-panel" role="tabpanel" id={`${id}-panel-codes`} aria-labelledby={`${id}-tab-codes`} data-panel="codes" hidden={initial !== 'codes'}>
+        <header class="demo-panel-head">
+          <h3>{t('demo.app.codes.title', locale)}</h3>
+          <p class="demo-hint">{t('demo.app.codes.hint', locale)}</p>
+        </header>
+        <div class="demo-codes">
+          <ul class="demo-code-list">
+            {codes.map((c, i) => (
+              <li>
+                <button type="button" class="demo-code-item" data-code={c.key} aria-pressed={i === 0 ? 'true' : 'false'}>
+                  <span class="demo-code-name">{c.name}</span>
+                  <span class="demo-code-meta">{c.scans} {t('demo.app.codes.scans', locale)}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+          {codes.map((c, i) => (
+            <div class="demo-code-detail" data-code-detail={c.key} hidden={i !== 0}>
+              <svg class="demo-qr" viewBox="-2 -2 29 29" role="img" aria-label={t('demo.app.codes.qrAria', locale)}>
+                <rect x="-2" y="-2" width="29" height="29" fill="#fff" />
+                <path d={qrPath(c.seed)} fill="currentColor" fill-rule="evenodd" />
+              </svg>
+              <dl class="demo-code-facts">
+                <div><dt>{t('demo.app.codes.id', locale)}</dt><dd>{c.id}</dd></div>
+                <div><dt>{t('demo.app.codes.total', locale)}</dt><dd>{c.scans}</dd></div>
+                <div><dt>{t('demo.app.codes.last', locale)}</dt><dd>{c.last}</dd></div>
+              </dl>
+              <form class="demo-dest" data-dest-form>
+                <label for={`${id}-dest-${c.key}`}>{t('demo.app.codes.destination', locale)}</label>
+                <div class="demo-dest-row">
+                  <input id={`${id}-dest-${c.key}`} type="text" value={`https://${c.dest}`} spellcheck="false" autocomplete="off" />
+                  <button type="submit" class="btn btn-primary">{t('demo.app.codes.save', locale)}</button>
+                </div>
+                <p class="demo-dest-note" aria-live="polite" data-dest-note></p>
+              </form>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- ── Geofence ─────────────────────────────── -->
+      <section class="demo-panel" role="tabpanel" id={`${id}-panel-geofence`} aria-labelledby={`${id}-tab-geofence`} data-panel="geofence" hidden={initial !== 'geofence'}>
+        <header class="demo-panel-head">
+          <h3>{t('demo.app.geo.title', locale)}</h3>
+          <p class="demo-hint">{t('demo.app.geo.hint', locale)}</p>
+        </header>
+        <div class="demo-geo">
+          <svg class="demo-map" viewBox="0 0 400 240" data-map role="img" aria-label={t('demo.app.geo.mapAria', locale)}>
+            <rect width="400" height="240" class="demo-map-bg" />
+            <path class="demo-map-water" d="M-10 190 C 80 160, 140 230, 230 200 S 360 150, 420 175 L420 250 L-10 250 Z" />
+            <g class="demo-map-streets">
+              <path d="M0 60 H400 M0 128 H400 M60 0 V240 M150 0 V240 M255 0 V240 M340 0 V240 M20 0 L390 240" />
+            </g>
+            <g class="demo-map-blocks">
+              <rect x="70" y="72" width="70" height="46" /><rect x="162" y="72" width="82" height="46" />
+              <rect x="265" y="72" width="66" height="46" /><rect x="70" y="10" width="70" height="40" />
+              <rect x="265" y="10" width="66" height="40" /><rect x="162" y="138" width="82" height="34" />
+            </g>
+            <circle class="demo-fence" cx="200" cy="112" r="70" data-fence />
+            <circle class="demo-fence-center" cx="200" cy="112" r="4" />
+            <text class="demo-map-label" x="208" y="106">Café Mozart</text>
+            <g data-pins></g>
+          </svg>
+          <div class="demo-geo-side">
+            <label class="demo-range">
+              <span>{t('demo.app.geo.radius', locale)} <output data-radius-out>350 m</output></span>
+              <input type="range" min="30" max="130" value="70" step="1" data-radius />
+            </label>
+            <button type="button" class="btn btn-ghost demo-btn-sm" data-random-scan>{t('demo.app.geo.simulate', locale)}</button>
+            <ol class="demo-log" data-geo-log aria-live="polite"></ol>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Time routing ─────────────────────────── -->
+      <section class="demo-panel" role="tabpanel" id={`${id}-panel-time`} aria-labelledby={`${id}-tab-time`} data-panel="time" hidden={initial !== 'time'}>
+        <header class="demo-panel-head">
+          <h3>{t('demo.app.time.title', locale)}</h3>
+          <p class="demo-hint">{t('demo.app.time.hint', locale)}</p>
+        </header>
+        <div class="demo-time">
+          <div class="demo-timeline" aria-hidden="true">
+            {timeRules.map(rule => (
+              rule.to > 24
+                ? [<span class={`demo-seg demo-seg--${rule.tone}`} style={`inset-inline-start:${rule.from / 24 * 100}%;width:${(24 - rule.from) / 24 * 100}%`}></span>,
+                   <span class={`demo-seg demo-seg--${rule.tone}`} style={`inset-inline-start:0;width:${(rule.to - 24) / 24 * 100}%`}></span>]
+                : <span class={`demo-seg demo-seg--${rule.tone}`} style={`inset-inline-start:${rule.from / 24 * 100}%;width:${(rule.to - rule.from) / 24 * 100}%`}></span>
+            ))}
+            <span class="demo-timeline-cursor" data-cursor></span>
+            <span class="demo-timeline-ticks"><i>00</i><i>06</i><i>12</i><i>18</i><i>24</i></span>
+          </div>
+          <label class="demo-range">
+            <span>{t('demo.app.time.clock', locale)} <output data-clock-out>13:30</output></span>
+            <input type="range" min="0" max="47" value="27" step="1" data-clock />
+          </label>
+          <div class="demo-time-grid">
+            <ul class="demo-rules">
+              {timeRules.map(rule => (
+                <li class={`demo-rule demo-rule--${rule.tone}`} data-rule={rule.key} data-from={rule.from} data-to={rule.to} data-dest={rule.dest}>
+                  <span class="demo-rule-time">{String(rule.from).padStart(2, '0')}:00–{String(rule.to % 24).padStart(2, '0')}:00</span>
+                  <span class="demo-rule-name">{t(`demo.app.time.rule.${rule.key}`, locale)}</span>
+                  <span class="demo-rule-dest">→ {rule.dest}</span>
+                </li>
+              ))}
+              <li class="demo-rule demo-rule--vermil" data-rule="closed" data-dest="/opening-hours">
+                <span class="demo-rule-time">{t('demo.app.time.otherwise', locale)}</span>
+                <span class="demo-rule-name">{t('demo.app.time.rule.closed', locale)}</span>
+                <span class="demo-rule-dest">→ /opening-hours</span>
+              </li>
+            </ul>
+            <div class="demo-phone" aria-live="polite">
+              <span class="demo-phone-bar">{t('demo.app.time.visitorSees', locale)}</span>
+              <strong data-phone-title></strong>
+              <code data-phone-dest></code>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Analytics ────────────────────────────── -->
+      <section class="demo-panel" role="tabpanel" id={`${id}-panel-analytics`} aria-labelledby={`${id}-tab-analytics`} data-panel="analytics" hidden={initial !== 'analytics'}>
+        <header class="demo-panel-head">
+          <h3>{t('demo.app.analytics.title', locale)}</h3>
+          <div class="demo-seg-toggle" role="group" aria-label={t('demo.app.analytics.rangeAria', locale)}>
+            <button type="button" data-range="7" aria-pressed="false">7d</button>
+            <button type="button" data-range="30" aria-pressed="true">30d</button>
+            <button type="button" data-range="90" aria-pressed="false">90d</button>
+          </div>
+        </header>
+        <dl class="demo-kpis">
+          <div><dt>{t('demo.app.analytics.scans', locale)}</dt><dd data-kpi="scans">–</dd></div>
+          <div><dt>{t('demo.app.analytics.devices', locale)}</dt><dd data-kpi="devices">–</dd></div>
+          <div><dt>{t('demo.app.analytics.blocked', locale)}</dt><dd data-kpi="blocked">–</dd></div>
+          <div><dt>{t('demo.app.analytics.topCity', locale)}</dt><dd>VIENNA</dd></div>
+        </dl>
+        <div class="demo-analytics">
+          <svg class="demo-chart" viewBox="0 0 300 120" preserveAspectRatio="none" data-chart role="img" aria-label={t('demo.app.analytics.chartAria', locale)}></svg>
+          <div class="demo-feed">
+            <span class="demo-feed-head"><span class="hero-receipt-dot" aria-hidden="true"></span>{t('demo.app.analytics.live', locale)}</span>
+            <ol data-feed></ol>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<script>
+  type Strings = Record<string, string>;
+  const track = (action: string, name: string) => {
+    const paq = (window as unknown as { _paq?: unknown[][] })._paq;
+    if (paq) paq.push(['trackEvent', 'Demo', action, name]);
+  };
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const SVG = 'http://www.w3.org/2000/svg';
+  const pad = (n: number) => String(n).padStart(2, '0');
+  const fmt = (n: number) => n.toLocaleString(document.documentElement.lang || 'en');
+
+  function initDemo(root: HTMLElement) {
+    const s: Strings = JSON.parse(root.dataset.strings || '{}');
+    const series: number[] = JSON.parse(root.dataset.series || '[]');
+    const cities: string[] = JSON.parse(root.dataset.cities || '[]');
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const panels = [...root.querySelectorAll<HTMLElement>('[data-panel]')];
+    let current = root.dataset.initial || 'codes';
+
+    // ── Tabs ──────────────────────────────────────
+    function show(key: string, focus = false) {
+      if (!panels.some(p => p.dataset.panel === key)) return;
+      current = key;
+      tabs.forEach(tab => {
+        const on = tab.dataset.tab === key;
+        tab.setAttribute('aria-selected', String(on));
+        tab.tabIndex = on ? 0 : -1;
+        if (on && focus) tab.focus();
+      });
+      panels.forEach(p => { p.hidden = p.dataset.panel !== key; });
+      feedTick();
+    }
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => { show(tab.dataset.tab!); track('view', tab.dataset.tab!); });
+      tab.addEventListener('keydown', e => {
+        const horizontal = e.key === 'ArrowRight' || e.key === 'ArrowLeft';
+        const vertical = e.key === 'ArrowDown' || e.key === 'ArrowUp';
+        if (!horizontal && !vertical && e.key !== 'Home' && e.key !== 'End') return;
+        e.preventDefault();
+        let next = i;
+        if (e.key === 'Home') next = 0;
+        else if (e.key === 'End') next = tabs.length - 1;
+        else next = (i + ((e.key === 'ArrowRight' || e.key === 'ArrowDown') ? 1 : -1) + tabs.length) % tabs.length;
+        show(tabs[next].dataset.tab!, true);
+      });
+    });
+    root.addEventListener('demo:show', e => show((e as CustomEvent<string>).detail));
+
+    // ── Codes ─────────────────────────────────────
+    const codeItems = [...root.querySelectorAll<HTMLButtonElement>('[data-code]')];
+    const details = [...root.querySelectorAll<HTMLElement>('[data-code-detail]')];
+    codeItems.forEach(item => item.addEventListener('click', () => {
+      codeItems.forEach(b => b.setAttribute('aria-pressed', String(b === item)));
+      details.forEach(d => { d.hidden = d.dataset.codeDetail !== item.dataset.code; });
+    }));
+    root.querySelectorAll<HTMLFormElement>('[data-dest-form]').forEach(form => {
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        const input = form.querySelector('input')!;
+        const note = form.querySelector<HTMLElement>('[data-dest-note]')!;
+        const url = input.value.trim() || input.defaultValue;
+        input.value = url;
+        note.textContent = s.saved.replace('{url}', url);
+        note.classList.remove('is-flash');
+        void note.offsetWidth;
+        note.classList.add('is-flash');
+        track('edit', 'destination');
+      });
+    });
+
+    // ── Geofence ──────────────────────────────────
+    const map = root.querySelector<SVGSVGElement>('[data-map]')!;
+    const fence = root.querySelector<SVGCircleElement>('[data-fence]')!;
+    const pins = root.querySelector<SVGGElement>('[data-pins]')!;
+    const radius = root.querySelector<HTMLInputElement>('[data-radius]')!;
+    const radiusOut = root.querySelector<HTMLOutputElement>('[data-radius-out]')!;
+    const geoLog = root.querySelector<HTMLOListElement>('[data-geo-log]')!;
+    const CX = 200, CY = 112, M_PER_UNIT = 5;
+
+    function evaluatePins() {
+      const r = Number(radius.value);
+      pins.querySelectorAll('circle').forEach(pin => {
+        const d = Math.hypot(Number(pin.getAttribute('cx')) - CX, Number(pin.getAttribute('cy')) - CY);
+        pin.classList.toggle('is-in', d <= r);
+      });
+    }
+    function setRadius() {
+      fence.setAttribute('r', radius.value);
+      radiusOut.value = `${Number(radius.value) * M_PER_UNIT} m`;
+      evaluatePins();
+    }
+    function scanAt(x: number, y: number) {
+      const r = Number(radius.value);
+      const dist = Math.hypot(x - CX, y - CY);
+      const inside = dist <= r;
+      const pin = document.createElementNS(SVG, 'circle');
+      pin.setAttribute('cx', x.toFixed(1));
+      pin.setAttribute('cy', y.toFixed(1));
+      pin.setAttribute('r', '5');
+      pin.setAttribute('class', `demo-pin${inside ? ' is-in' : ''}`);
+      pins.appendChild(pin);
+      while (pins.childElementCount > 8) pins.firstElementChild!.remove();
+
+      const li = document.createElement('li');
+      li.className = inside ? 'is-signal' : 'is-vermil';
+      const meters = Math.round(dist * M_PER_UNIT);
+      li.textContent = `${meters} ${s.meters} · ${inside ? `${s.routed} → /menu` : `${s.blocked} · ${s.outside}`}`;
+      geoLog.prepend(li);
+      while (geoLog.childElementCount > 4) geoLog.lastElementChild!.remove();
+    }
+    radius.addEventListener('input', setRadius);
+    map.addEventListener('click', e => {
+      const pt = map.createSVGPoint();
+      pt.x = e.clientX; pt.y = e.clientY;
+      const p = pt.matrixTransform(map.getScreenCTM()!.inverse());
+      scanAt(p.x, p.y);
+      track('scan', 'geofence');
+    });
+    root.querySelector('[data-random-scan]')!.addEventListener('click', () => {
+      scanAt(20 + Math.random() * 360, 15 + Math.random() * 180);
+      track('scan', 'geofence');
+    });
+    setRadius();
+    [[160, 140], [250, 150], [330, 40]].forEach(([x, y]) => scanAt(x, y));
+
+    // ── Time routing ──────────────────────────────
+    const clock = root.querySelector<HTMLInputElement>('[data-clock]')!;
+    const clockOut = root.querySelector<HTMLOutputElement>('[data-clock-out]')!;
+    const cursor = root.querySelector<HTMLElement>('[data-cursor]')!;
+    const rules = [...root.querySelectorAll<HTMLElement>('[data-rule]')];
+    const phoneTitle = root.querySelector<HTMLElement>('[data-phone-title]')!;
+    const phoneDest = root.querySelector<HTMLElement>('[data-phone-dest]')!;
+    function setClock() {
+      const half = Number(clock.value);
+      const hours = half / 2;
+      clockOut.value = `${pad(Math.floor(hours))}:${half % 2 ? '30' : '00'}`;
+      cursor.style.insetInlineStart = `${(hours / 24) * 100}%`;
+      const match = rules.find(rule => {
+        if (!rule.dataset.from) return false;
+        const from = Number(rule.dataset.from), to = Number(rule.dataset.to);
+        return (hours >= from && hours < to) || (to > 24 && hours < to - 24);
+      }) ?? rules.find(rule => rule.dataset.rule === 'closed')!;
+      rules.forEach(rule => rule.classList.toggle('is-active', rule === match));
+      phoneTitle.textContent = match.querySelector('.demo-rule-name')!.textContent;
+      phoneDest.textContent = match.dataset.dest || '';
+    }
+    clock.addEventListener('input', setClock);
+    clock.addEventListener('change', () => track('scrub', 'time'));
+    setClock();
+
+    // ── Analytics ─────────────────────────────────
+    const chart = root.querySelector<SVGSVGElement>('[data-chart]')!;
+    const rangeBtns = [...root.querySelectorAll<HTMLButtonElement>('[data-range]')];
+    function setRange(days: number) {
+      rangeBtns.forEach(b => b.setAttribute('aria-pressed', String(Number(b.dataset.range) === days)));
+      const slice = series.slice(-days);
+      const bucket = days === 90 ? 7 : 1;
+      const bars: number[] = [];
+      for (let i = 0; i < slice.length; i += bucket) bars.push(slice.slice(i, i + bucket).reduce((a, b) => a + b, 0));
+      const max = Math.max(...bars);
+      const w = 300 / bars.length;
+      chart.replaceChildren(...bars.map((v, i) => {
+        const h = (v / max) * 108;
+        const rect = document.createElementNS(SVG, 'rect');
+        rect.setAttribute('x', (i * w + w * 0.15).toFixed(2));
+        rect.setAttribute('y', (120 - h).toFixed(2));
+        rect.setAttribute('width', (w * 0.7).toFixed(2));
+        rect.setAttribute('height', h.toFixed(2));
+        return rect;
+      }));
+      const total = slice.reduce((a, b) => a + b, 0);
+      root.querySelector('[data-kpi="scans"]')!.textContent = fmt(total);
+      root.querySelector('[data-kpi="devices"]')!.textContent = fmt(Math.round(total * 0.71));
+      root.querySelector('[data-kpi="blocked"]')!.textContent = `${(3.1 + days / 60).toFixed(1)}%`;
+      chart.setAttribute('aria-label', s.scansIn.replace('{n}', fmt(total)).replace('{days}', String(days)));
+    }
+    rangeBtns.forEach(b => b.addEventListener('click', () => { setRange(Number(b.dataset.range)); track('range', `${b.dataset.range}d`); }));
+    setRange(30);
+
+    const feed = root.querySelector<HTMLOListElement>('[data-feed]')!;
+    const clients = ['iOS · Safari', 'Android · Chrome', 'iOS · Chrome', 'Android · Samsung'];
+    let clockMin = 9 * 60 + 41;
+    function addFeedRow() {
+      clockMin += 1 + Math.floor(Math.random() * 2);
+      const blocked = Math.random() < 0.18;
+      const li = document.createElement('li');
+      li.className = blocked ? 'is-vermil' : 'is-signal';
+      const city = cities[Math.floor(Math.random() * cities.length)];
+      const client = clients[Math.floor(Math.random() * clients.length)];
+      li.innerHTML = `<span>${pad(Math.floor(clockMin / 60) % 24)}:${pad(clockMin % 60)}</span><span>${city}</span><span>${client}</span><span></span>`;
+      li.lastElementChild!.textContent = blocked ? `${s.blocked} · ${s.outside}` : `${s.routed} → /menu`;
+      feed.prepend(li);
+      while (feed.childElementCount > 6) feed.lastElementChild!.remove();
+    }
+    for (let i = 0; i < 6; i++) addFeedRow();
+
+    // Only tick while the panel is on screen and the tab is visible.
+    let onScreen = false;
+    let timer: number | undefined;
+    function feedTick() {
+      const run = onScreen && current === 'analytics' && !document.hidden && !reducedMotion;
+      if (run && timer === undefined) timer = window.setInterval(addFeedRow, 2200);
+      if (!run && timer !== undefined) { clearInterval(timer); timer = undefined; }
+    }
+    new IntersectionObserver(entries => { onScreen = entries[0].isIntersecting; feedTick(); }).observe(root);
+    document.addEventListener('visibilitychange', feedTick);
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-demo]').forEach(initDemo);
+
+  // Deep links: #demo=geofence, and any [data-demo-open] link on the page.
+  const openDemo = (key: string, targetId?: string) => {
+    const root = (targetId ? document.getElementById(targetId) : null) ?? document.querySelector<HTMLElement>('[data-demo]');
+    root?.dispatchEvent(new CustomEvent('demo:show', { detail: key }));
+    return root;
+  };
+  const openFromHash = () => {
+    const hash = location.hash.match(/^#demo=(\w+)/);
+    if (hash) openDemo(hash[1])?.scrollIntoView({ block: 'start' });
+  };
+  openFromHash();
+  window.addEventListener('hashchange', openFromHash);
+  document.querySelectorAll<HTMLAnchorElement>('[data-demo-open]').forEach(link => {
+    link.addEventListener('click', () => {
+      openDemo(link.dataset.demoOpen!, link.getAttribute('href')?.replace('#', ''));
+      track('view', link.dataset.demoOpen!);
+    });
+  });
+  document.querySelectorAll<HTMLAnchorElement>('[data-demo-cta]').forEach(link => {
+    link.addEventListener('click', () => track('cta', link.dataset.demoCta!));
+  });
+</script>

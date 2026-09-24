@@ -1,0 +1,114 @@
+---
+/**
+ * /demo/ product tour. Shared by src/pages/demo.astro (English) and the
+ * `demo` kind in src/pages/[locale]/[...path].astro, so every locale renders
+ * the same body.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from './Header.astro';
+import Footer from './Footer.astro';
+import CTA from './CTA.astro';
+import DemoApp from './DemoApp.astro';
+import { resolveLocale, localizedUrl, t } from '../i18n/t';
+import { ORG_ID } from '../lib/seo';
+
+const locale = resolveLocale(Astro.currentLocale);
+const title = t('demo.title', locale);
+const description = t('demo.description', locale);
+const canonical = `https://scanfence.com${localizedUrl('/demo/', locale)}`;
+
+const core = (['codes', 'geofence', 'time', 'analytics'] as const).map(key => ({
+  key,
+  title: t(`demo.core.${key}.title`, locale),
+  body: t(`demo.core.${key}.body`, locale),
+  bullets: [1, 2, 3].map(i => t(`demo.core.${key}.b${i}`, locale)),
+}));
+
+const more = ['limits', 'locations', 'seats', 'eu', 'api', 'bulk'].map(key => ({
+  title: t(`demo.more.${key}.title`, locale),
+  body: t(`demo.more.${key}.body`, locale),
+}));
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  '@id': canonical,
+  name: title,
+  description,
+  url: canonical,
+  publisher: { '@id': ORG_ID },
+  about: { '@type': 'SoftwareApplication', name: 'ScanFence', applicationCategory: 'BusinessApplication' },
+};
+---
+
+<BaseLayout title={title} description={description} canonical={canonical} jsonLd={jsonLd} locale={locale}>
+  <Header />
+  <main>
+    <section class="demo-hero">
+      <div class="container">
+        <span class="eyebrow">{t('demo.hero.eyebrow', locale)}</span>
+        <h1>
+          {t('demo.hero.line1', locale)}<br />
+          <span class="serif-accent">{t('demo.hero.line2', locale)}</span>
+        </h1>
+        <p class="demo-lede">{t('demo.hero.lede', locale)}</p>
+        <div class="hero-cta">
+          <a href="https://app.scanfence.com/signup" class="btn btn-primary btn-lg" data-demo-cta="signup">{t('demo.hero.ctaPrimary', locale)}</a>
+          <a href={localizedUrl('/contact/', locale)} class="btn btn-ghost btn-lg" data-demo-cta="contact">{t('demo.hero.ctaSecondary', locale)}</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="demo-showcase">
+      <div class="container">
+        <DemoApp id="tour" />
+        <p class="demo-caption">{t('demo.caption', locale)}</p>
+      </div>
+    </section>
+
+    <section class="demo-core section">
+      <div class="container">
+        <header class="receipt-header">
+          <span class="eyebrow">{t('demo.core.eyebrow', locale)}</span>
+          <h2>
+            {t('demo.core.line1', locale)}<br />
+            <span class="serif-accent">{t('demo.core.line2', locale)}</span>
+          </h2>
+        </header>
+        <ul class="demo-core-grid">
+          {core.map((c, i) => (
+            <li class="demo-core-card">
+              <span class="features-num">{String(i + 1).padStart(2, '0')}</span>
+              <h3>{c.title}</h3>
+              <p>{c.body}</p>
+              <ul class="demo-bullets">
+                {c.bullets.map(b => <li>{b}</li>)}
+              </ul>
+              <a href="#tour" class="demo-try" data-demo-open={c.key}>{t('demo.core.try', locale)}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <section class="demo-more section">
+      <div class="container">
+        <header class="receipt-header">
+          <span class="eyebrow">{t('demo.more.eyebrow', locale)}</span>
+          <h2>{t('demo.more.heading', locale)}</h2>
+        </header>
+        <ul class="demo-more-grid">
+          {more.map(m => (
+            <li>
+              <h3>{m.title}</h3>
+              <p>{m.body}</p>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+
+    <CTA />
+  </main>
+  <Footer />
+</BaseLayout>

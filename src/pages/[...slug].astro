@@ -7,7 +7,7 @@ import { descriptionForPage } from '../lib/seo';
 export async function getStaticPaths() {
   const [pages, posts] = await Promise.all([getPages(), getAllPosts()]);
   const postSlugs = new Set(posts.map(p => p.slug));
-  const excludedSlugs = ['homepage', 'blog', 'sample-page', 'contact', 'pricing'];
+  const excludedSlugs = ['homepage', 'blog', 'sample-page', 'contact', 'pricing', 'demo'];
   return pages
     .filter(p => !excludedSlugs.includes(p.slug))
     .map(p => ({ params: { slug: p.slug }, props: { page: p, postSlugs: [...postSlugs] } }));
