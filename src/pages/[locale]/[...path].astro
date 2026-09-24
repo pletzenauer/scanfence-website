@@ -25,8 +25,6 @@ import Hero from '../../components/Hero.astro';
 import Features from '../../components/Features.astro';
 import Receipt from '../../components/Receipt.astro';
 import CTA from '../../components/CTA.astro';
-import DemoPage from '../../components/DemoPage.astro';
-import DemoTeaser from '../../components/DemoTeaser.astro';
 import BlogCard from '../../components/BlogCard.astro';
 import Pagination from '../../components/Pagination.astro';
 import { LOCALES, DEFAULT_LOCALE, type Locale } from '../../i18n/config';
@@ -39,7 +37,6 @@ type Kind =
   | 'home'
   | 'pricing'
   | 'contact'
-  | 'demo'
   | 'wp-page'
   | 'blog-index'
   | 'blog-post'
@@ -58,7 +55,7 @@ interface RouteProps {
 
 export async function getStaticPaths() {
   const POSTS_PER_PAGE_LOCAL = 12;
-  const EXCLUDED_WP_SLUGS = new Set(['homepage', 'blog', 'sample-page', 'contact', 'pricing', 'demo']);
+  const EXCLUDED_WP_SLUGS = new Set(['homepage', 'blog', 'sample-page', 'contact', 'pricing']);
   const NON_DEFAULT_LOCALES: Locale[] = LOCALES.filter(l => l !== DEFAULT_LOCALE) as Locale[];
 
   const [pages, posts, categories] = await Promise.all([
@@ -78,7 +75,6 @@ export async function getStaticPaths() {
     paths.push({ params: { locale, path: undefined },  props: { kind: 'home',    postSlugs } });
     paths.push({ params: { locale, path: 'pricing' },   props: { kind: 'pricing', postSlugs } });
     paths.push({ params: { locale, path: 'contact' },   props: { kind: 'contact', postSlugs } });
-    paths.push({ params: { locale, path: 'demo' },      props: { kind: 'demo',    postSlugs } });
 
     // WP pages.
     for (const p of wpPages) {
@@ -483,15 +479,12 @@ if (kind === 'category' && props.category) {
         </div>
       </div>
       <Features />
-      <DemoTeaser />
       <Receipt />
       <CTA />
     </main>
     <Footer />
   </BaseLayout>
 )}
-
-{kind === 'demo' && <DemoPage />}
 
 {kind === 'pricing' && pricingData && (
   <BaseLayout
