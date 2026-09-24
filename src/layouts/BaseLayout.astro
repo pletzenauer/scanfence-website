@@ -64,18 +64,15 @@ import '../styles/global.css';
   <meta name="description" content={description} />
   <meta name="robots" content={robots} />
   <meta name="author" content={SITE_NAME} />
-  <meta name="theme-color" content="#F1ECE0" media="(prefers-color-scheme: light)" />
-  <meta name="theme-color" content="#06080B" media="(prefers-color-scheme: dark)" />
+  <meta name="theme-color" content="#06080B" />
   {/* Dark mode, the app's "Mission" palette. Runs before first paint so there
       is no light flash. Stored choice wins (key shared with the app and the
-      live demo), otherwise the OS setting; the light paper look stays default. */}
+      live demo); dark is the default, light only when the visitor picked it. */}
   <script is:inline>
     (function () {
       var t = null;
       try { t = localStorage.getItem('scanfence-theme'); } catch (e) {}
-      if (t !== 'light' && t !== 'dark') {
-        t = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-      }
+      if (t !== 'light') t = 'dark';
       document.documentElement.classList.add(t);
     })();
   </script>

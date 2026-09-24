@@ -1787,5 +1787,7 @@ ul {
 :root.dark .pricing-card--featured .eyebrow--mute,
 :root.dark .pricing-card--featured .pricing-card-cadence { color: rgba(6, 8, 11, 0.6); }
 :root.dark .pricing-card--featured .pricing-card-price { border-color: rgba(6, 8, 11, 0.2); }
+:root.dark .pricing-card--featured h2 { color: var(--d01-paper-hi); }
+:root.dark .pricing-card--featured .btn-primary { background: #06080B; border-color: #06080B; color: #E8ECF2; }
 :root.dark .hero-receipt-dot::after { background: rgba(124, 224, 153, 0.35); }
 :root.dark .lang-switcher__menu { box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5); }
