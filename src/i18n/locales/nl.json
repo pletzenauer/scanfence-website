@@ -223,5 +223,25 @@
   "category.description": "Blader door alle {name}-artikelen op de ScanFence-blog.",
   "pagination.prev": "← Vorige",
   "pagination.next": "Volgende →",
-  "pagination.aria": "Paginering"
+  "pagination.aria": "Paginering",
+
+  "docs.siteTitle": "ScanFence Help",
+  "docs.homeTitle": "ScanFence Help · Zo gebruikt u de app",
+  "docs.help": "Help",
+  "docs.navAria": "Helponderdelen",
+  "docs.searchLabel": "Doorzoek de help",
+  "docs.searchPlaceholder": "geofence, prullenbak, CSV…",
+  "docs.searchEmpty": "Niets gevonden. Probeer een ander woord.",
+  "docs.allTopics": "Alle onderwerpen",
+  "docs.breadcrumbAria": "Kruimelpad",
+  "docs.pagerAria": "Vorig en volgend onderwerp",
+  "docs.previous": "← Vorige",
+  "docs.next": "Volgende →",
+  "docs.onThisPage": "Op deze pagina",
+  "docs.stillStuck": "<strong>Kom u er niet uit?</strong> Schrijf naar <a href=\"mailto:hello@scanfence.com\">hello@scanfence.com</a> of probeer het eerst in de <a href=\"{demo}\">live demo</a>. De demo draait op voorbeelddata en niets wat u wijzigt wordt opgeslagen.",
+  "docs.group.gettingStarted": "Aan de slag",
+  "docs.group.qrCodes": "QR-codes",
+  "docs.group.location": "Locatie",
+  "docs.group.insights": "Inzichten",
+  "docs.group.teamAccount": "Team en account"
 }

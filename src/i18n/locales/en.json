@@ -243,5 +243,25 @@
 
   "pagination.prev": "← Previous",
   "pagination.next": "Next →",
-  "pagination.aria": "Pagination"
+  "pagination.aria": "Pagination",
+
+  "docs.siteTitle": "ScanFence Help",
+  "docs.homeTitle": "ScanFence Help · How to use the app",
+  "docs.help": "Help",
+  "docs.navAria": "Help sections",
+  "docs.searchLabel": "Search the help",
+  "docs.searchPlaceholder": "geofence, trash, CSV…",
+  "docs.searchEmpty": "Nothing found. Try another word.",
+  "docs.allTopics": "All topics",
+  "docs.breadcrumbAria": "Breadcrumb",
+  "docs.pagerAria": "Previous and next topic",
+  "docs.previous": "← Previous",
+  "docs.next": "Next →",
+  "docs.onThisPage": "On this page",
+  "docs.stillStuck": "<strong>Still stuck?</strong> Write to <a href=\"mailto:hello@scanfence.com\">hello@scanfence.com</a> or try it first in the <a href=\"{demo}\">live demo</a>. The demo runs on sample data and nothing you change is saved.",
+  "docs.group.gettingStarted": "Getting started",
+  "docs.group.qrCodes": "QR codes",
+  "docs.group.location": "Location",
+  "docs.group.insights": "Insights",
+  "docs.group.teamAccount": "Team and account"
 }

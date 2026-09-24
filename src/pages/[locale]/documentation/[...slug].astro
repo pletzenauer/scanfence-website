@@ -1,0 +1,16 @@
+---
+import DocsLayout from '../../../layouts/DocsLayout.astro';
+import { ALL_SLUGS } from '../../../lib/docs';
+import { LOCALES, DEFAULT_LOCALE, type Locale } from '../../../i18n/config';
+
+export function getStaticPaths() {
+  return LOCALES.filter(l => l !== DEFAULT_LOCALE).flatMap(locale =>
+    ALL_SLUGS.map(slug => ({ params: { locale, slug: slug || undefined } })),
+  );
+}
+
+const locale = Astro.params.locale as Locale;
+const slug = Astro.params.slug ?? '';
+---
+
+<DocsLayout locale={locale} slug={slug} />

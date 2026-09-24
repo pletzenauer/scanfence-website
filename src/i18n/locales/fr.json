@@ -238,5 +238,25 @@
 
   "pagination.prev": "← Précédent",
   "pagination.next": "Suivant →",
-  "pagination.aria": "Pagination"
+  "pagination.aria": "Pagination",
+
+  "docs.siteTitle": "Aide ScanFence",
+  "docs.homeTitle": "Aide ScanFence · Utiliser l’application",
+  "docs.help": "Aide",
+  "docs.navAria": "Rubriques d’aide",
+  "docs.searchLabel": "Rechercher dans l’aide",
+  "docs.searchPlaceholder": "géorepérage, corbeille, CSV…",
+  "docs.searchEmpty": "Aucun résultat. Essayez un autre mot.",
+  "docs.allTopics": "Tous les sujets",
+  "docs.breadcrumbAria": "Fil d’Ariane",
+  "docs.pagerAria": "Sujet précédent et suivant",
+  "docs.previous": "← Précédent",
+  "docs.next": "Suivant →",
+  "docs.onThisPage": "Sur cette page",
+  "docs.stillStuck": "<strong>Toujours bloqué ?</strong> Écrivez à <a href=\"mailto:hello@scanfence.com\">hello@scanfence.com</a> ou essayez d’abord dans la <a href=\"{demo}\">démo en direct</a>. La démo utilise des données d’exemple et rien de ce que vous modifiez n’est enregistré.",
+  "docs.group.gettingStarted": "Premiers pas",
+  "docs.group.qrCodes": "Codes QR",
+  "docs.group.location": "Localisation",
+  "docs.group.insights": "Statistiques",
+  "docs.group.teamAccount": "Équipe et compte"
 }

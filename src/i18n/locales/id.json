@@ -238,5 +238,25 @@
 
   "pagination.prev": "← Sebelumnya",
   "pagination.next": "Berikutnya →",
-  "pagination.aria": "Paginasi"
+  "pagination.aria": "Paginasi",
+
+  "docs.siteTitle": "Bantuan ScanFence",
+  "docs.homeTitle": "Bantuan ScanFence · Cara menggunakan aplikasi",
+  "docs.help": "Bantuan",
+  "docs.navAria": "Bagian bantuan",
+  "docs.searchLabel": "Cari bantuan",
+  "docs.searchPlaceholder": "geofence, sampah, CSV…",
+  "docs.searchEmpty": "Tidak ditemukan. Coba kata lain.",
+  "docs.allTopics": "Semua topik",
+  "docs.breadcrumbAria": "Breadcrumb",
+  "docs.pagerAria": "Topik sebelumnya dan berikutnya",
+  "docs.previous": "← Sebelumnya",
+  "docs.next": "Berikutnya →",
+  "docs.onThisPage": "Di halaman ini",
+  "docs.stillStuck": "<strong>Masih bingung?</strong> Kirim email ke <a href=\"mailto:hello@scanfence.com\">hello@scanfence.com</a> atau coba dulu di <a href=\"{demo}\">demo langsung</a>. Demo memakai data contoh dan tidak ada perubahan yang disimpan.",
+  "docs.group.gettingStarted": "Memulai",
+  "docs.group.qrCodes": "Kode QR",
+  "docs.group.location": "Lokasi",
+  "docs.group.insights": "Wawasan",
+  "docs.group.teamAccount": "Tim dan akun"
 }

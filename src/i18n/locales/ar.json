@@ -238,5 +238,25 @@
 
   "pagination.prev": "← السابق",
   "pagination.next": "التالي →",
-  "pagination.aria": "ترقيم الصفحات"
+  "pagination.aria": "ترقيم الصفحات",
+
+  "docs.siteTitle": "مساعدة ScanFence",
+  "docs.homeTitle": "مساعدة ScanFence · كيفية استخدام التطبيق",
+  "docs.help": "المساعدة",
+  "docs.navAria": "أقسام المساعدة",
+  "docs.searchLabel": "ابحث في المساعدة",
+  "docs.searchPlaceholder": "سياج جغرافي، سلة المهملات، CSV…",
+  "docs.searchEmpty": "لا توجد نتائج. جرّب كلمة أخرى.",
+  "docs.allTopics": "كل المواضيع",
+  "docs.breadcrumbAria": "مسار التنقل",
+  "docs.pagerAria": "الموضوع السابق والتالي",
+  "docs.previous": "→ السابق",
+  "docs.next": "التالي ←",
+  "docs.onThisPage": "في هذه الصفحة",
+  "docs.stillStuck": "<strong>هل ما زلت بحاجة إلى مساعدة؟</strong> راسلنا على <a href=\"mailto:hello@scanfence.com\">hello@scanfence.com</a> أو جرّب أولاً في <a href=\"{demo}\">العرض التجريبي المباشر</a>. يعمل العرض التجريبي ببيانات نموذجية ولا يُحفظ أي تغيير تجريه.",
+  "docs.group.gettingStarted": "البدء",
+  "docs.group.qrCodes": "رموز QR",
+  "docs.group.location": "الموقع",
+  "docs.group.insights": "التحليلات",
+  "docs.group.teamAccount": "الفريق والحساب"
 }

@@ -1,54 +1,67 @@
 ---
 /**
- * Layout of the help docs (src/pages/documentation/*.md). Three columns on
- * wide screens: section nav, the article, and "On this page". Markdown pages
- * name it in their frontmatter, so Astro hands over `frontmatter` and the
- * page's `headings`.
+ * Layout of the help docs. Three columns on wide screens: section nav, the
+ * article, and "On this page". Rendered by the routes in
+ * src/pages/documentation/ and src/pages/[locale]/documentation/.
  */
 import BaseLayout from './BaseLayout.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import { DOCS_NAV, docHref, docSlugFor, neighbours } from '../lib/docs';
+import { DOCS_NAV, docHref, docsFor, localizeDocLinks, neighbours } from '../lib/docs';
+import { t, localizedUrl } from '../i18n/t';
+import type { Locale } from '../i18n/config';
 import '../styles/docs.css';
 
 interface Props {
-  frontmatter: { title: string; description: string; eyebrow?: string };
-  headings?: { depth: number; slug: string; text: string }[];
+  locale: Locale;
+  slug: string;
 }
 
-const { frontmatter, headings = [] } = Astro.props;
-const slug = docSlugFor(Astro.url.pathname) ?? '';
-const { current, prev, next } = neighbours(slug);
+const { locale, slug } = Astro.props;
+const pages = await docsFor(locale);
+const page = pages.get(slug)!;
+const { group, prev, next } = neighbours(slug);
+const headings = (page.rendered?.metadata?.headings ?? []) as { depth: number; slug: string; text: string }[];
 const toc = headings.filter(h => h.depth === 2 || h.depth === 3);
-const eyebrow = frontmatter.eyebrow ?? current?.group ?? 'Help';
+const html = await localizeDocLinks(page.rendered?.html ?? '', locale);
+const eyebrow = page.data.eyebrow ?? (group ? t(`docs.group.${group}`, locale) : t('docs.help', locale));
+const titleOf = (s: string) => pages.get(s)!.data.title;
 ---
 
 <BaseLayout
-  title={slug ? `${frontmatter.title} · ScanFence Help` : 'ScanFence Help · How to use the app'}
-  description={frontmatter.description}
-  canonical={`https://scanfence.com${docHref(slug)}`}
-  locale="en"
+  title={slug ? `${page.data.title} · ${t('docs.siteTitle', locale)}` : t('docs.homeTitle', locale)}
+  description={page.data.description}
+  canonical={`https://scanfence.com${docHref(slug, locale)}`}
+  locale={locale}
+  robots={page.translated ? undefined : 'noindex,follow'}
 >
   <Header />
   <div class="docs">
-    <aside class="docs-nav" aria-label="Help sections">
+    <aside class="docs-nav" aria-label={t('docs.navAria', locale)}>
       <div class="docs-search">
-        <label for="docsSearch" class="eyebrow eyebrow--mute">Search the help</label>
-        <input id="docsSearch" type="search" placeholder="geofence, trash, CSV…" autocomplete="off" />
+        <label for="docsSearch" class="eyebrow eyebrow--mute">{t('docs.searchLabel', locale)}</label>
+        <input
+          id="docsSearch"
+          type="search"
+          placeholder={t('docs.searchPlaceholder', locale)}
+          autocomplete="off"
+          data-index={localizedUrl('/documentation/search.json', locale)}
+          data-empty={t('docs.searchEmpty', locale)}
+        />
         <ul id="docsSearchResults" class="docs-search-results" hidden></ul>
       </div>
       <details class="docs-nav-toggle" open>
-        <summary>All topics</summary>
-        {DOCS_NAV.map(group => (
+        <summary>{t('docs.allTopics', locale)}</summary>
+        {DOCS_NAV.map(g => (
           <div class="docs-nav-group">
-            <p class="eyebrow eyebrow--mute">{group.label}</p>
+            <p class="eyebrow eyebrow--mute">{t(`docs.group.${g.key}`, locale)}</p>
             <ul>
-              {group.items.map(item => (
+              {g.slugs.map(s => (
                 <li>
                   <a
-                    href={docHref(item.slug)}
-                    aria-current={item.slug === slug ? 'page' : undefined}
-                  >{item.title}</a>
+                    href={docHref(s, locale)}
+                    aria-current={s === slug ? 'page' : undefined}
+                  >{titleOf(s)}</a>
                 </li>
               ))}
             </ul>
@@ -59,41 +72,39 @@ const eyebrow = frontmatter.eyebrow ?? current?.group ?? 'Help';
 
     <main class="docs-main">
       <article class="docs-article">
-        <nav class="docs-crumbs eyebrow eyebrow--mute" aria-label="Breadcrumb">
-          <a href="/documentation/">Help</a>
+        <nav class="docs-crumbs eyebrow eyebrow--mute" aria-label={t('docs.breadcrumbAria', locale)}>
+          <a href={docHref('', locale)}>{t('docs.help', locale)}</a>
           <span aria-hidden="true">/</span>
           <span>{eyebrow}</span>
         </nav>
-        <h1>{frontmatter.title}</h1>
-        <p class="docs-lede">{frontmatter.description}</p>
-        <div class="docs-body">
-          <slot />
-        </div>
+        <h1>{page.data.title}</h1>
+        <p class="docs-lede">{page.data.description}</p>
+        <div class="docs-body" set:html={html} />
 
-        <nav class="docs-pager" aria-label="Previous and next topic">
-          {prev ? (
-            <a class="docs-pager-prev" href={docHref(prev.slug)}>
-              <span class="eyebrow eyebrow--mute">← Previous</span>
-              <span>{prev.title}</span>
+        <nav class="docs-pager" aria-label={t('docs.pagerAria', locale)}>
+          {prev !== undefined ? (
+            <a class="docs-pager-prev" href={docHref(prev, locale)}>
+              <span class="eyebrow eyebrow--mute">{t('docs.previous', locale)}</span>
+              <span>{titleOf(prev)}</span>
             </a>
           ) : <span />}
-          {next && (
-            <a class="docs-pager-next" href={docHref(next.slug)}>
-              <span class="eyebrow eyebrow--mute">Next →</span>
-              <span>{next.title}</span>
+          {next !== undefined && (
+            <a class="docs-pager-next" href={docHref(next, locale)}>
+              <span class="eyebrow eyebrow--mute">{t('docs.next', locale)}</span>
+              <span>{titleOf(next)}</span>
             </a>
           )}
         </nav>
 
         <aside class="docs-help">
-          <p><strong>Still stuck?</strong> Write to <a href="mailto:hello@scanfence.com">hello@scanfence.com</a> or try it first in the <a href="/demo/app/">live demo</a>. The demo runs on sample data and nothing you change is saved.</p>
+          <p set:html={t('docs.stillStuck', locale, { demo: localizedUrl('/demo/app/', locale) })} />
         </aside>
       </article>
     </main>
 
     {toc.length > 1 && (
-      <aside class="docs-toc" aria-label="On this page">
-        <p class="eyebrow eyebrow--mute">On this page</p>
+      <aside class="docs-toc" aria-label={t('docs.onThisPage', locale)}>
+        <p class="eyebrow eyebrow--mute">{t('docs.onThisPage', locale)}</p>
         <ul>
           {toc.map(h => (
             <li class={h.depth === 3 ? 'is-sub' : undefined}><a href={`#${h.slug}`}>{h.text}</a></li>
@@ -162,7 +173,7 @@ const eyebrow = frontmatter.eyebrow ?? current?.group ?? 'Help';
   const esc = (s: string) => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
   const load = async () => {
     if (index) return index;
-    try { index = await (await fetch('/documentation/search.json')).json(); } catch { index = []; }
+    try { index = await (await fetch(input!.dataset.index!)).json(); } catch { index = []; }
     return index!;
   };
   const search = async () => {
@@ -186,7 +197,7 @@ const eyebrow = frontmatter.eyebrow ?? current?.group ?? 'Help';
     hits.sort((a, b) => b.score - a.score);
     list.innerHTML = hits.length
       ? hits.slice(0, 8).map(h => `<li><a href="${h.href}"><span>${esc(h.label)}</span><small>${esc(h.sub)}</small></a></li>`).join('')
-      : '<li class="is-empty">Nothing found. Try another word.</li>';
+      : `<li class="is-empty">${esc(input.dataset.empty ?? '')}</li>`;
     list.hidden = false;
   };
   input?.addEventListener('focus', load, { once: true });

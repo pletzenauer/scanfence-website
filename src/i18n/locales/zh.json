@@ -238,5 +238,25 @@
 
   "pagination.prev": "← 上一页",
   "pagination.next": "下一页 →",
-  "pagination.aria": "分页"
+  "pagination.aria": "分页",
+
+  "docs.siteTitle": "ScanFence 帮助",
+  "docs.homeTitle": "ScanFence 帮助 · 如何使用应用",
+  "docs.help": "帮助",
+  "docs.navAria": "帮助栏目",
+  "docs.searchLabel": "搜索帮助",
+  "docs.searchPlaceholder": "地理围栏、回收站、CSV…",
+  "docs.searchEmpty": "未找到结果，请换个词试试。",
+  "docs.allTopics": "全部主题",
+  "docs.breadcrumbAria": "面包屑导航",
+  "docs.pagerAria": "上一个和下一个主题",
+  "docs.previous": "← 上一页",
+  "docs.next": "下一页 →",
+  "docs.onThisPage": "本页内容",
+  "docs.stillStuck": "<strong>仍有疑问？</strong> 请发送邮件至 <a href=\"mailto:hello@scanfence.com\">hello@scanfence.com</a> ，或先在 <a href=\"{demo}\">在线演示</a>中试用。演示使用示例数据，所做的任何更改都不会保存。",
+  "docs.group.gettingStarted": "入门",
+  "docs.group.qrCodes": "二维码",
+  "docs.group.location": "位置",
+  "docs.group.insights": "数据分析",
+  "docs.group.teamAccount": "团队与账户"
 }

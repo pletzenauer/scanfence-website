@@ -238,5 +238,25 @@
 
   "pagination.prev": "← 前へ",
   "pagination.next": "次へ →",
-  "pagination.aria": "ページネーション"
+  "pagination.aria": "ページネーション",
+
+  "docs.siteTitle": "ScanFence ヘルプ",
+  "docs.homeTitle": "ScanFence ヘルプ · アプリの使い方",
+  "docs.help": "ヘルプ",
+  "docs.navAria": "ヘルプの項目",
+  "docs.searchLabel": "ヘルプを検索",
+  "docs.searchPlaceholder": "ジオフェンス、ゴミ箱、CSV…",
+  "docs.searchEmpty": "見つかりませんでした。別の言葉でお試しください。",
+  "docs.allTopics": "すべてのトピック",
+  "docs.breadcrumbAria": "パンくずリスト",
+  "docs.pagerAria": "前後のトピック",
+  "docs.previous": "← 前へ",
+  "docs.next": "次へ →",
+  "docs.onThisPage": "このページの内容",
+  "docs.stillStuck": "<strong>解決しませんか？</strong>  <a href=\"mailto:hello@scanfence.com\">hello@scanfence.com</a> までご連絡いただくか、まず <a href=\"{demo}\">ライブデモ</a>でお試しください。デモはサンプルデータで動作し、変更内容は保存されません。",
+  "docs.group.gettingStarted": "はじめに",
+  "docs.group.qrCodes": "QRコード",
+  "docs.group.location": "位置情報",
+  "docs.group.insights": "分析",
+  "docs.group.teamAccount": "チームとアカウント"
 }

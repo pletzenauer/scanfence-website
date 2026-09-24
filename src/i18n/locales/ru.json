@@ -238,5 +238,25 @@
 
   "pagination.prev": "← Назад",
   "pagination.next": "Далее →",
-  "pagination.aria": "Пагинация"
+  "pagination.aria": "Пагинация",
+
+  "docs.siteTitle": "Справка ScanFence",
+  "docs.homeTitle": "Справка ScanFence · Как пользоваться приложением",
+  "docs.help": "Справка",
+  "docs.navAria": "Разделы справки",
+  "docs.searchLabel": "Поиск по справке",
+  "docs.searchPlaceholder": "геозона, корзина, CSV…",
+  "docs.searchEmpty": "Ничего не найдено. Попробуйте другое слово.",
+  "docs.allTopics": "Все темы",
+  "docs.breadcrumbAria": "Навигационная цепочка",
+  "docs.pagerAria": "Предыдущая и следующая тема",
+  "docs.previous": "← Назад",
+  "docs.next": "Далее →",
+  "docs.onThisPage": "На этой странице",
+  "docs.stillStuck": "<strong>Остались вопросы?</strong> Напишите на <a href=\"mailto:hello@scanfence.com\">hello@scanfence.com</a> или сначала попробуйте в <a href=\"{demo}\">живом демо</a>. Демо работает на примерных данных, и ваши изменения не сохраняются.",
+  "docs.group.gettingStarted": "Начало работы",
+  "docs.group.qrCodes": "QR-коды",
+  "docs.group.location": "Местоположение",
+  "docs.group.insights": "Аналитика",
+  "docs.group.teamAccount": "Команда и аккаунт"
 }

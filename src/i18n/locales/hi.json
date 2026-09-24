@@ -218,5 +218,25 @@
   "category.description": "ScanFence ब्लॉग पर सभी {name} लेख ब्राउज़ करें।",
   "pagination.prev": "← पिछला",
   "pagination.next": "अगला →",
-  "pagination.aria": "पेजिनेशन"
+  "pagination.aria": "पेजिनेशन",
+
+  "docs.siteTitle": "ScanFence सहायता",
+  "docs.homeTitle": "ScanFence सहायता · ऐप का उपयोग कैसे करें",
+  "docs.help": "सहायता",
+  "docs.navAria": "सहायता अनुभाग",
+  "docs.searchLabel": "सहायता में खोजें",
+  "docs.searchPlaceholder": "जियोफ़ेंस, ट्रैश, CSV…",
+  "docs.searchEmpty": "कुछ नहीं मिला। कोई दूसरा शब्द आज़माएँ।",
+  "docs.allTopics": "सभी विषय",
+  "docs.breadcrumbAria": "ब्रेडक्रंब",
+  "docs.pagerAria": "पिछला और अगला विषय",
+  "docs.previous": "← पिछला",
+  "docs.next": "अगला →",
+  "docs.onThisPage": "इस पेज पर",
+  "docs.stillStuck": "<strong>अब भी अटके हैं?</strong>  <a href=\"mailto:hello@scanfence.com\">hello@scanfence.com</a> पर लिखें या पहले <a href=\"{demo}\">लाइव डेमो</a> में आज़माएँ। डेमो नमूना डेटा पर चलता है और आपका कोई बदलाव सहेजा नहीं जाता।",
+  "docs.group.gettingStarted": "शुरुआत",
+  "docs.group.qrCodes": "QR कोड",
+  "docs.group.location": "लोकेशन",
+  "docs.group.insights": "एनालिटिक्स",
+  "docs.group.teamAccount": "टीम और खाता"
 }
