@@ -93,6 +93,19 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_URI} !\.(css|js|png|jpe?g|gif|svg|ico|webp|woff2?|map)$ [NC]
 RewriteRule ^demo/app/ /demo/app/index.html [L]
 
+# 3e) The old hand-built product tour lived at /demo/ (and /<locale>/demo/)
+#     for a few hours on 2026-09-24; send those links to the real demo.
+RewriteRule ^demo/?$ /demo/app/ [R=301,L]
+RewriteRule ^(zh|es|ar|pt|id|fr|ja|ru|de|nl|hi)/demo/?$ /demo/app/ [R=301,L]
+
+# 3f) No directory listings. The host has autoindex on, so a folder without
+#     an index.html (/assets/, /_astro/, /blog/page/ …) printed its file
+#     list. Done with mod_rewrite rather than "Options -Indexes", which this
+#     shared host may not allow in .htaccess (that would 500 the whole site).
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteCond %{REQUEST_FILENAME}/index.html !-f
+RewriteRule ^ - [R=404,L]
+
 # 4) Strip trailing index.html (clean URLs in the address bar)
 RewriteCond %{THE_REQUEST} \s/+(.*?)index\.html[\s?] [NC]
 RewriteRule ^ /%1 [R=301,L]
