@@ -45,6 +45,9 @@
   "hero.receipt.eyebrow": "LIVE · SAMPLE",
   "hero.receipt.regionLabel": "GEHOSTET IN DER EU",
   "hero.receipt.latency": "P50 · 117MS",
+  "hero.demo.aria": "Live-Demo öffnen: die echte ScanFence-App mit Beispieldaten",
+  "hero.demo.alt": "ScanFence-Dashboard in der Live-Demo: Scans heute, Compliance-Rate, Geofences und ein Live-Feed verifizierter und blockierter Scans",
+  "hero.demo.cta": "Klicken und Live-Demo ausprobieren →",
 
   "features.eyebrow": "DIE WACHE",
   "features.heading.line1": "Sechs Dinge, die der Code tut,",
