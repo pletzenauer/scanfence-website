@@ -1,3 +1,6 @@
+import fs from 'node:fs';
+import path from 'node:path';
+import { createHash } from 'node:crypto';
 import { CONSOLIDATED_POSTS } from '../seo/consolidated-posts';
 import { ORG_ID } from './seo';
 const WP_API = import.meta.env.WP_API_URL || 'https://cms.scanfence.com/wp-json/wp/v2';
@@ -47,10 +50,39 @@ export interface WPMedia {
   alt_text: string;
 }
 
+// Every CMS response is kept twice:
+//  - in memory, so the ~20 locales x every route asking for the same post list
+//    cost one request per URL per build instead of hundreds;
+//  - on disk in .cms-cache/, which CI keeps between runs (actions/cache).
+// CMS_CACHE=offline builds from disk alone and only asks the CMS for URLs the
+// cache has never seen. Otherwise the CMS is asked and the disk copy is the
+// fallback when it times out, so a slow cms.scanfence.com no longer fails the
+// deploy.
+const CACHE_DIR = '.cms-cache';
+const OFFLINE = process.env.CMS_CACHE === 'offline';
+
+interface Cached { status: number; totalPages: string | null; body: string }
+
+const memo = new Map<string, Promise<Cached>>();
+
+function cacheFile(url: string): string {
+  // The API host can come from a secret; keep it out of the file name.
+  return path.join(CACHE_DIR, createHash('sha1').update(url).digest('hex') + '.json');
+}
+
+function readDisk(url: string): Cached | null {
+  try { return JSON.parse(fs.readFileSync(cacheFile(url), 'utf8')); } catch { return null; }
+}
+
+function writeDisk(url: string, c: Cached): void {
+  fs.mkdirSync(CACHE_DIR, { recursive: true });
+  fs.writeFileSync(cacheFile(url), JSON.stringify(c));
+}
+
 // Retries transient 5xx + network failures from cms.scanfence.com.
 // KonsoleH shared hosting occasionally returns 508 "Resource Limit Reached" —
 // without retry, a single blip fails the whole GitHub Actions build.
-async function wpFetch(url: string, retries = 3): Promise<Response> {
+async function fetchLive(url: string, retries = 3): Promise<Response> {
   let lastErr: unknown;
   for (let attempt = 0; attempt < retries; attempt++) {
     try {
@@ -69,6 +101,36 @@ async function wpFetch(url: string, retries = 3): Promise<Response> {
     }
   }
   throw lastErr ?? new Error(`wpFetch failed: ${url}`);
+}
+
+async function load(url: string): Promise<Cached> {
+  const disk = readDisk(url);
+  if (OFFLINE && disk) return disk;
+  try {
+    const res = await fetchLive(url);
+    const c = { status: res.status, totalPages: res.headers.get('X-WP-TotalPages'), body: await res.text() };
+    if (res.ok) writeDisk(url, c);
+    else if (disk) return disk;
+    return c;
+  } catch (err) {
+    if (disk) {
+      console.warn(`[cms] ${url} unreachable, using cached copy`);
+      return disk;
+    }
+    throw err;
+  }
+}
+
+async function wpFetch(url: string): Promise<Response> {
+  let p = memo.get(url);
+  if (!p) {
+    p = load(url);
+    memo.set(url, p);
+    p.catch(() => memo.delete(url));
+  }
+  const c = await p;
+  const headers = c.totalPages ? { 'X-WP-TotalPages': c.totalPages } : undefined;
+  return new Response(c.body, { status: c.status, headers });
 }
 
 async function fetchAPI<T>(endpoint: string): Promise<T> {

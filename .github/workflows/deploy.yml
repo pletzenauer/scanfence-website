@@ -3,7 +3,16 @@ name: Build and deploy scanfence.com
 on:
   push:
     branches: [main]
-  workflow_dispatch: {}
+  # Daily rebuild pulls fresh posts from the CMS, so WordPress edits go live
+  # without a code push.
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+    inputs:
+      refresh_cms:
+        description: Fetch fresh content from cms.scanfence.com instead of the cache
+        type: boolean
+        default: true
 
 concurrency:
   group: deploy-prod
@@ -26,9 +35,18 @@ jobs:
 
       - run: npm ci
 
+      # CMS responses from the last build. Pushes build from this copy, so a
+      # slow or blocking cms.scanfence.com can't fail a code deploy.
+      - uses: actions/cache@v4
+        with:
+          path: .cms-cache
+          key: cms-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: cms-
+
       - name: Build Astro
         env:
           WP_API_URL: ${{ secrets.WP_API_URL }}
+          CMS_CACHE: ${{ (github.event_name == 'schedule' || inputs.refresh_cms) && 'refresh' || 'offline' }}
         run: npm run build
 
       - name: Deploy dist/ to flokinet via FTPS
