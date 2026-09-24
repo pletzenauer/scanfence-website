@@ -242,6 +242,38 @@ export function demoteExtraH1s(html: string): string {
   });
 }
 
+/**
+ * Dark mode for WordPress content. The CMS pages carry their own <style>
+ * blocks with hard-coded paper-palette hex values, which the site's token
+ * swap can't reach. Rewrite each known literal to a CSS variable that falls
+ * back to the original, so light mode renders byte-for-byte as before and
+ * `:root.dark` in global.css supplies the dark values.
+ */
+const WP_COLOR_VARS: Record<string, string> = {
+  '#faf7ec': '--wp-cream',
+  '#0a0e15': '--wp-ink',
+  '#1f2937': '--wp-ink',
+  '#5b6470': '--wp-mute',
+  '#6b7280': '--wp-mute',
+  '#0f8a5f': '--wp-green',
+  '#e5e7eb': '--wp-rule',
+};
+
+function themeColors(css: string): string {
+  return css
+    .replace(/#[0-9a-f]{6}\b/gi, (hex) => {
+      const v = WP_COLOR_VARS[hex.toLowerCase()];
+      return v ? `var(${v}, ${hex})` : hex;
+    })
+    .replace(/rgba\(\s*10\s*,\s*14\s*,\s*21\s*,/g, 'rgba(var(--wp-ink-rgb, 10, 14, 21),');
+}
+
+export function themeWPColors(html: string): string {
+  return html
+    .replace(/(<style\b[^>]*>)([\s\S]*?)(<\/style>)/gi, (_, open, css, close) => open + themeColors(css) + close)
+    .replace(/(\sstyle=)(["'])(.*?)\2/gi, (_, attr, q, css) => attr + q + themeColors(css) + q);
+}
+
 export function rewriteWPLinks(html: string, knownPostSlugs: Set<string>): string {
   return html.replace(
     /(\bhref=["'])((?:https?:\/\/(?:www\.)?scanfence\.com)?)\/([^"'#?\s]*?)\/?(["'#?])/gi,

@@ -6,6 +6,7 @@ import {
   getPostsByCategory,
   getMedia,
   rewriteWPLinks,
+  themeWPColors,
   rewriteSchemaUrls,
   demoteExtraH1s,
   demoteAllH1s,
@@ -297,7 +298,7 @@ if (kind === 'wp-page' && props.page) {
   const titleText = translation?.title ?? page.title.rendered;
   const yoastTitle = translation?.yoastTitle ?? seo?.title;
   const description = translation?.yoastDescription ?? seo?.description;
-  const rewritten = demoteExtraH1s(rewriteWPLinks(content, knownPostSlugs));
+  const rewritten = demoteExtraH1s(themeWPColors(rewriteWPLinks(content, knownPostSlugs)));
   const canonical = `https://scanfence.com${localizedUrl(`/${page.slug}/`, locale)}`;
   const fixedSchema = seo?.schema ? rewriteSchemaUrls(seo.schema, knownPostSlugs) : undefined;
   wpPageView = {
@@ -397,7 +398,7 @@ if (kind === 'blog-post' && props.post) {
   const titleText = translation?.title ?? post.title.rendered;
   const yoastTitle = translation?.yoastTitle ?? seo?.title;
   const description = translation?.yoastDescription ?? seo?.description;
-  const rewritten = demoteAllH1s(rewriteWPLinks(content, knownPostSlugs));
+  const rewritten = demoteAllH1s(themeWPColors(rewriteWPLinks(content, knownPostSlugs)));
   const canonical = `https://scanfence.com${localizedUrl(`/blog/${post.slug}/`, locale)}`;
   const fixedSchema = seo?.schema ? rewriteSchemaUrls(seo.schema, knownPostSlugs) : undefined;
   blogPostView = {

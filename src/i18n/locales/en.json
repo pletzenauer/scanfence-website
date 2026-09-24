@@ -13,6 +13,7 @@
   "nav.startPlan": "Start a plan →",
   "nav.liveDemo": "Live demo",
   "nav.toggleMenu": "Toggle menu",
+  "nav.toggleTheme": "Toggle dark mode",
   "nav.primary": "Primary",
   "nav.languageSwitcherLabel": "Language",
   "nav.languageSwitcherAria": "Select language",

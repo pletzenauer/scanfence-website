@@ -40,6 +40,38 @@
   --header-height: 64px;
 }
 
+/* ===== Dark mode — the app's "Mission" palette =====
+   Toggled by the .dark class on <html> (set before paint in BaseLayout,
+   same localStorage key as app.scanfence.com and /demo/app/). Every rule
+   below reads the tokens, so swapping them re-skins the whole site; the
+   few hardcoded cream tints get their own overrides further down. */
+:root.dark {
+  color-scheme: dark;
+  --d01-paper:      #06080B;
+  --d01-paper-hi:   #0E1218;
+  --d01-ink:        #E8ECF2;
+  --d01-steel:      #8E97A8;
+  --d01-mute:       #8E97A8;
+  --d01-rule:       #222A3A;
+  --d01-rule-hard:  #2E3A4F;
+
+  --d01-signal:     #7CE099;
+  --d01-signal-bg:  #12261A;
+  --d01-vermil:     #FF5C6C;
+  --d01-vermil-bg:  #2A1216;
+  --d01-mustard:    #FFB547;
+  --d01-mustard-bg: #2A2010;
+  --d01-sky:        #5EE6FF;
+
+  /* WordPress content colors, see themeWPColors() in lib/wordpress.ts */
+  --wp-cream:   #0E1218;
+  --wp-ink:     #E8ECF2;
+  --wp-ink-rgb: 232, 236, 242;
+  --wp-mute:    #8E97A8;
+  --wp-green:   #7CE099;
+  --wp-rule:    #222A3A;
+}
+
 /* ===== Reset ===== */
 *, *::before, *::after {
   margin: 0;
@@ -1624,3 +1656,38 @@ ul {
   .pricing-grid { grid-template-columns: 1fr; }
   .pricing-enterprise { grid-template-columns: 1fr; }
 }
+
+/* ===== Theme toggle ===== */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  margin-inline-start: calc(-1 * var(--space-4));
+  padding: 0;
+  background: none;
+  border: 1px solid transparent;
+  color: var(--d01-steel);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.theme-toggle:hover { color: var(--d01-ink); border-color: var(--d01-rule-hard); }
+.theme-toggle svg { width: 18px; height: 18px; }
+.theme-toggle__sun { display: none; }
+:root.dark .theme-toggle__sun { display: block; }
+:root.dark .theme-toggle__moon { display: none; }
+
+@media (max-width: 1024px) {
+  .theme-toggle { margin-inline-start: auto; margin-inline-end: calc(-1 * var(--space-4)); }
+}
+
+/* Cream tints that sit on inverted (ink) surfaces. In dark mode those
+   surfaces turn light, so the tints flip to the dark end. */
+:root.dark .pricing-card--featured .pricing-card-blurb,
+:root.dark .pricing-card--featured .pricing-card-features li { color: rgba(6, 8, 11, 0.78); }
+:root.dark .pricing-card--featured .eyebrow--mute,
+:root.dark .pricing-card--featured .pricing-card-cadence { color: rgba(6, 8, 11, 0.6); }
+:root.dark .pricing-card--featured .pricing-card-price { border-color: rgba(6, 8, 11, 0.2); }
+:root.dark .hero-receipt-dot::after { background: rgba(124, 224, 153, 0.35); }
+:root.dark .lang-switcher__menu { box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5); }

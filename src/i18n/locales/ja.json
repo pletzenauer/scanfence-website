@@ -12,6 +12,7 @@
   "nav.signIn": "ログイン",
   "nav.startPlan": "プランを開始 →",
   "nav.toggleMenu": "メニューを切り替え",
+  "nav.toggleTheme": "ダークモードを切り替え",
   "nav.primary": "メインナビゲーション",
   "nav.languageSwitcherLabel": "言語",
   "nav.languageSwitcherAria": "言語を選択",
