@@ -621,7 +621,7 @@ ul {
 
 .receipt-stats {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0;
   border-top: var(--rule-hard);
   border-inline-start: var(--rule-hard);

@@ -52,9 +52,6 @@ export const PAGE_DESCRIPTIONS: Record<string, string> = {
   support:
     'Get help with ScanFence — troubleshooting scans that route to the wrong destination, ' +
     'geofence accuracy, billing questions, and how to reach the team.',
-  'about-raphael':
-    'Raphael on why ScanFence exists: a printed QR code should not be frozen the moment ' +
-    'it leaves the printer, and it should know where and when it was scanned.',
 };
 
 /**

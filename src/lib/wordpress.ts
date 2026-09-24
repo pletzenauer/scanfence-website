@@ -1,4 +1,5 @@
 import { CONSOLIDATED_POSTS } from '../seo/consolidated-posts';
+import { ORG_ID } from './seo';
 const WP_API = import.meta.env.WP_API_URL || 'https://cms.scanfence.com/wp-json/wp/v2';
 
 export interface WPPost {
@@ -145,7 +146,7 @@ export function stripHtml(html: string): string {
 
 const ROOT_SLUG_ALLOWLIST = new Set([
   '', 'pricing', 'features', 'faq', 'documentation', 'contact', 'blog',
-  'about-raphael', 'support', 'datenschutzerklaerung', 'terms-and-conditions',
+  'support', 'datenschutzerklaerung', 'terms-and-conditions',
   'category', 'assets', 'wp-content', 'wp-admin', 'wp-login.php',
 ]);
 
@@ -164,6 +165,29 @@ const LEGACY_PATH_REDIRECTS: Record<string, string> = {
  * fix them up to match the Astro routing.
  */
 export function rewriteSchemaUrls<T>(schema: T, knownPostSlugs: Set<string>): T {
+  return attributeToOrganization(rewriteUrls(schema, knownPostSlugs));
+}
+
+/**
+ * Yoast credits every post to the WP user who wrote it, as a Person node with
+ * their bio. The site does not name individuals, so drop Person nodes and
+ * credit the site-wide Organization (emitted by BaseLayout) instead.
+ */
+function attributeToOrganization<T>(schema: T): T {
+  const graph = (schema as { '@graph'?: Array<Record<string, unknown>> } | null)?.['@graph'];
+  if (!Array.isArray(graph)) return schema;
+  const personIds = new Set(graph.filter(n => n['@type'] === 'Person').map(n => n['@id']));
+  const nodes = graph
+    .filter(n => n['@type'] !== 'Person')
+    .map(n => {
+      const author = n.author as { '@id'?: unknown } | undefined;
+      if (!author || !personIds.has(author['@id'])) return n;
+      return { ...n, author: { '@id': ORG_ID } };
+    });
+  return { ...(schema as object), '@graph': nodes } as T;
+}
+
+function rewriteUrls<T>(schema: T, knownPostSlugs: Set<string>): T {
   if (schema === null || schema === undefined) return schema;
   if (typeof schema === 'string') {
     return schema.replace(
@@ -178,12 +202,12 @@ export function rewriteSchemaUrls<T>(schema: T, knownPostSlugs: Set<string>): T 
     ) as unknown as T;
   }
   if (Array.isArray(schema)) {
-    return schema.map(item => rewriteSchemaUrls(item, knownPostSlugs)) as unknown as T;
+    return schema.map(item => rewriteUrls(item, knownPostSlugs)) as unknown as T;
   }
   if (typeof schema === 'object') {
     const out: Record<string, unknown> = {};
     for (const [k, v] of Object.entries(schema as Record<string, unknown>)) {
-      out[k] = rewriteSchemaUrls(v, knownPostSlugs);
+      out[k] = rewriteUrls(v, knownPostSlugs);
     }
     return out as T;
   }

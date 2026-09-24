@@ -96,7 +96,7 @@ Hard rules:
 1. ALWAYS keep the brand name "ScanFence" untranslated and in Latin script,
    even in Chinese / Arabic / Japanese / Russian / Korean copy.
 2. Keep proper nouns and short ALL-CAPS technical labels (e.g. "QR · DYNAMIC",
-   "SOC-2 TYPE II", "P50 · 117MS", "GPS · GEOFENCED", "QR · DYNAMIC") untranslated.
+   "P50 · 117MS", "GPS · GEOFENCED", "QR · DYNAMIC") untranslated.
 3. Keep email addresses, URLs, code samples, version numbers (v2.4.1), and price
    numbers (29, 79, 199, €0.0008) exactly as they appear in the source.
 4. Preserve the placeholder syntax {var} verbatim — do not translate inside the braces.

@@ -52,6 +52,10 @@ RewriteRule ^privacy-policy/?$  /datenschutzerklaerung/   [R=301,L]
 RewriteRule ^terms/?$           /terms-and-conditions/    [R=301,L]
 RewriteRule ^terms-of-service/?$ /terms-and-conditions/   [R=301,L]
 
+# 2b) 301 the retired founder page to the homepage (page removed from the site)
+RewriteRule ^about-raphael/?$ / [R=301,L]
+RewriteRule ^(zh|es|ar|pt|id|fr|ja|ru|de|nl|hi)/about-raphael/?$ /$1/ [R=301,L]
+
 # 3) 301 legacy blog pagination /blog/N/ -> /blog/page/N/  (N=2..9)
 RewriteRule ^blog/([0-9])/?$    /blog/page/$1/            [R=301,L]
 

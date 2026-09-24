@@ -55,7 +55,7 @@ interface RouteProps {
 
 export async function getStaticPaths() {
   const POSTS_PER_PAGE_LOCAL = 12;
-  const EXCLUDED_WP_SLUGS = new Set(['homepage', 'blog', 'sample-page', 'contact', 'pricing']);
+  const EXCLUDED_WP_SLUGS = new Set(['homepage', 'blog', 'sample-page', 'contact', 'pricing', 'about-raphael']);
   const NON_DEFAULT_LOCALES: Locale[] = LOCALES.filter(l => l !== DEFAULT_LOCALE) as Locale[];
 
   const [pages, posts, categories] = await Promise.all([
@@ -197,7 +197,7 @@ if (kind === 'pricing') {
     { row: t('pricing.compare.row.geofences', locale), s: '100',    g: '500',     x: '2,500' },
     { row: t('pricing.compare.row.seats', locale),     s: '2',      g: '3',       x: '10' },
     { row: t('pricing.compare.row.trial', locale),     s: '30d',    g: '30d',     x: '30d' },
-    { row: t('pricing.compare.row.region', locale),    s: 'EU', g: 'EU', x: 'EU' },
+    { row: t('pricing.compare.row.region', locale),    s: t('pricing.tier.basic.feature5', locale), g: t('pricing.tier.starter.feature5', locale), x: t('pricing.tier.professional.feature5', locale) },
     { row: t('pricing.compare.row.support', locale),
       s: t('pricing.compare.val.email', locale),
       g: t('pricing.compare.val.priority', locale),
@@ -475,7 +475,6 @@ if (kind === 'category' && props.category) {
           <span>{t('common.metadata.gpsGeofenced', locale)}</span>
           <span>{t('common.metadata.timeAware', locale)}</span>
           <span>{t('common.metadata.eu', locale)}</span>
-          <span>{t('common.metadata.soc2', locale)}</span>
         </div>
       </div>
       <Features />
@@ -507,7 +506,6 @@ if (kind === 'category' && props.category) {
             <span>{t('common.metadata.usdNet', locale)}</span>
             <span>{t('common.metadata.trial', locale)}</span>
             <span>{t('common.metadata.eu', locale)}</span>
-            <span>{t('common.metadata.soc2', locale)}</span>
           </div>
         </div>
       </section>
