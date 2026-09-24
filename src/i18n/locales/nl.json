@@ -43,6 +43,7 @@
   "hero.receipt.latency": "P50 · 117MS",
   "hero.demo.aria": "Open de live demo: de echte ScanFence-app met voorbeelddata",
   "hero.demo.alt": "ScanFence-dashboard in de live demo: scans vandaag, compliance, geofences en een live feed van geverifieerde en geblokkeerde scans",
+  "hero.demo.label": "Live demo · de echte app met voorbeelddata · zonder aanmelding",
   "hero.demo.cta": "Klik en probeer de live demo →",
   "features.eyebrow": "DE WACHT",
   "features.heading.line1": "Zes dingen die de code doet",

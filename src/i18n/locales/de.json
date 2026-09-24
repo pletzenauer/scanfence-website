@@ -47,6 +47,7 @@
   "hero.receipt.latency": "P50 · 117MS",
   "hero.demo.aria": "Live-Demo öffnen: die echte ScanFence-App mit Beispieldaten",
   "hero.demo.alt": "ScanFence-Dashboard in der Live-Demo: Scans heute, Compliance-Rate, Geofences und ein Live-Feed verifizierter und blockierter Scans",
+  "hero.demo.label": "Live-Demo · die echte App mit Beispieldaten · ohne Anmeldung",
   "hero.demo.cta": "Klicken und Live-Demo ausprobieren →",
 
   "features.eyebrow": "DIE WACHE",

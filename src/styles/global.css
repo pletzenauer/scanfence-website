@@ -401,39 +401,129 @@ ul {
 /* ===== Hero ===== */
 /* Live-demo screenshot: the first thing on the page, one viewport tall, and
    the whole thing is a link into /demo/app/. */
+/* Opening screen: the live demo shown as an app window on a stage, so it reads
+   as "a preview you can open" rather than as the site itself. Colours are
+   fixed, not theme tokens: the stage is dark in both themes. */
 .hero-demo {
   position: relative;
-  display: block;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
   height: calc(100svh - var(--header-height));
-  min-height: 420px;
+  min-height: 460px;
+  padding: 28px 40px 0;
   overflow: hidden;
-  background: #0b0c0e;
-  border-bottom: var(--rule-hard);
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 0%, rgba(124, 224, 153, 0.16), transparent 70%),
+    radial-gradient(circle, rgba(142, 151, 168, 0.16) 1px, transparent 1.5px) 0 0 / 22px 22px,
+    #030405;
+  border-bottom: 1px solid #222A3A;
   text-decoration: none;
 }
 
-.hero-demo picture { display: block; height: 100%; }
+.hero-demo-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 14px;
+  border: 1px solid rgba(124, 224, 153, 0.35);
+  background: rgba(124, 224, 153, 0.08);
+  color: #7CE099;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.hero-demo-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #7CE099;
+  animation: hero-demo-blink 1.2s steps(2, jump-none) infinite;
+}
+
+.hero-demo-window {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  width: min(1320px, 100%);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #2E3A4F;
+  border-bottom: 0;
+  border-radius: 12px 12px 0 0;
+  overflow: hidden;
+  background: #0b0c0e;
+  box-shadow:
+    0 -20px 80px rgba(124, 224, 153, 0.10),
+    0 30px 90px rgba(0, 0, 0, 0.7);
+  transition: transform 0.4s ease, border-color 0.3s ease;
+}
+
+.hero-demo-bar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 36px;
+  padding: 0 14px;
+  background: #141923;
+  border-bottom: 1px solid #222A3A;
+}
+
+.hero-demo-bar i {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #2E3A4F;
+}
+
+.hero-demo-url {
+  margin: 0 auto;
+  padding: 4px 16px;
+  border-radius: 6px;
+  background: #0E1218;
+  color: #E8ECF2;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  transform: translateX(-24px); /* optically centre against the dots */
+}
+
+.hero-demo-url-path { color: #8E97A8; }
+
+.hero-demo picture { display: block; flex: 1; min-height: 0; }
 
 .hero-demo img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   object-position: left top;
-  transition: transform 0.6s ease, filter 0.3s ease;
+  transition: filter 0.3s ease;
 }
 
-.hero-demo:hover img,
-.hero-demo:focus-visible img {
-  transform: scale(1.01);
-  filter: brightness(0.85);
-}
-
-.hero-demo::after {
+.hero-demo-window::after {
   content: "";
   position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at center, rgba(11, 12, 14, 0.55) 0%, rgba(11, 12, 14, 0) 60%);
+  inset: 36px 0 0;
+  /* Shade over the whole screenshot so it reads as a preview, not the page */
+  background:
+    radial-gradient(ellipse at center, rgba(3, 4, 5, 0.45) 0%, rgba(3, 4, 5, 0) 60%),
+    rgba(3, 4, 5, 0.5);
   pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.hero-demo:hover .hero-demo-window::after,
+.hero-demo:focus-visible .hero-demo-window::after { opacity: 0.55; }
+
+.hero-demo:hover .hero-demo-window,
+.hero-demo:focus-visible .hero-demo-window {
+  transform: translateY(-6px);
+  border-color: rgba(124, 224, 153, 0.6);
 }
 
 .hero-demo-cta {
@@ -444,7 +534,6 @@ ul {
   transform: translate(-50%, -50%);
   display: inline-flex;
   align-items: center;
-  gap: var(--space-3);
   padding: 20px 36px;
   background: #7CE099;
   color: #0b0c0e;
@@ -466,21 +555,14 @@ ul {
   scale: 1.06;
 }
 
-.hero-demo-dot {
-  width: 10px;
-  height: 10px;
-  background: #0b0c0e;
-  animation: hero-demo-blink 1.2s steps(2, jump-none) infinite;
-}
-
 @keyframes hero-demo-blink {
-  50% { opacity: 0; }
+  50% { opacity: 0.2; }
 }
 
 /* Expanding ring that draws the eye to the button */
 @keyframes hero-demo-pulse {
-  0%   { box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 0 color-mix(in srgb, #7CE099 70%, transparent); }
-  100% { box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 22px color-mix(in srgb, #7CE099 0%, transparent); }
+  0%   { box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 0 rgba(124, 224, 153, 0.7); }
+  100% { box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 22px rgba(124, 224, 153, 0); }
 }
 
 @keyframes hero-demo-bob {
@@ -489,11 +571,19 @@ ul {
 }
 
 @media (max-width: 600px) {
-  .hero-demo-cta { font-size: 13px; padding: 16px 20px; gap: var(--space-2); }
+  .hero-demo { padding: 16px 14px 0; gap: 12px; }
+  .hero-demo-label { font-size: 9.5px; letter-spacing: 0.04em; padding: 6px 10px; gap: 7px; }
+  .hero-demo-window { border-radius: 10px 10px 0 0; }
+  .hero-demo-bar { height: 30px; gap: 5px; padding: 0 10px; }
+  .hero-demo-bar i { width: 8px; height: 8px; }
+  .hero-demo-url { font-size: 11px; padding: 3px 10px; transform: translateX(-12px); }
+  .hero-demo-url-path { display: none; }
+  .hero-demo-window::after { inset: 30px 0 0; }
+  .hero-demo-cta { font-size: 13px; padding: 16px 20px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-demo img, .hero-demo-cta { transition: none; }
+  .hero-demo img, .hero-demo-cta, .hero-demo-window { transition: none; }
   .hero-demo-cta, .hero-demo-dot { animation: none; }
 }
 

@@ -13,26 +13,35 @@ const scans = [
 ---
 
 <a href="/demo/app/" class="hero-demo" aria-label={t('hero.demo.aria', locale)}>
-  <picture>
-    <source
-      media="(max-width: 600px)"
-      srcset="/images/live-demo-dashboard-mobile.webp"
-      width="780"
-      height="1576"
-    />
-    <img
-      src="/images/live-demo-dashboard.webp"
-      srcset="/images/live-demo-dashboard-1440.webp 1440w, /images/live-demo-dashboard.webp 2880w"
-      sizes="100vw"
-      width="2880"
-      height="1800"
-      alt={t('hero.demo.alt', locale)}
-      fetchpriority="high"
-    />
-  </picture>
-  <span class="hero-demo-cta">
+  <span class="hero-demo-label">
     <span class="hero-demo-dot" aria-hidden="true"></span>
-    {t('hero.demo.cta', locale)}
+    {t('hero.demo.label', locale)}
+  </span>
+  <span class="hero-demo-window">
+    <span class="hero-demo-bar" aria-hidden="true">
+      <i></i><i></i><i></i>
+      <span class="hero-demo-url">app.scanfence.com<span class="hero-demo-url-path">/dashboard</span></span>
+    </span>
+    <picture>
+      <source
+        media="(max-width: 600px)"
+        srcset="/images/live-demo-dashboard-mobile.webp"
+        width="780"
+        height="1576"
+      />
+      <img
+        src="/images/live-demo-dashboard.webp"
+        srcset="/images/live-demo-dashboard-1440.webp 1440w, /images/live-demo-dashboard.webp 2880w"
+        sizes="100vw"
+        width="2880"
+        height="1800"
+        alt={t('hero.demo.alt', locale)}
+        fetchpriority="high"
+      />
+    </picture>
+    <span class="hero-demo-cta">
+      {t('hero.demo.cta', locale)}
+    </span>
   </span>
 </a>
 
