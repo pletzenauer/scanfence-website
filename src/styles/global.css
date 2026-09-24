@@ -428,49 +428,73 @@ ul {
   filter: brightness(0.85);
 }
 
+.hero-demo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at center, rgba(11, 12, 14, 0.55) 0%, rgba(11, 12, 14, 0) 60%);
+  pointer-events: none;
+}
+
 .hero-demo-cta {
   position: absolute;
+  z-index: 1;
   left: 50%;
-  bottom: var(--space-7);
-  transform: translateX(-50%);
+  top: 50%;
+  transform: translate(-50%, -50%);
   display: inline-flex;
   align-items: center;
   gap: var(--space-3);
-  padding: 16px 28px;
-  background: var(--d01-signal);
-  color: #fff;
+  padding: 20px 36px;
+  background: #7CE099;
+  color: #0b0c0e;
   font-family: var(--font-mono);
-  font-size: 14px;
-  letter-spacing: 0.08em;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
   white-space: nowrap;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
-  transition: transform 0.2s ease;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  animation: hero-demo-pulse 2s ease-out infinite, hero-demo-bob 2s ease-in-out infinite;
+  transition: background 0.2s ease;
 }
 
 .hero-demo:hover .hero-demo-cta,
 .hero-demo:focus-visible .hero-demo-cta {
-  transform: translateX(-50%) translateY(-3px);
+  background: #fff;
+  animation-play-state: paused;
+  scale: 1.06;
 }
 
 .hero-demo-dot {
-  width: 8px;
-  height: 8px;
-  background: #fff;
-  animation: hero-demo-blink 1.6s ease-in-out infinite;
+  width: 10px;
+  height: 10px;
+  background: #0b0c0e;
+  animation: hero-demo-blink 1.2s steps(2, jump-none) infinite;
 }
 
 @keyframes hero-demo-blink {
-  50% { opacity: 0.3; }
+  50% { opacity: 0; }
+}
+
+/* Expanding ring that draws the eye to the button */
+@keyframes hero-demo-pulse {
+  0%   { box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 0 color-mix(in srgb, #7CE099 70%, transparent); }
+  100% { box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5), 0 0 0 22px color-mix(in srgb, #7CE099 0%, transparent); }
+}
+
+@keyframes hero-demo-bob {
+  0%, 100% { scale: 1; }
+  50%      { scale: 1.04; }
 }
 
 @media (max-width: 600px) {
-  .hero-demo-cta { font-size: 12px; padding: 14px 18px; bottom: var(--space-5); }
+  .hero-demo-cta { font-size: 13px; padding: 16px 20px; gap: var(--space-2); }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .hero-demo img, .hero-demo-cta { transition: none; }
-  .hero-demo-dot { animation: none; }
+  .hero-demo-cta, .hero-demo-dot { animation: none; }
 }
 
 .hero {
