@@ -1,0 +1,198 @@
+---
+/**
+ * Layout of the help docs (src/pages/documentation/*.md). Three columns on
+ * wide screens: section nav, the article, and "On this page". Markdown pages
+ * name it in their frontmatter, so Astro hands over `frontmatter` and the
+ * page's `headings`.
+ */
+import BaseLayout from './BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import { DOCS_NAV, docHref, docSlugFor, neighbours } from '../lib/docs';
+import '../styles/docs.css';
+
+interface Props {
+  frontmatter: { title: string; description: string; eyebrow?: string };
+  headings?: { depth: number; slug: string; text: string }[];
+}
+
+const { frontmatter, headings = [] } = Astro.props;
+const slug = docSlugFor(Astro.url.pathname) ?? '';
+const { current, prev, next } = neighbours(slug);
+const toc = headings.filter(h => h.depth === 2 || h.depth === 3);
+const eyebrow = frontmatter.eyebrow ?? current?.group ?? 'Help';
+---
+
+<BaseLayout
+  title={slug ? `${frontmatter.title} · ScanFence Help` : 'ScanFence Help · How to use the app'}
+  description={frontmatter.description}
+  canonical={`https://scanfence.com${docHref(slug)}`}
+  locale="en"
+>
+  <Header />
+  <div class="docs">
+    <aside class="docs-nav" aria-label="Help sections">
+      <div class="docs-search">
+        <label for="docsSearch" class="eyebrow eyebrow--mute">Search the help</label>
+        <input id="docsSearch" type="search" placeholder="geofence, trash, CSV…" autocomplete="off" />
+        <ul id="docsSearchResults" class="docs-search-results" hidden></ul>
+      </div>
+      <details class="docs-nav-toggle" open>
+        <summary>All topics</summary>
+        {DOCS_NAV.map(group => (
+          <div class="docs-nav-group">
+            <p class="eyebrow eyebrow--mute">{group.label}</p>
+            <ul>
+              {group.items.map(item => (
+                <li>
+                  <a
+                    href={docHref(item.slug)}
+                    aria-current={item.slug === slug ? 'page' : undefined}
+                  >{item.title}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </details>
+    </aside>
+
+    <main class="docs-main">
+      <article class="docs-article">
+        <nav class="docs-crumbs eyebrow eyebrow--mute" aria-label="Breadcrumb">
+          <a href="/documentation/">Help</a>
+          <span aria-hidden="true">/</span>
+          <span>{eyebrow}</span>
+        </nav>
+        <h1>{frontmatter.title}</h1>
+        <p class="docs-lede">{frontmatter.description}</p>
+        <div class="docs-body">
+          <slot />
+        </div>
+
+        <nav class="docs-pager" aria-label="Previous and next topic">
+          {prev ? (
+            <a class="docs-pager-prev" href={docHref(prev.slug)}>
+              <span class="eyebrow eyebrow--mute">← Previous</span>
+              <span>{prev.title}</span>
+            </a>
+          ) : <span />}
+          {next && (
+            <a class="docs-pager-next" href={docHref(next.slug)}>
+              <span class="eyebrow eyebrow--mute">Next →</span>
+              <span>{next.title}</span>
+            </a>
+          )}
+        </nav>
+
+        <aside class="docs-help">
+          <p><strong>Still stuck?</strong> Write to <a href="mailto:hello@scanfence.com">hello@scanfence.com</a> or try it first in the <a href="/demo/app/">live demo</a>. The demo runs on sample data and nothing you change is saved.</p>
+        </aside>
+      </article>
+    </main>
+
+    {toc.length > 1 && (
+      <aside class="docs-toc" aria-label="On this page">
+        <p class="eyebrow eyebrow--mute">On this page</p>
+        <ul>
+          {toc.map(h => (
+            <li class={h.depth === 3 ? 'is-sub' : undefined}><a href={`#${h.slug}`}>{h.text}</a></li>
+          ))}
+        </ul>
+      </aside>
+    )}
+  </div>
+  <Footer />
+</BaseLayout>
+
+<script>
+  // On phones the topic list starts folded so the article comes first.
+  const navToggle = document.querySelector<HTMLDetailsElement>('.docs-nav-toggle');
+  if (navToggle && matchMedia('(max-width: 860px)').matches) navToggle.open = false;
+
+  // Screenshots exist in a dark and a light version. The Markdown points at
+  // the dark one (the site's default); swap to match the visitor's theme,
+  // including when they flip the header toggle.
+  const root = document.documentElement;
+  const syncShots = () => {
+    const theme = root.classList.contains('light') ? 'light' : 'dark';
+    document.querySelectorAll<HTMLImageElement>('.docs-body img[src*="/images/docs/"]').forEach(img => {
+      const want = img.src.replace(/-(dark|light)\.webp$/, `-${theme}.webp`);
+      if (img.src !== want) img.src = want;
+    });
+  };
+  syncShots();
+  new MutationObserver(syncShots).observe(root, { attributes: true, attributeFilter: ['class'] });
+
+  // Click a screenshot to see it full size; click again or press Esc to close.
+  document.querySelectorAll<HTMLImageElement>('.docs-body figure img').forEach(img => {
+    img.addEventListener('click', () => {
+      const box = document.createElement('div');
+      box.className = 'docs-zoom';
+      box.innerHTML = `<img src="${img.src}" alt="">`;
+      const close = () => { box.remove(); document.removeEventListener('keydown', onKey); };
+      const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') close(); };
+      box.addEventListener('click', close);
+      document.addEventListener('keydown', onKey);
+      document.body.appendChild(box);
+    });
+  });
+
+  // Highlight the section being read in "On this page".
+  const tocLinks = [...document.querySelectorAll<HTMLAnchorElement>('.docs-toc a')];
+  if (tocLinks.length) {
+    const targets = tocLinks
+      .map(a => document.getElementById(decodeURIComponent(a.hash.slice(1))))
+      .filter((el): el is HTMLElement => !!el);
+    const onScroll = () => {
+      let active = targets[0];
+      for (const t of targets) if (t.getBoundingClientRect().top < 140) active = t;
+      tocLinks.forEach(a => a.classList.toggle('is-active', a.hash === `#${active?.id}`));
+    };
+    document.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+
+  // Search: the index is small, so fetch it on first focus and filter in
+  // the browser. Titles weigh more than headings, headings more than text.
+  type Entry = { href: string; title: string; group: string; headings: { slug: string; text: string }[]; text: string };
+  const input = document.getElementById('docsSearch') as HTMLInputElement | null;
+  const list = document.getElementById('docsSearchResults') as HTMLUListElement | null;
+  let index: Entry[] | null = null;
+  const esc = (s: string) => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]!));
+  const load = async () => {
+    if (index) return index;
+    try { index = await (await fetch('/documentation/search.json')).json(); } catch { index = []; }
+    return index!;
+  };
+  const search = async () => {
+    if (!input || !list) return;
+    const q = input.value.trim().toLowerCase();
+    if (q.length < 2) { list.hidden = true; list.innerHTML = ''; return; }
+    const terms = q.split(/\s+/);
+    const hits: { score: number; href: string; label: string; sub: string }[] = [];
+    for (const p of await load()) {
+      const hay = `${p.title} ${p.headings.map(h => h.text).join(' ')} ${p.text}`.toLowerCase();
+      if (!terms.every(t => hay.includes(t))) continue;
+      const heading = p.headings.find(h => terms.every(t => h.text.toLowerCase().includes(t)));
+      const score = (terms.every(t => p.title.toLowerCase().includes(t)) ? 10 : 0) + (heading ? 5 : 0) + 1;
+      hits.push({
+        score,
+        href: heading ? `${p.href}#${heading.slug}` : p.href,
+        label: heading ? heading.text : p.title,
+        sub: heading ? p.title : p.group,
+      });
+    }
+    hits.sort((a, b) => b.score - a.score);
+    list.innerHTML = hits.length
+      ? hits.slice(0, 8).map(h => `<li><a href="${h.href}"><span>${esc(h.label)}</span><small>${esc(h.sub)}</small></a></li>`).join('')
+      : '<li class="is-empty">Nothing found. Try another word.</li>';
+    list.hidden = false;
+  };
+  input?.addEventListener('focus', load, { once: true });
+  input?.addEventListener('input', search);
+  input?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { const first = list?.querySelector('a'); if (first) location.href = first.getAttribute('href')!; }
+    if (e.key === 'Escape') { input.value = ''; search(); }
+  });
+</script>

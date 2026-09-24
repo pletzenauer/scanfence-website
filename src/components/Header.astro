@@ -8,6 +8,8 @@ const isActive = (href: string) => {
   if (href === '/') return canonicalPath === '/';
   return canonicalPath.startsWith(href);
 };
+// The help docs exist in English only (src/pages/documentation/).
+const navHref = (href: string) => (href === '/documentation/' ? href : localizedUrl(href, locale));
 const nav = [
   { href: '/',               key: 'nav.home' },
   { href: '/features/',      key: 'nav.features' },
@@ -29,7 +31,7 @@ const nav = [
     <nav class="header-nav" aria-label={t('nav.primary', locale)}>
       {nav.map(item => (
         <a
-          href={localizedUrl(item.href, locale)}
+          href={navHref(item.href)}
           class:list={[{ 'is-active': isActive(item.href) }]}
         >{t(item.key, locale)}</a>
       ))}
@@ -62,7 +64,7 @@ const nav = [
 <div class="mobile-menu" id="mobileMenu">
   {nav.map(item => (
     <a
-      href={localizedUrl(item.href, locale)}
+      href={navHref(item.href)}
       class:list={[{ 'is-active': isActive(item.href) }]}
     >{t(item.key, locale)}</a>
   ))}

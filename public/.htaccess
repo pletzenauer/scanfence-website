@@ -56,6 +56,10 @@ RewriteRule ^terms-of-service/?$ /terms-and-conditions/   [R=301,L]
 RewriteRule ^about-raphael/?$ / [R=301,L]
 RewriteRule ^(zh|es|ar|pt|id|fr|ja|ru|de|nl|hi)/about-raphael/?$ /$1/ [R=301,L]
 
+# 2c) The help docs are English-only Astro pages since 2026-09. The translated
+#     copies of the old WordPress documentation page are gone.
+RewriteRule ^(zh|es|ar|pt|id|fr|ja|ru|de|nl|hi)/documentation/?$ /documentation/ [R=301,L]
+
 # 3) 301 legacy blog pagination /blog/N/ -> /blog/page/N/  (N=2..9)
 RewriteRule ^blog/([0-9])/?$    /blog/page/$1/            [R=301,L]
 
