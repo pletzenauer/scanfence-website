@@ -5,7 +5,7 @@ description: 创建账户，制作你的第一个动态二维码，并用手机�
 
 ## 1. 创建账户
 
-1. 访问 [app.scanfence.com/signup](https://app.scanfence.com/signup)。
+1. 访问 [app.scanfence.com/signup](https://app.scanfence.com/signup?lang=zh)。
 2. 选择一个套餐：**Basic**、**Starter** 或 **Professional**。在顶部切换 **Monthly** 和 **Annual** 付费方式；按年付费约可节省 17%。每个套餐都有 30 天免费试用。如果不确定选哪个，请参阅[套餐与限额](/documentation/plans-and-limits/)。
 3. 输入你的工作邮箱和密码（至少 6 个字符），确认密码，并同意隐私政策和服务条款。
 4. 有优惠码？继续之前请在 **Voucher code** 中输入。

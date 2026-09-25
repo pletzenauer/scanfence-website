@@ -5,7 +5,7 @@ description: アカウントを作成し、最初の動的 QR コードを作っ
 
 ## 1. アカウントを作成する
 
-1. [app.scanfence.com/signup](https://app.scanfence.com/signup) を開きます。
+1. [app.scanfence.com/signup](https://app.scanfence.com/signup?lang=ja) を開きます。
 2. **Basic**、**Starter**、**Professional** からプランを選びます。上部で **Monthly** と **Annual** の支払い方法を切り替えられます。年払いは約 17 % お得です。すべてのプランに 30 日間の無料トライアルがあります。どれを選ぶか迷ったら、[プランと上限](/documentation/plans-and-limits/)をご覧ください。
 3. 仕事用のメールアドレスとパスワード(6 文字以上)を入力して確認し、プライバシーポリシーと利用規約に同意します。
 4. クーポンをお持ちの場合は、先に進む前に **Voucher code** に入力します。

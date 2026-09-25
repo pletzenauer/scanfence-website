@@ -29,7 +29,7 @@ import CTA from '../../components/CTA.astro';
 import BlogCard from '../../components/BlogCard.astro';
 import Pagination from '../../components/Pagination.astro';
 import { LOCALES, DEFAULT_LOCALE, type Locale } from '../../i18n/config';
-import { t, localizedUrl } from '../../i18n/t';
+import { t, localizedUrl, appUrl } from '../../i18n/t';
 import { getPageTranslation, getPostTranslation } from '../../i18n/wp-cache';
 
 const POSTS_PER_PAGE = 12;
@@ -187,7 +187,7 @@ if (kind === 'pricing') {
     blurb: t(`pricing.tier.${k}.blurb`, locale),
     cta: {
       label: t(`pricing.tier.${k}.cta`, locale),
-      href: `https://app.scanfence.com/signup?plan=${k}`,
+      href: appUrl(`/signup?plan=${k}`, locale),
     },
     features: [1, 2, 3, 4, 5, 6].map(i => t(`pricing.tier.${k}.feature${i}`, locale)),
     featured: k === 'starter',

@@ -5,7 +5,7 @@ description: Maak uw account aan, maak uw eerste dynamische QR-code en test die 
 
 ## 1. Uw account aanmaken
 
-1. Ga naar [app.scanfence.com/signup](https://app.scanfence.com/signup).
+1. Ga naar [app.scanfence.com/signup](https://app.scanfence.com/signup?lang=nl).
 2. Kies een abonnement: **Basic**, **Starter** of **Professional**. Wissel bovenaan tussen maandelijkse (**Monthly**) en jaarlijkse (**Annual**) facturatie. Jaarlijks bespaart u ongeveer 17 %. Elk abonnement begint met een gratis proefperiode van 30 dagen. Zie [Abonnementen en limieten](/documentation/plans-and-limits/) als u twijfelt welk u moet kiezen.
 3. Voer uw zakelijke e-mailadres en een wachtwoord in (minimaal 6 tekens), bevestig het wachtwoord en accepteer het privacybeleid en de voorwaarden.
 4. Hebt u een voucher? Voer die in bij **Voucher code** voordat u verdergaat.

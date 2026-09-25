@@ -1,5 +1,5 @@
 ---
-import { resolveLocale, localizedUrl, t } from '../i18n/t';
+import { resolveLocale, localizedUrl, appUrl, t } from '../i18n/t';
 
 const locale = resolveLocale(Astro.currentLocale);
 ---
@@ -10,7 +10,7 @@ const locale = resolveLocale(Astro.currentLocale);
       <h2>{t('cta.heading', locale)}</h2>
       <p>{t('cta.lede', locale)}</p>
       <div class="cta-buttons">
-        <a href="https://app.scanfence.com/signup" class="btn btn-primary btn-lg">{t('cta.primary', locale)}</a>
+        <a href={appUrl('/signup', locale)} class="btn btn-primary btn-lg">{t('cta.primary', locale)}</a>
         <a href={localizedUrl('/contact/', locale)} class="btn btn-ghost btn-lg">{t('cta.secondary', locale)}</a>
       </div>
     </div>

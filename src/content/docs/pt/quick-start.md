@@ -5,7 +5,7 @@ description: Crie sua conta, faça seu primeiro código QR dinâmico e teste no 
 
 ## 1. Crie sua conta
 
-1. Acesse [app.scanfence.com/signup](https://app.scanfence.com/signup).
+1. Acesse [app.scanfence.com/signup](https://app.scanfence.com/signup?lang=pt).
 2. Escolha um plano: **Basic**, **Starter** ou **Professional**. Alterne entre cobrança **Monthly** e **Annual** no topo. O plano anual economiza cerca de 17 %. Todo plano começa com um teste grátis de 30 dias. Veja [Planos e limites](/documentation/plans-and-limits/) se estiver em dúvida sobre qual escolher.
 3. Digite seu e-mail de trabalho e uma senha (com pelo menos 6 caracteres), confirme a senha e aceite a Política de Privacidade e os Termos.
 4. Tem um cupom? Digite-o em **Voucher code** antes de continuar.

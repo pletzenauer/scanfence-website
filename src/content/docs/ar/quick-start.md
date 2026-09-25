@@ -5,7 +5,7 @@ description: "أنشئ حسابك، واصنع أول رمز QR ديناميكي
 
 ## 1. أنشئ حسابك
 
-1. اذهب إلى [app.scanfence.com/signup](https://app.scanfence.com/signup).
+1. اذهب إلى [app.scanfence.com/signup](https://app.scanfence.com/signup?lang=ar).
 2. اختر خطة: **Basic** أو **Starter** أو **Professional**. بدّل بين الفوترة **Monthly** و**Annual** في الأعلى، والفوترة السنوية توفر نحو 17 %. تبدأ كل خطة بفترة تجريبية مجانية مدتها 30 يومًا. راجع [الخطط والحدود](/documentation/plans-and-limits/) إن لم تكن متأكدًا أيها تختار.
 3. أدخل بريد عملك الإلكتروني وكلمة مرور (6 أحرف على الأقل)، وأكّدها، ووافق على سياسة الخصوصية والشروط.
 4. لديك قسيمة؟ أدخلها في **Voucher code** قبل المتابعة.

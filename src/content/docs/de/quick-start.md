@@ -5,7 +5,7 @@ description: Konto anlegen, den ersten dynamischen QR-Code erstellen und auf dem
 
 ## 1. Konto anlegen
 
-1. Rufen Sie [app.scanfence.com/signup](https://app.scanfence.com/signup) auf.
+1. Rufen Sie [app.scanfence.com/signup](https://app.scanfence.com/signup?lang=de) auf.
 2. Wählen Sie einen Tarif: **Basic**, **Starter** oder **Professional**. Oben wechseln Sie zwischen **Monthly** und **Annual**. Jährliche Abrechnung spart rund 17 %. Jeder Tarif beginnt mit einer 30-tägigen kostenlosen Testphase. Wenn Sie unsicher sind, welcher passt, lesen Sie [Tarife und Limits](/documentation/plans-and-limits/).
 3. Geben Sie Ihre geschäftliche E-Mail-Adresse und ein Passwort (mindestens 6 Zeichen) ein, bestätigen Sie es und akzeptieren Sie die Datenschutzerklärung und die Nutzungsbedingungen.
 4. Sie haben einen Gutschein? Geben Sie ihn unter **Voucher code** ein, bevor Sie fortfahren.

@@ -1,5 +1,5 @@
 ---
-import { resolveLocale, localizedUrl, stripLocalePrefix, t } from '../i18n/t';
+import { resolveLocale, localizedUrl, appUrl, stripLocalePrefix, t } from '../i18n/t';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 
 const locale = resolveLocale(Astro.currentLocale);
@@ -38,8 +38,8 @@ const nav = [
     <div class="header-actions">
       <LanguageSwitcher />
       <a href="/demo/app/" class="header-link">{t('nav.liveDemo', locale)}</a>
-      <a href="https://app.scanfence.com/login" class="header-link">{t('nav.signIn', locale)}</a>
-      <a href="https://app.scanfence.com/signup" class="btn btn-primary btn-nav">{t('nav.startPlan', locale)}</a>
+      <a href={appUrl('/login', locale)} class="header-link">{t('nav.signIn', locale)}</a>
+      <a href={appUrl('/signup', locale)} class="btn btn-primary btn-nav">{t('nav.startPlan', locale)}</a>
     </div>
 
     <button class="theme-toggle" type="button" id="themeToggle" aria-label={t('nav.toggleTheme', locale)} title={t('nav.toggleTheme', locale)} aria-pressed="false">
@@ -69,8 +69,8 @@ const nav = [
   <hr class="rule-hard" />
   <LanguageSwitcher />
   <a href="/demo/app/">{t('nav.liveDemo', locale)}</a>
-  <a href="https://app.scanfence.com/login">{t('nav.signIn', locale)}</a>
-  <a href="https://app.scanfence.com/signup" class="btn btn-primary">{t('nav.startPlan', locale)}</a>
+  <a href={appUrl('/login', locale)}>{t('nav.signIn', locale)}</a>
+  <a href={appUrl('/signup', locale)} class="btn btn-primary">{t('nav.startPlan', locale)}</a>
 </div>
 
 <script>

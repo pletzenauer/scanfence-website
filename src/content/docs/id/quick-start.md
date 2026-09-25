@@ -5,7 +5,7 @@ description: Buat akun, buat kode QR dinamis pertama Anda, lalu uji di ponsel. H
 
 ## 1. Membuat akun
 
-1. Buka [app.scanfence.com/signup](https://app.scanfence.com/signup).
+1. Buka [app.scanfence.com/signup](https://app.scanfence.com/signup?lang=id).
 2. Pilih paket: **Basic**, **Starter** atau **Professional**. Beralih antara penagihan **Monthly** dan **Annual** di bagian atas; tahunan menghemat sekitar 17 %. Setiap paket dimulai dengan uji coba gratis 30 hari. Lihat [Paket dan batas](/documentation/plans-and-limits/) jika Anda ragu memilih yang mana.
 3. Masukkan email kerja dan kata sandi (minimal 6 karakter), konfirmasikan, lalu setujui Kebijakan Privasi dan Ketentuan.
 4. Punya voucher? Masukkan di **Voucher code** sebelum melanjutkan.

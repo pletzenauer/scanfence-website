@@ -5,7 +5,7 @@ description: अपना अकाउंट बनाएँ, अपना प�
 
 ## 1. अपना अकाउंट बनाएँ
 
-1. [app.scanfence.com/signup](https://app.scanfence.com/signup) पर जाएँ।
+1. [app.scanfence.com/signup](https://app.scanfence.com/signup?lang=hi) पर जाएँ।
 2. एक प्लान चुनें: **Basic**, **Starter** या **Professional**। ऊपर **Monthly** और **Annual** बिलिंग के बीच स्विच करें; सालाना में लगभग 17 % की बचत होती है। हर प्लान 30 दिन के फ़्री ट्रायल से शुरू होता है। कौन सा लें, इस पर पक्का न हों तो [प्लान और सीमाएँ](/documentation/plans-and-limits/) देखें।
 3. अपना काम वाला ईमेल और एक पासवर्ड (कम से कम 6 अक्षर) डालें, उसकी पुष्टि करें, और Privacy Policy और Terms स्वीकार करें।
 4. वाउचर है? आगे बढ़ने से पहले उसे **Voucher code** में डालें।

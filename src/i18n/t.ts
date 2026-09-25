@@ -58,6 +58,19 @@ export function localizedUrl(path: string, locale: Locale): string {
 }
 
 /**
+ * Link into app.scanfence.com in the visitor's language. The app reads
+ * `?lang=` (same locale codes as this site). English links carry no param so
+ * the app can fall back to the visitor's saved or browser language.
+ *   appUrl('/signup', 'de')              -> 'https://app.scanfence.com/signup?lang=de'
+ *   appUrl('/signup?plan=starter', 'en') -> 'https://app.scanfence.com/signup?plan=starter'
+ */
+export function appUrl(path: string, locale: Locale): string {
+  const url = new URL(path, 'https://app.scanfence.com');
+  if (locale !== DEFAULT_LOCALE) url.searchParams.set('lang', locale);
+  return url.toString();
+}
+
+/**
  * Strip the locale prefix from a pathname, returning the canonical English path.
  *   stripLocalePrefix('/de/pricing/') -> { locale: 'de', path: '/pricing/' }
  *   stripLocalePrefix('/pricing/')    -> { locale: 'en', path: '/pricing/' }
